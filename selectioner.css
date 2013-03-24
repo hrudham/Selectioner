@@ -1,0 +1,126 @@
+.select-dialog
+{
+	border: 1px solid #AAA;
+	background-color: #FFF;
+	line-height: 20px;
+	z-index: 60000;
+	overflow: hidden;
+	text-align: left;
+	padding: 4px 0px;
+	margin-top: -1px;
+	max-height: 158px;
+	overflow: auto;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.25);
+}
+
+.select-dialog ul
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+.select-dialog  a
+{
+	display: block;
+}
+
+.select-dialog  a:hover
+{
+	background-color: #F5F5F5;
+}
+
+.select-dialog > ul > li
+{
+	padding: 0px 4px;
+}
+
+.select-dialog ul li
+{
+	list-style: none;
+}
+
+.select-dialog ul li label
+{
+	display: block;
+	padding-left: 20px;
+}
+
+.select-dialog ul li label:hover
+{
+	background-color: #F5F5F5;
+}
+
+.select-dialog ul li input[type="checkbox"]
+{
+	float: left;
+}
+
+.select-dialog .select-group-title
+{
+	font-weight: bold;
+}
+
+.select-display
+{
+	border: 1px solid #AAA;
+	background-color: #FFF;
+	display: inline-block;
+	min-width: 126px;
+	text-align: left;
+	cursor: pointer;
+	position: relative;
+	padding: 2px 24px 2px 1px;
+	overflow: hidden;
+	margin: 2px;
+	height: 16px;
+	line-height: 16px;
+	vertical-align: middle;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.select-display .select-text
+{
+	padding-left: 2px;
+}
+
+.select-display .none
+{
+	color: #CCC;
+}
+
+.select-display .select-button
+{
+	position: absolute;
+	right: 4px;
+	top: 50%;
+	margin-top: -8px;
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	background: #FFF url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+	
+	-moz-transition: all 0.15s linear;
+    -webkit-transition: all 0.15s linear;
+	-ms-transition: all 0.15s linear;
+    -o-transition: all 0.15s linear;
+    transition: all 0.15s linear;
+}
+
+.select-display.select-visible .select-button
+{
+	background-position: 0px -16px;
+}
+
+.select-display.select-visible .select-button:not(ie8)
+{
+	-moz-transform:rotate(-180deg);
+    -webkit-transform:rotate(-180deg);
+    -o-transform:rotate(-180deg);
+    transform:rotate(-180deg);
+	background-position: 0px 0px;
+}
+
+
