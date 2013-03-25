@@ -36,12 +36,12 @@
 .select-dialog ul li
 {
 	list-style: none;
+	overflow: auto;
 }
 
 .select-dialog ul li label
 {
 	display: block;
-	padding-left: 20px;
 }
 
 .select-dialog ul li label:hover

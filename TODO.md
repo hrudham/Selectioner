@@ -12,3 +12,6 @@
 - Test / implement with AJAX.
 - Consider implementing responsive support for mobile.
 - Add .gitignore and attributes files.
+- Dialog needs to be able to determine where it should position itself depending on what is available within the viewport (IE: do not overflow at the bottom of the page).
+- If the viewport ends up off of the viewport, it's size is incorrectly calculated.
+- Dialog needs to reposition itself when the viewport resizes. Might be better just to close it when this happens.

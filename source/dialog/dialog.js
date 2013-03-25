@@ -126,7 +126,7 @@ Dialog.prototype.renderOptionGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass('title')
+		.addClass('select-group-title')
 		.append(groupAnchor);
 	
 	var children = group.children();

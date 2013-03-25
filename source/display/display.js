@@ -87,7 +87,7 @@ Display.prototype.update = function()
 		var displayText = '';
 		for (var i = 0, length = selectedOptions.length; i < length; i++)
 		{
-			displayText += selectedOptions[i].innerText;
+			displayText += selectedOptions[i].text;
 			
 			if (i < length - 1)
 			{

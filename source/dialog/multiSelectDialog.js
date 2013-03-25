@@ -17,7 +17,8 @@ MultiSelectDialog.prototype.renderOption = function(option)
 	}
 		
 	var label = $('<label />')
-		.text(option.text())
+		.append(checkbox)
+		.append($('<span />').text(option.text()))
 		.attr('for', checkboxId);
 		
 	var dialog = this;
@@ -32,7 +33,7 @@ MultiSelectDialog.prototype.renderOption = function(option)
 			}
 		);
 		
-	element.append(checkbox).append(label);
+	element.append(label);
 
 	return element;
 };

@@ -134,7 +134,7 @@ Dialog.prototype.renderOptionGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass('title')
+		.addClass('select-group-title')
 		.append(groupAnchor);
 	
 	var children = group.children();
@@ -188,7 +188,8 @@ MultiSelectDialog.prototype.renderOption = function(option)
 	}
 		
 	var label = $('<label />')
-		.text(option.text())
+		.append(checkbox)
+		.append($('<span />').text(option.text()))
 		.attr('for', checkboxId);
 		
 	var dialog = this;
@@ -203,7 +204,7 @@ MultiSelectDialog.prototype.renderOption = function(option)
 			}
 		);
 		
-	element.append(checkbox).append(label);
+	element.append(label);
 
 	return element;
 };
@@ -337,7 +338,7 @@ Display.prototype.update = function()
 		var displayText = '';
 		for (var i = 0, length = selectedOptions.length; i < length; i++)
 		{
-			displayText += selectedOptions[i].innerText;
+			displayText += selectedOptions[i].text;
 			
 			if (i < length - 1)
 			{
