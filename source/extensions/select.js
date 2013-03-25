@@ -1,7 +1,7 @@
 $.fn.select = function ()
 {
 	this
-		.filter('select')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()

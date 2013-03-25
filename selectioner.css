@@ -4,7 +4,6 @@
 	background-color: #FFF;
 	line-height: 20px;
 	z-index: 60000;
-	overflow: hidden;
 	text-align: left;
 	padding: 4px 0px;
 	margin-top: -1px;
@@ -75,6 +74,7 @@
 	height: 16px;
 	line-height: 16px;
 	vertical-align: middle;
+	outline: none;
 	
 	-moz-user-select: none;
 	-webkit-user-select: none;

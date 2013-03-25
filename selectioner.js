@@ -1,3 +1,9 @@
+/*!
+ * Copyright 2013 Hilton Rudham
+ * Released under the MIT license
+ * https://github.com/hrudham/Selectioner/blob/master/LICENSE
+ */
+ 
 (function ($)
 {
 var Dialog = function() {};
@@ -255,6 +261,22 @@ Display.prototype.initialize = function(select)
 		.after(this.element);
 		
 	var display = this;
+	
+	// Find any labels associated with this select element,
+	// and make them focus on this display instead.
+	var selectId = select.attr('id');
+	if (selectId !== undefined)
+	{
+		$('label[for="' + selectId + '"]')
+			.on
+				(
+					'click',
+					function (event)
+					{
+						display.element.trigger('focusin.select');
+					}
+				);
+	}
 		
 	this.select
 		.on
@@ -333,7 +355,7 @@ Display.prototype.update = function()
 $.fn.select = function ()
 {
 	this
-		.filter('select')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()
@@ -349,7 +371,7 @@ Display.prototype.update = function()
 $.fn.multiselect = function ()
 {
 	this
-		.filter('select')
+		.filter('select[multiple]')
 		.each
 		(
 			function()

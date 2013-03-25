@@ -11,6 +11,22 @@ Display.prototype.initialize = function(select)
 		.after(this.element);
 		
 	var display = this;
+	
+	// Find any labels associated with this select element,
+	// and make them focus on this display instead.
+	var selectId = select.attr('id');
+	if (selectId !== undefined)
+	{
+		$('label[for="' + selectId + '"]')
+			.on
+				(
+					'click',
+					function (event)
+					{
+						display.element.trigger('focusin.select');
+					}
+				);
+	}
 		
 	this.select
 		.on

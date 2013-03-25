@@ -1,7 +1,7 @@
 $.fn.multiselect = function ()
 {
 	this
-		.filter('select')
+		.filter('select[multiple]')
 		.each
 		(
 			function()
