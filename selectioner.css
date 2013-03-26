@@ -81,6 +81,11 @@
 	-ms-user-select: none;
 }
 
+.select-display:focus
+{
+	border-color: #5CA9E4;
+}
+
 .select-display .select-text
 {
 	padding-left: 2px;
@@ -108,11 +113,6 @@
 	-ms-transition: all 0.15s linear;
     -o-transition: all 0.15s linear;
     transition: all 0.15s linear;
-	
-	-moz-transform:rotateX(-360deg);
-    -webkit-transform:rotateX(-360deg);
-    -o-transform:rotateX(-360deg);
-    transform:rotateX(-360deg);
 }
 
 .select-display.select-visible .select-button
@@ -122,10 +122,10 @@
 
 .select-display.select-visible .select-button:not(ie8)
 {
-	-moz-transform:rotateX(-180deg);
-    -webkit-transform:rotateX(-180deg);
-    -o-transform:rotateX(-180deg);
-    transform:rotateX(-180deg);
+	-moz-transform:rotate(-180deg);
+    -webkit-transform:rotate(-180deg);
+    -o-transform:rotate(-180deg);
+    transform:rotate(-180deg);
 	background-position: 0px 0px;
 }
 

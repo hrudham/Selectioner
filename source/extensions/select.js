@@ -6,11 +6,8 @@ $.fn.select = function ()
 		(
 			function()
 			{
-				var select = $(this);
-				var display = new Display();
-				display.initialize(select);
-				var dialog = new Dialog();
-				dialog.initialize(select, display);
+				var display = new Selectioner.Core.Display();
+				display.initialize($(this), new Selectioner.Views.Dialogs.SingleSelect());
 			}
 		);
 };

@@ -6,11 +6,8 @@ $.fn.multiselect = function ()
 		(
 			function()
 			{
-				var select = $(this);
-				var display = new Display();
-				display.initialize(select);
-				var dialog = new MultiSelectDialog();
-				dialog.initialize(select, display);
+				var display = new Selectioner.Core.Display();
+				display.initialize($(this), new Selectioner.Views.Dialogs.MultiSelect());
 			}
 		);
 };

@@ -31,9 +31,12 @@ var getSourceFiles = function ()
     var paths =
         [
             sourcePath + 'header.js',
-            sourcePath + 'dialog/dialog.js',
-            sourcePath + 'dialog/multiSelectDialog.js',
-            sourcePath + 'display/display.js',
+			sourcePath + 'namespaces.js',
+            sourcePath + 'core/dialog.js',
+            sourcePath + 'core/display.js',
+			sourcePath + 'views/dialog/base.js',
+			sourcePath + 'views/dialog/singleSelect.js',
+			sourcePath + 'views/dialog/multiSelect.js',
             sourcePath + 'extensions/select.js',
             sourcePath + 'extensions/multiSelect.js',
             sourcePath + 'footer.js',
