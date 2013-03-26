@@ -1,0 +1,44 @@
+html
+{
+	font-family: Arial;
+	font-size: 12px;
+	color: #333;
+}
+
+h1, h2, h3, h4
+{
+	font-family: Calibri, Verdana, Arial;
+	padding: 4px;
+	text-transform: uppercase;
+	margin: 16px 0px;
+}
+
+h1
+{
+	font-size: 15px;
+	color: #FFF;
+	background-color: #4F81BD;
+}
+
+h2
+{
+	font-size: 15px;
+	color: #333;
+	background-color: #DBE5F1;
+}
+
+h3, h4
+{
+	font-size: 15px;
+	color: #243F60;
+	border-top: solid 1px #4F81BD;
+	border-left: solid 1px #4F81BD;
+}
+
+label
+{
+	cursor: pointer;
+	font-weight: bold;
+	display: inline-block;
+	min-width: 120px;
+}

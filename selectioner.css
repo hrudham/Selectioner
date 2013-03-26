@@ -129,4 +129,12 @@
 	background-position: 0px 0px;
 }
 
+.select-display input[type="text"]
+{
+	border: none;
+	padding: 0px 0px 0px 2px;
+	margin: 0px;
+	outline: none;
+}
+
 

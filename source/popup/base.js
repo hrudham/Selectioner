@@ -1,7 +1,7 @@
 (function(){
-	var Dialog = Selectioner.Core.Dialog = function() {};
+	var PopupBase = Selectioner.Popup.Base = function() {};
 
-	Dialog.prototype.initialize = function(select, display, dialogView)
+	PopupBase.prototype.initialize = function(select, display, dialogView)
 	{	
 		this.select = select;
 		this.display = display;
@@ -67,7 +67,7 @@
 		$('body').append(this.element);
 	};
 
-	Dialog.prototype.reposition = function()
+	PopupBase.prototype.reposition = function()
 	{
 		var offset = this.display.element.offset();
 		var borderWidth = this.element.outerWidth(false) - this.element.width();
@@ -79,14 +79,14 @@
 		});
 	};
 
-	Dialog.prototype.render = function()
+	PopupBase.prototype.render = function()
 	{
 		this.element
 			.empty()
 			.append(this.dialogView.render());
 	};
 
-	Dialog.prototype.show = function()
+	PopupBase.prototype.show = function()
 	{
 		this.render();
 		this.reposition();
@@ -94,13 +94,13 @@
 		this.select.trigger('show-dialog.selectioner');
 	};
 
-	Dialog.prototype.hide = function()
+	PopupBase.prototype.hide = function()
 	{
 		this.element.css('display', 'none');
 		this.select.trigger('hide-dialog.selectioner');
 	};
 
-	Dialog.prototype.isShown = function()
+	PopupBase.prototype.isShown = function()
 	{
 		return this.element.is(':visible');
 	}

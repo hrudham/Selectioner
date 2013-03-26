@@ -8,18 +8,15 @@
 {
 Selectioner = 
 {
-	Core: {},
 	Extensions: {},
-	Views: 
-	{
-		Dialogs: {},
-		Displays: {}
-	}
+	Dialog: {},
+	Display: {},
+	Popup: {}
 };
 (function(){
-	var Dialog = Selectioner.Core.Dialog = function() {};
+	var PopupBase = Selectioner.Popup.Base = function() {};
 
-	Dialog.prototype.initialize = function(select, display, dialogView)
+	PopupBase.prototype.initialize = function(select, display, dialogView)
 	{	
 		this.select = select;
 		this.display = display;
@@ -85,7 +82,7 @@
 		$('body').append(this.element);
 	};
 
-	Dialog.prototype.reposition = function()
+	PopupBase.prototype.reposition = function()
 	{
 		var offset = this.display.element.offset();
 		var borderWidth = this.element.outerWidth(false) - this.element.width();
@@ -97,14 +94,14 @@
 		});
 	};
 
-	Dialog.prototype.render = function()
+	PopupBase.prototype.render = function()
 	{
 		this.element
 			.empty()
 			.append(this.dialogView.render());
 	};
 
-	Dialog.prototype.show = function()
+	PopupBase.prototype.show = function()
 	{
 		this.render();
 		this.reposition();
@@ -112,25 +109,25 @@
 		this.select.trigger('show-dialog.selectioner');
 	};
 
-	Dialog.prototype.hide = function()
+	PopupBase.prototype.hide = function()
 	{
 		this.element.css('display', 'none');
 		this.select.trigger('hide-dialog.selectioner');
 	};
 
-	Dialog.prototype.isShown = function()
+	PopupBase.prototype.isShown = function()
 	{
 		return this.element.is(':visible');
 	}
 })();
 (function(){
-	var Display = Selectioner.Core.Display = function() {};
+	var DisplayBase = Selectioner.Display.Base = function() {};
 
-	Display.prototype.initialize = function(select, dialogView)
+	DisplayBase.prototype.initialize = function(select, dialogView)
 	{
 		this.select = select;
 		
-		this.render();
+		this.element = this.render();
 		
 		this.select
 			.css('display', 'none')
@@ -182,11 +179,11 @@
 				
 		dialogView.initialize(select);
 		
-		var dialog = new Selectioner.Core.Dialog();
+		var dialog = new Selectioner.Popup.Base();
 		dialog.initialize(select, this, dialogView);
 	};
 
-	Display.prototype.render = function()
+	DisplayBase.prototype.render = function()
 	{	
 		this.element = $('<span />')
 			.prop('tabindex', this.select.prop('tabindex'))
@@ -194,16 +191,16 @@
 			
 		this.textElement = $('<span />').addClass('select-text');
 		
-		this.button = $('<span />').addClass('select-button');
+		var button = $('<span />').addClass('select-button');
 		
 		this.element
-			.append(this.button)
+			.append(button)
 			.append(this.textElement);
 			
 		this.update();
 	};
 
-	Display.prototype.update = function()
+	DisplayBase.prototype.update = function()
 	{	
 		var selectedOptions = this.select.find('option:selected');
 		this.textElement.removeClass('none');
@@ -234,7 +231,107 @@
 	};
 })();
 (function(){
-	var DailogBase = Selectioner.Views.Dialogs.Base = function() {};
+	var ListBox = Selectioner.Display.ListBox = function() {};
+	
+	ListBox.prototype = new Selectioner.Display.Base();
+	
+	ListBox.prototype.render = function()
+	{	
+		var element = $('<span />')
+			.prop('tabindex', this.select.prop('tabindex'))
+			.addClass('select-display');
+			
+		this.textElement = $('<span />').addClass('select-text');
+		
+		var button = $('<span />').addClass('select-button');
+		
+		element
+			.append(button)
+			.append(this.textElement);
+			
+		this.update();
+		
+		return element;
+	};
+
+	ListBox.prototype.update = function()
+	{	
+		var selectedOptions = this.select.find('option:selected');
+		this.textElement.removeClass('none');
+		
+		if (selectedOptions.length == 0)
+		{
+			this.textElement
+				.text('None')
+				.addClass('none');
+		}
+		else if (selectedOptions.length <= 2)
+		{
+			var displayText = '';
+			for (var i = 0, length = selectedOptions.length; i < length; i++)
+			{
+				displayText += selectedOptions[i].text;
+				
+				if (i < length - 1)
+				{
+					displayText += ', ';
+				}
+			}
+			this.textElement.text(displayText);
+		}
+		else
+		{
+			this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
+		}
+	};
+})();
+(function(){
+	var ComboBox = Selectioner.Display.ComboBox = function() {};
+	
+	ComboBox.prototype = new Selectioner.Display.Base();
+	
+	ComboBox.prototype.render = function()
+	{	
+		var element = $('<span />')
+			.prop('tabindex', this.select.prop('tabindex'))
+			.addClass('select-display');
+			
+		this.inputElement = $('<input type="text" />')
+			.attr('placeholder', 'None')
+			.addClass('select-text');
+		
+		var button = $('<span />').addClass('select-button');
+		
+		element
+			.append(button)
+			.append(this.inputElement);
+			
+		this.update();
+		
+		return element;
+	};
+	
+	ComboBox.prototype.update = function()
+	{	
+		var selectedOption = this.select.find('option:selected');
+		this.inputElement
+			.removeAttr('placeholder')
+			.removeClass('none');
+			
+		var value = '';
+		
+		if (selectedOption.length === 0)
+		{
+			this.inputElement.addClass('none');
+		}
+		else 
+		{
+			this.inputElement.val(selectedOption.text());
+		}
+	};
+})();
+(function(){
+	var DailogBase = Selectioner.Dialog.Base = function() {};
 
 	DailogBase.prototype.initialize = function(select)
 	{	
@@ -264,9 +361,9 @@
 	};
 })();
 (function(){
-	var SingleSelect = Selectioner.Views.Dialogs.SingleSelect = function() {};
+	var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 
-	SingleSelect.prototype = new Selectioner.Views.Dialogs.Base();
+	SingleSelect.prototype = new Selectioner.Dialog.Base();
 
 	SingleSelect.prototype.renderOption = function(option)
 	{
@@ -311,9 +408,9 @@
 (function(){
 	var inputIdIndex = 0;
 
-	var MultiSelect = Selectioner.Views.Dialogs.MultiSelect = function() {};
+	var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 					
-	MultiSelect.prototype = new Selectioner.Views.Dialogs.Base();
+	MultiSelect.prototype = new Selectioner.Dialog.Base();
 
 	MultiSelect.prototype.renderOption = function(option)
 	{
@@ -390,7 +487,7 @@
 			);
 	};
 })();
-$.fn.select = function ()
+$.fn.singleSelect = function ()
 {
 	this
 		.filter('select:not([multiple])')
@@ -398,12 +495,12 @@
 		(
 			function()
 			{
-				var display = new Selectioner.Core.Display();
-				display.initialize($(this), new Selectioner.Views.Dialogs.SingleSelect());
+				var listBox = new Selectioner.Display.ListBox();
+				listBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };
-$.fn.multiselect = function ()
+$.fn.multiSelect = function ()
 {
 	this
 		.filter('select[multiple]')
@@ -411,8 +508,21 @@
 		(
 			function()
 			{
-				var display = new Selectioner.Core.Display();
-				display.initialize($(this), new Selectioner.Views.Dialogs.MultiSelect());
+				var listBox = new Selectioner.Display.ListBox();
+				listBox.initialize($(this), new Selectioner.Dialog.MultiSelect());
+			}
+		);
+};
+$.fn.comboSelect = function ()
+{
+	this
+		.filter('select:not([multiple])')
+		.each
+		(
+			function()
+			{
+				var comboBox = new Selectioner.Display.ComboBox();
+				comboBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };

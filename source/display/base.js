@@ -1,11 +1,11 @@
 (function(){
-	var Display = Selectioner.Core.Display = function() {};
+	var DisplayBase = Selectioner.Display.Base = function() {};
 
-	Display.prototype.initialize = function(select, dialogView)
+	DisplayBase.prototype.initialize = function(select, dialogView)
 	{
 		this.select = select;
 		
-		this.render();
+		this.element = this.render();
 		
 		this.select
 			.css('display', 'none')
@@ -57,11 +57,11 @@
 				
 		dialogView.initialize(select);
 		
-		var dialog = new Selectioner.Core.Dialog();
+		var dialog = new Selectioner.Popup.Base();
 		dialog.initialize(select, this, dialogView);
 	};
 
-	Display.prototype.render = function()
+	DisplayBase.prototype.render = function()
 	{	
 		this.element = $('<span />')
 			.prop('tabindex', this.select.prop('tabindex'))
@@ -69,16 +69,16 @@
 			
 		this.textElement = $('<span />').addClass('select-text');
 		
-		this.button = $('<span />').addClass('select-button');
+		var button = $('<span />').addClass('select-button');
 		
 		this.element
-			.append(this.button)
+			.append(button)
 			.append(this.textElement);
 			
 		this.update();
 	};
 
-	Display.prototype.update = function()
+	DisplayBase.prototype.update = function()
 	{	
 		var selectedOptions = this.select.find('option:selected');
 		this.textElement.removeClass('none');

@@ -1,7 +1,7 @@
 (function(){
-	var SingleSelect = Selectioner.Views.Dialogs.SingleSelect = function() {};
+	var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 
-	SingleSelect.prototype = new Selectioner.Views.Dialogs.Base();
+	SingleSelect.prototype = new Selectioner.Dialog.Base();
 
 	SingleSelect.prototype.renderOption = function(option)
 	{

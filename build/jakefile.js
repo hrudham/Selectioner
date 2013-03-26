@@ -32,13 +32,16 @@ var getSourceFiles = function ()
         [
             sourcePath + 'header.js',
 			sourcePath + 'namespaces.js',
-            sourcePath + 'core/dialog.js',
-            sourcePath + 'core/display.js',
-			sourcePath + 'views/dialog/base.js',
-			sourcePath + 'views/dialog/singleSelect.js',
-			sourcePath + 'views/dialog/multiSelect.js',
-            sourcePath + 'extensions/select.js',
+            sourcePath + 'Popup/base.js',
+			sourcePath + 'display/base.js',
+			sourcePath + 'display/listBox.js',
+			sourcePath + 'display/comboBox.js',
+			sourcePath + 'dialog/base.js',
+			sourcePath + 'dialog/singleSelect.js',
+			sourcePath + 'dialog/multiSelect.js',
+            sourcePath + 'extensions/singleSelect.js',
             sourcePath + 'extensions/multiSelect.js',
+			sourcePath + 'extensions/comboSelect.js',
             sourcePath + 'footer.js',
         ];
     return paths;

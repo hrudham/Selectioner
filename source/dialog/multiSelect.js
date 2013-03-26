@@ -1,9 +1,9 @@
 (function(){
 	var inputIdIndex = 0;
 
-	var MultiSelect = Selectioner.Views.Dialogs.MultiSelect = function() {};
+	var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 					
-	MultiSelect.prototype = new Selectioner.Views.Dialogs.Base();
+	MultiSelect.prototype = new Selectioner.Dialog.Base();
 
 	MultiSelect.prototype.renderOption = function(option)
 	{

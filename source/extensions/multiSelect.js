@@ -1,4 +1,4 @@
-$.fn.multiselect = function ()
+$.fn.multiSelect = function ()
 {
 	this
 		.filter('select[multiple]')
@@ -6,8 +6,8 @@ $.fn.multiselect = function ()
 		(
 			function()
 			{
-				var display = new Selectioner.Core.Display();
-				display.initialize($(this), new Selectioner.Views.Dialogs.MultiSelect());
+				var listBox = new Selectioner.Display.ListBox();
+				listBox.initialize($(this), new Selectioner.Dialog.MultiSelect());
 			}
 		);
 };

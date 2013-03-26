@@ -1,10 +1,7 @@
 Selectioner = 
 {
-	Core: {},
 	Extensions: {},
-	Views: 
-	{
-		Dialogs: {},
-		Displays: {}
-	}
+	Dialog: {},
+	Display: {},
+	Popup: {}
 };

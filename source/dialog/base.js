@@ -1,5 +1,5 @@
 (function(){
-	var DailogBase = Selectioner.Views.Dialogs.Base = function() {};
+	var DailogBase = Selectioner.Dialog.Base = function() {};
 
 	DailogBase.prototype.initialize = function(select)
 	{	
