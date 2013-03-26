@@ -15,3 +15,5 @@
 - Dialog needs to be able to determine where it should position itself depending on what is available within the viewport (IE: do not overflow at the bottom of the page).
 - If the viewport ends up off of the viewport, it's size is incorrectly calculated.
 - Dialog needs to reposition itself when the viewport resizes. Might be better just to close it when this happens.
+- Combo select need to get focus highlighting to work; rework how this is rendered?
+- Combo box needs to be able to be hooked up to a text box somewhere, and use it's ID.
