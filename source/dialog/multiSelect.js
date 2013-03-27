@@ -58,14 +58,14 @@
 			checkboxes.trigger('change.selectioner');
 		};
 		
-		var groupAnchor = $('<a />')
+		var groupElement = $('<a />')
 				.attr('href', 'javascript:;')
 				.on('click', toggleGroupSelect)
 				.text(group.attr('label'));
 
 		var options = $('<li />')
 			.addClass('select-group-title')
-			.append(groupAnchor);
+			.append(groupElement);
 		
 		var children = group.children();
 		for (var i = 0, length = children.length; i < length; i++)

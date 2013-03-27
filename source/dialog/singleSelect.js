@@ -23,12 +23,12 @@
 
 	SingleSelect.prototype.renderOptionGroup = function(group)
 	{		
-		var groupAnchor = $('<span />')
+		var groupElement = $('<span />')
 				.text(group.attr('label'));
 
 		var options = $('<li />')
 			.addClass('select-group-title')
-			.append(groupAnchor);
+			.append(groupElement);
 		
 		var children = group.children();
 		for (var i = 0, length = children.length; i < length; i++)

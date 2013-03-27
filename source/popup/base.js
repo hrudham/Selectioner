@@ -1,11 +1,11 @@
 (function(){
 	var PopupBase = Selectioner.Popup.Base = function() {};
 
-	PopupBase.prototype.initialize = function(select, display, dialogView)
+	PopupBase.prototype.initialize = function(select, display, dialog)
 	{	
 		this.select = select;
 		this.display = display;
-		this.dialogView = dialogView;
+		this.dialog = dialog;
 
 		this.element = $('<div />')
 			.addClass('select-dialog')
@@ -19,30 +19,31 @@
 		
 		var dialog = this;
 		
+		var toggleDialog = function() 
+		{ 
+			if (dialog.isShown())
+			{
+				dialog.hide();
+			}
+			else
+			{
+				dialog.show();
+			}
+		};
+		
+		var display = this.display;
+		
 		this.display
 			.element
+			.on('focusin.selectioner', function() { dialog.show(); })
+			.children()
 			.on
 			(
-				'focusin.selectioner', 
+				'mousedown', 
 				function(event) 
 				{ 
-					dialog.show();
-					
-					display.element.on
-					(
-						'mousedown.hide-select', 
-						function(event) 
-						{ 
-							if (dialog.isShown())
-							{
-								dialog.hide();
-							}
-							else
-							{
-								dialog.show();
-							}
-						}
-					);
+					event.stopPropagation(); 
+					toggleDialog(); 
 				}
 			);
 			
@@ -83,7 +84,7 @@
 	{
 		this.element
 			.empty()
-			.append(this.dialogView.render());
+			.append(this.dialog.render());
 	};
 
 	PopupBase.prototype.show = function()

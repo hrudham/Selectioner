@@ -18,3 +18,4 @@
 - Combo select need to get focus highlighting to work; rework how this is rendered?
 - Combo box needs to be able to be hooked up to a text box somewhere, and use it's ID.
 - When you save a page, you often end up with two display elements after the target select.
+- Disabled item support?

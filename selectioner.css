@@ -21,6 +21,8 @@
 .select-dialog  a
 {
 	display: block;
+	text-decoration: none;
+	color: #333;
 }
 
 .select-dialog  a:hover
@@ -42,6 +44,12 @@
 .select-dialog ul li label
 {
 	display: block;
+	font-weight: normal;
+}
+
+.select-dialog ul li span
+{
+	cursor: default;
 }
 
 .select-dialog ul li label:hover
@@ -61,27 +69,39 @@
 
 .select-display
 {
+	display: inline-block;
+	padding: 0px;
+	outline: none;
+	position: relative;
+	margin: 2px;
+}
+
+.select-display > .select-text
+{
 	border: 1px solid #AAA;
 	background-color: #FFF;
 	display: inline-block;
 	min-width: 126px;
 	text-align: left;
-	cursor: pointer;
-	position: relative;
 	padding: 2px 24px 2px 1px;
 	overflow: hidden;
-	margin: 2px;
+	margin: 0px;
 	height: 16px;
 	line-height: 16px;
 	vertical-align: middle;
 	outline: none;
-	
+}
+
+.select-display > span.select-text
+{
+	cursor: pointer;
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
 }
 
-.select-display:focus
+.select-display > .select-text:focus,
+.select-display > input[type="text"]:focus
 {
 	border-color: #5CA9E4;
 }
@@ -99,6 +119,7 @@
 .select-display .select-button
 {
 	position: absolute;
+	cursor: pointer;
 	right: 4px;
 	top: 50%;
 	margin-top: -8px;
@@ -106,7 +127,7 @@
 	height: 16px;
 	width: 16px;
 	z-index: 50000; /* Fixes a Chrome issue when elements float to the right of this element. */
-	background: #FFF url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+	background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
 	
 	-moz-transition: all 0.15s linear;
     -webkit-transition: all 0.15s linear;
@@ -115,26 +136,21 @@
     transition: all 0.15s linear;
 }
 
+.select-display.select-visible .select-button:not(ie8)
+{
+	-moz-transform: rotate(-180deg);
+    -webkit-transform: rotate(-180deg);
+    -o-transform: rotate(-180deg);
+	-ms-transform: rotate(-180deg);
+    transform: rotate(-180deg);
+	background-position: 0px 0px;
+}
+
 .select-display.select-visible .select-button
 {
 	background-position: 0px -16px;
 }
 
-.select-display.select-visible .select-button:not(ie8)
-{
-	-moz-transform:rotate(-180deg);
-    -webkit-transform:rotate(-180deg);
-    -o-transform:rotate(-180deg);
-    transform:rotate(-180deg);
-	background-position: 0px 0px;
-}
 
-.select-display input[type="text"]
-{
-	border: none;
-	padding: 0px 0px 0px 2px;
-	margin: 0px;
-	outline: none;
-}
 
 

@@ -16,11 +16,11 @@
 (function(){
 	var PopupBase = Selectioner.Popup.Base = function() {};
 
-	PopupBase.prototype.initialize = function(select, display, dialogView)
+	PopupBase.prototype.initialize = function(select, display, dialog)
 	{	
 		this.select = select;
 		this.display = display;
-		this.dialogView = dialogView;
+		this.dialog = dialog;
 
 		this.element = $('<div />')
 			.addClass('select-dialog')
@@ -34,30 +34,31 @@
 		
 		var dialog = this;
 		
+		var toggleDialog = function() 
+		{ 
+			if (dialog.isShown())
+			{
+				dialog.hide();
+			}
+			else
+			{
+				dialog.show();
+			}
+		};
+		
+		var display = this.display;
+		
 		this.display
 			.element
+			.on('focusin.selectioner', function() { dialog.show(); })
+			.children()
 			.on
 			(
-				'focusin.selectioner', 
+				'mousedown', 
 				function(event) 
 				{ 
-					dialog.show();
-					
-					display.element.on
-					(
-						'mousedown.hide-select', 
-						function(event) 
-						{ 
-							if (dialog.isShown())
-							{
-								dialog.hide();
-							}
-							else
-							{
-								dialog.show();
-							}
-						}
-					);
+					event.stopPropagation(); 
+					toggleDialog(); 
 				}
 			);
 			
@@ -98,7 +99,7 @@
 	{
 		this.element
 			.empty()
-			.append(this.dialogView.render());
+			.append(this.dialog.render());
 	};
 
 	PopupBase.prototype.show = function()
@@ -123,15 +124,12 @@
 (function(){
 	var DisplayBase = Selectioner.Display.Base = function() {};
 
-	DisplayBase.prototype.initialize = function(select, dialogView)
+	DisplayBase.prototype.initialize = function(select, dialog)
 	{
 		this.select = select;
 		
-		this.element = this.render();
-		
-		this.select
-			.css('display', 'none')
-			.after(this.element);
+		this.render();		
+		this.update();
 			
 		var display = this;
 		
@@ -177,27 +175,30 @@
 					}
 				);
 				
-		dialogView.initialize(select);
+		dialog.initialize(select);
 		
-		var dialog = new Selectioner.Popup.Base();
-		dialog.initialize(select, this, dialogView);
+		var popup = new Selectioner.Popup.Base();
+		popup.initialize(select, this, dialog);
 	};
 
 	DisplayBase.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.prop('tabindex', this.select.prop('tabindex'))
 			.addClass('select-display');
 			
-		this.textElement = $('<span />').addClass('select-text');
+		this.textElement = $('<span />')
+			.addClass('select-text')
+			.prop('tabindex', this.select.prop('tabindex'));
 		
 		var button = $('<span />').addClass('select-button');
 		
 		this.element
 			.append(button)
 			.append(this.textElement);
-			
-		this.update();
+		
+		this.select
+			.css('display', 'none')
+			.after(this.element);
 	};
 
 	DisplayBase.prototype.update = function()
@@ -237,21 +238,22 @@
 	
 	ListBox.prototype.render = function()
 	{	
-		var element = $('<span />')
-			.prop('tabindex', this.select.prop('tabindex'))
+		this.element = $('<span />')
 			.addClass('select-display');
 			
-		this.textElement = $('<span />').addClass('select-text');
+		this.textElement = $('<span />')
+			.addClass('select-text')
+			.prop('tabindex', this.select.prop('tabindex'));
 		
 		var button = $('<span />').addClass('select-button');
 		
-		element
+		this.element
 			.append(button)
 			.append(this.textElement);
-			
-		this.update();
 		
-		return element;
+		this.select
+			.css('display', 'none')
+			.after(this.element);
 	};
 
 	ListBox.prototype.update = function()
@@ -286,47 +288,49 @@
 	};
 })();
 (function(){
-	var ComboBox = Selectioner.Display.ComboBox = function() {};
+	var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
+	{
+		this.textElement = $(textElement);
+	};
 	
 	ComboBox.prototype = new Selectioner.Display.Base();
-	
+		
 	ComboBox.prototype.render = function()
 	{	
-		var element = $('<span />')
-			.prop('tabindex', this.select.prop('tabindex'))
+		this.element = $('<span />')
 			.addClass('select-display');
 			
-		this.inputElement = $('<input type="text" />')
-			.attr('placeholder', 'None')
-			.addClass('select-text');
+		this.textElement
+			.addClass('select-text')
+			.prop('tabindex', this.select.prop('tabindex'));
 		
-		var button = $('<span />').addClass('select-button');
+		var button = $('<span />')
+			.addClass('select-button')
+			.on('focus', function() {  });
 		
-		element
+		this.element
 			.append(button)
-			.append(this.inputElement);
-			
-		this.update();
+			.append(this.textElement);
 		
-		return element;
+		this.select
+			.css('display', 'none')
+			.after(this.element);
 	};
 	
 	ComboBox.prototype.update = function()
 	{	
 		var selectedOption = this.select.find('option:selected');
-		this.inputElement
-			.removeAttr('placeholder')
-			.removeClass('none');
+		this.textElement.removeClass('none');
 			
-		var value = '';
-		
+		var value = selectedOption.text();
+			
 		if (selectedOption.length === 0)
 		{
-			this.inputElement.addClass('none');
+			this.textElement.addClass('none');
 		}
-		else 
+		else if (value !== '')
 		{
-			this.inputElement.val(selectedOption.text());
+			this.textElement.val(value);
 		}
 	};
 })();
@@ -385,12 +389,12 @@
 
 	SingleSelect.prototype.renderOptionGroup = function(group)
 	{		
-		var groupAnchor = $('<span />')
+		var groupElement = $('<span />')
 				.text(group.attr('label'));
 
 		var options = $('<li />')
 			.addClass('select-group-title')
-			.append(groupAnchor);
+			.append(groupElement);
 		
 		var children = group.children();
 		for (var i = 0, length = children.length; i < length; i++)
@@ -465,14 +469,14 @@
 			checkboxes.trigger('change.selectioner');
 		};
 		
-		var groupAnchor = $('<a />')
+		var groupElement = $('<a />')
 				.attr('href', 'javascript:;')
 				.on('click', toggleGroupSelect)
 				.text(group.attr('label'));
 
 		var options = $('<li />')
 			.addClass('select-group-title')
-			.append(groupAnchor);
+			.append(groupElement);
 		
 		var children = group.children();
 		for (var i = 0, length = children.length; i < length; i++)
@@ -513,7 +517,7 @@
 			}
 		);
 };
-$.fn.comboSelect = function ()
+$.fn.comboSelect = function (textInput)
 {
 	this
 		.filter('select:not([multiple])')
@@ -521,7 +525,7 @@
 		(
 			function()
 			{
-				var comboBox = new Selectioner.Display.ComboBox();
+				var comboBox = new Selectioner.Display.ComboBox(textInput);
 				comboBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
 			}
 		);

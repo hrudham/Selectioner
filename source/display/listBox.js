@@ -5,21 +5,22 @@
 	
 	ListBox.prototype.render = function()
 	{	
-		var element = $('<span />')
-			.prop('tabindex', this.select.prop('tabindex'))
+		this.element = $('<span />')
 			.addClass('select-display');
 			
-		this.textElement = $('<span />').addClass('select-text');
+		this.textElement = $('<span />')
+			.addClass('select-text')
+			.prop('tabindex', this.select.prop('tabindex'));
 		
 		var button = $('<span />').addClass('select-button');
 		
-		element
+		this.element
 			.append(button)
 			.append(this.textElement);
-			
-		this.update();
 		
-		return element;
+		this.select
+			.css('display', 'none')
+			.after(this.element);
 	};
 
 	ListBox.prototype.update = function()

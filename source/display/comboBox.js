@@ -1,45 +1,47 @@
 (function(){
-	var ComboBox = Selectioner.Display.ComboBox = function() {};
+	var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
+	{
+		this.textElement = $(textElement);
+	};
 	
 	ComboBox.prototype = new Selectioner.Display.Base();
-	
+		
 	ComboBox.prototype.render = function()
 	{	
-		var element = $('<span />')
-			.prop('tabindex', this.select.prop('tabindex'))
+		this.element = $('<span />')
 			.addClass('select-display');
 			
-		this.inputElement = $('<input type="text" />')
-			.attr('placeholder', 'None')
-			.addClass('select-text');
+		this.textElement
+			.addClass('select-text')
+			.prop('tabindex', this.select.prop('tabindex'));
 		
-		var button = $('<span />').addClass('select-button');
+		var button = $('<span />')
+			.addClass('select-button')
+			.on('focus', function() {  });
 		
-		element
+		this.element
 			.append(button)
-			.append(this.inputElement);
-			
-		this.update();
+			.append(this.textElement);
 		
-		return element;
+		this.select
+			.css('display', 'none')
+			.after(this.element);
 	};
 	
 	ComboBox.prototype.update = function()
 	{	
 		var selectedOption = this.select.find('option:selected');
-		this.inputElement
-			.removeAttr('placeholder')
-			.removeClass('none');
+		this.textElement.removeClass('none');
 			
-		var value = '';
-		
+		var value = selectedOption.text();
+			
 		if (selectedOption.length === 0)
 		{
-			this.inputElement.addClass('none');
+			this.textElement.addClass('none');
 		}
-		else 
+		else if (value !== '')
 		{
-			this.inputElement.val(selectedOption.text());
+			this.textElement.val(value);
 		}
 	};
 })();

@@ -1,4 +1,4 @@
-$.fn.comboSelect = function ()
+$.fn.comboSelect = function (textInput)
 {
 	this
 		.filter('select:not([multiple])')
@@ -6,7 +6,7 @@ $.fn.comboSelect = function ()
 		(
 			function()
 			{
-				var comboBox = new Selectioner.Display.ComboBox();
+				var comboBox = new Selectioner.Display.ComboBox(textInput);
 				comboBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
 			}
 		);
