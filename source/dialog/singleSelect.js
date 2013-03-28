@@ -17,6 +17,9 @@
 			.attr('href', 'javascript:;')
 			.on('click', selectOption)
 			.text(option.text());
+			
+		this.copyData(option, selectAnchor);
+		this.copyCss(option, selectAnchor);
 
 		return $('<li />').append(selectAnchor);
 	};
@@ -36,10 +39,15 @@
 			var child = $(children[i]);
 			options = options.add(this.renderOption(child));
 		}
-
-		return $('<li />').append
+		
+		var groupElement = $('<li />').append
 			(
 				$('<ul >').append(options)
 			);
+		
+		this.copyData(group, groupElement);
+		this.copyCss(group, groupElement);
+
+		return groupElement;
 	};
 })();

@@ -35,6 +35,9 @@
 			);
 			
 		element.append(label);
+		
+		this.copyData(option, element);
+		this.copyCss(option, element);
 
 		return element;
 	};
@@ -74,9 +77,14 @@
 			options = options.add(this.renderOption(child));
 		}
 
-		return $('<li />').append
+		var groupElement = $('<li />').append
 			(
 				$('<ul >').append(options)
 			);
+		
+		this.copyData(group, groupElement);
+		this.copyCss(group, groupElement);
+
+		return groupElement;
 	};
 })();

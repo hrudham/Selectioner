@@ -5,9 +5,25 @@
 	{
 		this.select = select;
 		
+		var selectStyle = select.attr('style');
+		var selectClasses = (select.attr('class') || '').split(' ');
+		var selectData = select.data();
+		
 		this.render();		
 		this.update();
-			
+		
+		// Copy over the class, style and any data attributes from the select element.
+		this.element.attr('style', selectStyle);
+		for (var i = 0, length = selectClasses.length; i < length; i++)
+		{
+			this.element.addClass(selectClasses[i]);
+		}
+		
+		for (var attr in selectData)
+		{
+			this.element.attr('data-' + attr, selectData[attr]);
+		}
+					
 		var display = this;
 		
 		// Find any labels associated with this select element,
@@ -61,11 +77,11 @@
 	DisplayBase.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.addClass('select-display');
+			.addClass('select-display')
+			.prop('tabindex', this.select.prop('tabindex'));
 			
 		this.textElement = $('<span />')
-			.addClass('select-text')
-			.prop('tabindex', this.select.prop('tabindex'));
+			.addClass('select-text');
 		
 		var button = $('<span />').addClass('select-button');
 		

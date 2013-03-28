@@ -74,11 +74,17 @@
 	outline: none;
 	position: relative;
 	margin: 2px;
+	border: 1px solid #AAA;
+}
+
+.select-display:focus
+{
+	border-color: #5CA9E4;
 }
 
 .select-display > .select-text
 {
-	border: 1px solid #AAA;
+	border: none;
 	background-color: #FFF;
 	display: inline-block;
 	min-width: 126px;
@@ -98,12 +104,6 @@
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
-}
-
-.select-display > .select-text:focus,
-.select-display > input[type="text"]:focus
-{
-	border-color: #5CA9E4;
 }
 
 .select-display .select-text

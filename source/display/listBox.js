@@ -6,11 +6,11 @@
 	ListBox.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.addClass('select-display');
+			.addClass('select-display')
+			.prop('tabindex', this.select.prop('tabindex'));
 			
 		this.textElement = $('<span />')
-			.addClass('select-text')
-			.prop('tabindex', this.select.prop('tabindex'));
+			.addClass('select-text');
 		
 		var button = $('<span />').addClass('select-button');
 		

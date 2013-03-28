@@ -128,9 +128,25 @@
 	{
 		this.select = select;
 		
+		var selectStyle = select.attr('style');
+		var selectClasses = (select.attr('class') || '').split(' ');
+		var selectData = select.data();
+		
 		this.render();		
 		this.update();
-			
+		
+		// Copy over the class, style and any data attributes from the select element.
+		this.element.attr('style', selectStyle);
+		for (var i = 0, length = selectClasses.length; i < length; i++)
+		{
+			this.element.addClass(selectClasses[i]);
+		}
+		
+		for (var attr in selectData)
+		{
+			this.element.attr('data-' + attr, selectData[attr]);
+		}
+					
 		var display = this;
 		
 		// Find any labels associated with this select element,
@@ -184,11 +200,11 @@
 	DisplayBase.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.addClass('select-display');
+			.addClass('select-display')
+			.prop('tabindex', this.select.prop('tabindex'));
 			
 		this.textElement = $('<span />')
-			.addClass('select-text')
-			.prop('tabindex', this.select.prop('tabindex'));
+			.addClass('select-text');
 		
 		var button = $('<span />').addClass('select-button');
 		
@@ -239,11 +255,11 @@
 	ListBox.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.addClass('select-display');
+			.addClass('select-display')
+			.prop('tabindex', this.select.prop('tabindex'));
 			
 		this.textElement = $('<span />')
-			.addClass('select-text')
-			.prop('tabindex', this.select.prop('tabindex'));
+			.addClass('select-text');
 		
 		var button = $('<span />').addClass('select-button');
 		
@@ -298,11 +314,11 @@
 	ComboBox.prototype.render = function()
 	{	
 		this.element = $('<span />')
-			.addClass('select-display');
+			.addClass('select-display')
+			.prop('tabindex', this.select.prop('tabindex'));
 			
 		this.textElement
-			.addClass('select-text')
-			.prop('tabindex', this.select.prop('tabindex'));
+			.addClass('select-text');
 		
 		var button = $('<span />')
 			.addClass('select-button')
@@ -363,6 +379,29 @@
 
 		return element;	
 	};
+	
+	//Copies over all data attributes from one element to another.
+	DailogBase.prototype.copyData = function(source, target)
+	{
+		var data = source.data();
+		for (var attr in data)
+		{
+			target.attr('data-' + attr, data[attr]);
+		}
+	};
+	
+	DailogBase.prototype.copyCss = function(source, target)
+	{
+		// Copy over the class and styleattributes from the source element to the target element.
+		target.attr('style', source.attr('style'));
+		
+		var classes = (source.attr('class') || '').split(' ');
+	
+		for (var i = 0, length = classes.length; i < length; i++)
+		{
+			target.addClass(classes[i]);
+		}
+	};
 })();
 (function(){
 	var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
@@ -383,6 +422,9 @@
 			.attr('href', 'javascript:;')
 			.on('click', selectOption)
 			.text(option.text());
+			
+		this.copyData(option, selectAnchor);
+		this.copyCss(option, selectAnchor);
 
 		return $('<li />').append(selectAnchor);
 	};
@@ -402,11 +444,16 @@
 			var child = $(children[i]);
 			options = options.add(this.renderOption(child));
 		}
-
-		return $('<li />').append
+		
+		var groupElement = $('<li />').append
 			(
 				$('<ul >').append(options)
 			);
+		
+		this.copyData(group, groupElement);
+		this.copyCss(group, groupElement);
+
+		return groupElement;
 	};
 })();
 (function(){
@@ -446,6 +493,9 @@
 			);
 			
 		element.append(label);
+		
+		this.copyData(option, element);
+		this.copyCss(option, element);
 
 		return element;
 	};
@@ -485,10 +535,15 @@
 			options = options.add(this.renderOption(child));
 		}
 
-		return $('<li />').append
+		var groupElement = $('<li />').append
 			(
 				$('<ul >').append(options)
 			);
+		
+		this.copyData(group, groupElement);
+		this.copyCss(group, groupElement);
+
+		return groupElement;
 	};
 })();
 $.fn.singleSelect = function ()
