@@ -9,16 +9,12 @@
 	- Add an additional CSS file for cosmetic purposes.
 - Review how the open / close eventing works.
 - Add highlighting / outlining back again.
-- Fix the issue where clicking on a label open the dialog, then clicking on the display itself, results in the dialog not closing.
 - Write an auto-complete extension.
 - Test / implement with AJAX.
 - Consider implementing responsive support for mobile.
 - Add .gitignore and attributes files.
-- Dialog needs to be able to determine where it should position itself depending on what is available within the viewport (IE: do not overflow at the bottom of the page).
-- If the viewport ends up off of the viewport, it's size is incorrectly calculated.
-- Dialog needs to reposition itself when the viewport resizes. Might be better just to close it when this happens.
 - Combo select need to get focus highlighting to work; rework how this is rendered?
 - Combo box needs to be able to be hooked up to a text box somewhere, and use it's ID.
 - When you save a page, you often end up with two display elements after the target select.
-- Disabled item support?
+- Implement disabled item support.
 - Get validation working in ASP.NET MVC.
