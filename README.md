@@ -10,20 +10,13 @@ A light-weight jQuery replacement for HTML select boxes.
 - Multi-select
 - Combo-box
 
-### What it does
+### How to use it
 
-- It has basic keyboard support; you can use most of it's functionality without a mouse.
-- It automatically copies over styles, classes and data attributes from it's underlying `select` element.
-- The pop-up always attempts to make sure it appears on the screen; it will try not to cause any overflow.
-- Preserves element IDs, so the correct information is sent when a POST occurs.
+Make sure that you've included the following in your project:
 
-### How it's built
-
-- Built in a modular pattern with prototyping in mind.
-- The build process uses [NodeJS](http://nodejs.org/) and [Jake](https://github.com/mde/jake) to mash, minify and validate everything.
-- It has [JSHint](http://www.jshint.com/) implemented, and has been written in [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
-
-## Usage
+- [jQuery](http://www.jquery.com/) v1.9.1+
+- [selectioner.min.js](selectioner.min.js) (or the [development]((selectioner.js)) version)
+- Optional: [selectioner.css](selectioner.css)
 
 See the [demo](demo/index.html) page for a more in-depth examples.
 
@@ -35,7 +28,7 @@ This will create a control that will allow you to select a single item.
 <select id="MySingleSelect"> ... </select>
 <script>
 	$('#MySingleSelect').singleSelect();
-&gt;/script&lt;
+</script>
 ```
 
 ### Multi-select
@@ -61,26 +54,31 @@ This will create a control that will allow you to select a single item, or enter
 </script>
 ```
 
+### What it does
+
+In-depth features include:
+
+- It has basic keyboard support; you can use most of it's functionality without a mouse.
+- It automatically copies over styles, classes and data attributes from it's underlying `select` element.
+- The pop-up always attempts to make sure it appears on the screen; it will try not to cause any overflow.
+- It stays in sync with it's underlying `<select />` element and preserves element IDs, so the correct information is sent when a POST occurs.
+
 ## Development
 
-### Solution Building Dependencies
+### How it's built
 
-#### NodeJS
+- Built in a modular pattern with prototyping in mind.
+- The build process uses [NodeJS](http://nodejs.org/) and [Jake](https://github.com/mde/jake) to mash, minify and validate everything.
+- It has [JSHint](http://www.jshint.com/) implemented, and has been written in [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
 
-You can obtain this from [nodejs.org](http://nodejs.org/). 
+### How you build it
 
-#### Node Package Manager (NPM)
+If you've never built the project before, download [nodejs.org](http://nodejs.org/), and make sure that you have the [Node Packet Manager (NPM)](https://npmjs.org/) installed (this usually comes bundled with Node). 
 
-NodeJs usually comes bundled with the NPM, but you can also obtain this from [npmjs.org](https://npmjs.org/).
-
-The following global NPM packages are also required:
-
-##### Jake
-
-[Jake](https://github.com/mde/jake) is a Rake port for NodeJS. You can this with the [NPM](http://github.com/isaacs/npm).
+Once that's done, you're going to need [Jake](https://github.com/mde/jake). This is a Rake port for NodeJS. You can this with the NPM via the following command:
 
 		$ npm install jake -g
 
-To build the solution from the `[ProjectPath]\Build` directory: 
+Thereafter, build the solution from the `[ProjectPath]\Build` directory with the following command: 
 
 		$ jake
