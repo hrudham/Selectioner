@@ -31,35 +31,35 @@ See the [demo](demo/index.html) page for a more in-depth examples.
 
 This will create a control that will allow you to select a single item. 
 
-`
+```html
 <select id="MySingleSelect"> ... </select>
 <script>
 	$('#MySingleSelect').singleSelect();
-</script>
-`
+&gt;/script&lt;
+```
 
 ### Multi-select
 
 This will create a control that will allow you to select multiple items.
 
-`
+```html
 <select id="MyMultiSelect" multiple="multiple"> ... </select>
 <script>
 	$('#MyMultiSelect').multiSelect();
 </script>
-`
+```
 
 ### Combo-select
 
 This will create a control that will allow you to select a single item, or enter your own text.
 
-`
+```html
 <input type="text" id="MyComboText" placeholder="Select an option" />
 <select id="MyComboSelect" multiple="multiple"> ... </select>
 <script>
 	$('#MyComboSelect').comboSelect('#MyComboText');
 </script>
-`
+```
 
 ## Development
 
