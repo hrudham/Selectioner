@@ -15,7 +15,7 @@ A light-weight jQuery replacement for HTML select boxes.
 Make sure that you've included the following in your project:
 
 - [jQuery](http://www.jquery.com/) v1.9.1+
-- [selectioner.min.js](selectioner.min.js) (or the [development]((selectioner.js)) version)
+- [selectioner.min.js](selectioner.min.js) (or the [development](selectioner.js) version)
 - Optional: [selectioner.css](selectioner.css)
 
 See the [demo](demo/index.html) page for a more in-depth examples.
@@ -75,7 +75,7 @@ In-depth features include:
 
 If you've never built the project before, download [nodejs.org](http://nodejs.org/), and make sure that you have the [Node Packet Manager (NPM)](https://npmjs.org/) installed (this usually comes bundled with Node). 
 
-Once that's done, you're going to need [Jake](https://github.com/mde/jake). This is a Rake port for NodeJS. You can this with the NPM via the following command:
+Once that's done, you're going to need [Jake](https://github.com/mde/jake). This is a Rake port for NodeJS. You can obtain this with NPM via the following command:
 
 		$ npm install jake -g
 
