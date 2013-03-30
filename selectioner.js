@@ -4,9 +4,17 @@
  * https://github.com/hrudham/Selectioner/blob/master/LICENSE
  */
  
+ /* 
+	jshint strict: true
+	jslint vars: true 
+	global Selectioner, window, document, jQuery 
+*/
+
+ /* jshint scripturl: true */
 (function ($)
 {
-Selectioner = 
+	'use strict';
+this.Selectioner = 
 {
 	Base: {},
 	Dialog: {},
@@ -41,11 +49,6 @@ var copyData = Selectioner.Utility.copyData = function(source, target)
     
 Eventable.prototype.on = function (name, handler, context)
 {
-    //#IF INCLUDE_VALIDATION
-    if (typeof name != 'string') throw new TypeError();
-    if (typeof handler != 'function') throw new TypeError();
-    //#ENDIF
-
     var names = name.split(' ');
     if (names.length > 1)
     {
@@ -180,21 +183,19 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	
 	this.render();
 	
-	var dialog = this;
+	var popup = this;
 	
 	var toggleDialog = function() 
 	{ 
-		if (dialog.isShown())
+		if (popup.isShown())
 		{
-			dialog.hide();
+			popup.hide();
 		}
 		else
 		{
-			dialog.show();
+			popup.show();
 		}
 	};
-	
-	var display = this.display;
 	
 	this.display
 		.element
@@ -203,7 +204,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'focusin.selectioner', 
 			function(event) 
 			{ 
-				dialog.show();
+				popup.show();
 			}
 		)
 		.children()
@@ -223,13 +224,13 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'mousedown.selectioner focusin.selectioner',
 			function(event)
 			{
-				if (dialog.isShown() &&
-					event.target !== dialog.display.element[0] &&
-					!$.contains(dialog.display.element[0], event.target) &&
-					event.target !== dialog.element[0] &&
-					!$.contains(dialog.element[0], event.target))
+				if (popup.isShown() &&
+					event.target !== popup.display.element[0] &&
+					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== popup.element[0] &&
+					!$.contains(popup.element[0], event.target))
 				{
-					dialog.hide();
+					popup.hide();
 				}
 			}
 		);
@@ -240,7 +241,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'resize.selectioner',
 			function()
 			{
-				dialog.hide();
+				popup.hide();
 			}
 		);
 		
@@ -302,21 +303,21 @@ PopupBase.prototype.show = function()
 	this.render();
 	this.reposition();
 	this.element.css({ visibility: 'visible', zIndex: '' });
-	this.select.trigger('show-dialog.selectioner');
+	this.trigger('show.selectioner');
 	this._isVisible = true;
 };
 
 PopupBase.prototype.hide = function()
 {
 	this.element.css({ visibility: 'hidden', zIndex: '-1' });
-	this.select.trigger('hide-dialog.selectioner');
+	this.trigger('hide.selectioner');
 	this._isVisible = false;
 };
 
 PopupBase.prototype.isShown = function()
 {
 	return this._isVisible;
-}
+};
 var Display = Selectioner.Base.Display = function() {};
 
 Display.prototype = new Eventable();
@@ -342,17 +343,18 @@ Display.prototype.initialize = function(select, dialog)
 	var selectId = select.attr('id');
 	if (selectId !== undefined)
 	{
-		$('label[for="' + selectId + '"]')
+		this.labels = $(document)
 			.on
 				(
-					'click',
+					'click.selectioner',
+					'label[for="' + selectId + '"]',
 					function (event)
 					{
 						display.element.focus();
 					}
 				);
 	}
-		
+	
 	this.select
 		.on
 			(
@@ -361,10 +363,17 @@ Display.prototype.initialize = function(select, dialog)
 				{
 					display.update();
 				}
-			)
+			);
+	
+	dialog.initialize(select);
+			
+	var popup = new Selectioner.Base.Popup();
+	popup.initialize(select, this, dialog);
+			
+	popup
 		.on
 			(
-				'show-dialog.selectioner',
+				'show.selectioner',
 				function(event)
 				{
 					display.element.addClass('select-visible');
@@ -372,17 +381,12 @@ Display.prototype.initialize = function(select, dialog)
 			)
 		.on
 			(
-				'hide-dialog.selectioner',
+				'hide.selectioner',
 				function(event)
 				{
 					display.element.removeClass('select-visible');
 				}
 			);
-			
-	dialog.initialize(select);
-	
-	var popup = new Selectioner.Base.Popup();
-	popup.initialize(select, this, dialog);
 };
 
 Display.prototype.render = function()
@@ -406,7 +410,7 @@ Display.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length == 0)
+	if (selectedOptions.length === 0)
 	{
 		this.textElement.text('None');
 		this.textElement.addClass('none');
@@ -441,7 +445,7 @@ Dailog.prototype.initialize = function(select)
 
 Dailog.prototype.render = function()
 {
-	var element = $('<ul />')
+	var element = $('<ul />');
 
 	var children = this.select.children();
 	
@@ -454,7 +458,7 @@ Dailog.prototype.render = function()
 		}
 		else if (children[i].tagName === 'OPTGROUP')
 		{
-			element.append(this.renderOptionGroup(child));
+			element.append(this.renderGroup(child));
 		}
 	}	
 
@@ -485,7 +489,7 @@ ListBox.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length == 0)
+	if (selectedOptions.length === 0)
 	{
 		this.textElement
 			.text('None')
@@ -576,14 +580,14 @@ SingleSelect.prototype.renderOption = function(option)
 	return $('<li />').append(selectAnchor);
 };
 
-SingleSelect.prototype.renderOptionGroup = function(group)
+SingleSelect.prototype.renderGroup = function(group)
 {		
-	var groupElement = $('<span />')
+	var groupTitle = $('<span />')
 			.text(group.attr('label'));
 
 	var options = $('<li />')
 		.addClass('select-group-title')
-		.append(groupElement);
+		.append(groupTitle);
 	
 	var children = group.children();
 	for (var i = 0, length = children.length; i < length; i++)
@@ -645,7 +649,7 @@ MultiSelect.prototype.renderOption = function(option)
 	return element;
 };
 
-MultiSelect.prototype.renderOptionGroup = function(group)
+MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;
 	var toggleGroupSelect = function(event)
@@ -664,14 +668,14 @@ MultiSelect.prototype.renderOptionGroup = function(group)
 		checkboxes.trigger('change.selectioner');
 	};
 	
-	var groupElement = $('<a />')
+	var groupTitle = $('<a />')
 			.attr('href', 'javascript:;')
 			.on('click', toggleGroupSelect)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
 		.addClass('select-group-title')
-		.append(groupElement);
+		.append(groupTitle);
 	
 	var children = group.children();
 	for (var i = 0, length = children.length; i < length; i++)

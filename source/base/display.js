@@ -23,17 +23,18 @@ Display.prototype.initialize = function(select, dialog)
 	var selectId = select.attr('id');
 	if (selectId !== undefined)
 	{
-		$('label[for="' + selectId + '"]')
+		this.labels = $(document)
 			.on
 				(
-					'click',
+					'click.selectioner',
+					'label[for="' + selectId + '"]',
 					function (event)
 					{
 						display.element.focus();
 					}
 				);
 	}
-		
+	
 	this.select
 		.on
 			(
@@ -42,10 +43,17 @@ Display.prototype.initialize = function(select, dialog)
 				{
 					display.update();
 				}
-			)
+			);
+	
+	dialog.initialize(select);
+			
+	var popup = new Selectioner.Base.Popup();
+	popup.initialize(select, this, dialog);
+			
+	popup
 		.on
 			(
-				'show-dialog.selectioner',
+				'show.selectioner',
 				function(event)
 				{
 					display.element.addClass('select-visible');
@@ -53,17 +61,12 @@ Display.prototype.initialize = function(select, dialog)
 			)
 		.on
 			(
-				'hide-dialog.selectioner',
+				'hide.selectioner',
 				function(event)
 				{
 					display.element.removeClass('select-visible');
 				}
 			);
-			
-	dialog.initialize(select);
-	
-	var popup = new Selectioner.Base.Popup();
-	popup.initialize(select, this, dialog);
 };
 
 Display.prototype.render = function()
@@ -87,7 +90,7 @@ Display.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length == 0)
+	if (selectedOptions.length === 0)
 	{
 		this.textElement.text('None');
 		this.textElement.addClass('none');

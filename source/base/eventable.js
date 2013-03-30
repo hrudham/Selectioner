@@ -2,11 +2,6 @@ var Eventable = Selectioner.Base.Eventable = function () { };
     
 Eventable.prototype.on = function (name, handler, context)
 {
-    //#IF INCLUDE_VALIDATION
-    if (typeof name != 'string') throw new TypeError();
-    if (typeof handler != 'function') throw new TypeError();
-    //#ENDIF
-
     var names = name.split(' ');
     if (names.length > 1)
     {

@@ -9,7 +9,7 @@ Dailog.prototype.initialize = function(select)
 
 Dailog.prototype.render = function()
 {
-	var element = $('<ul />')
+	var element = $('<ul />');
 
 	var children = this.select.children();
 	
@@ -22,7 +22,7 @@ Dailog.prototype.render = function()
 		}
 		else if (children[i].tagName === 'OPTGROUP')
 		{
-			element.append(this.renderOptionGroup(child));
+			element.append(this.renderGroup(child));
 		}
 	}	
 

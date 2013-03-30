@@ -23,14 +23,14 @@ SingleSelect.prototype.renderOption = function(option)
 	return $('<li />').append(selectAnchor);
 };
 
-SingleSelect.prototype.renderOptionGroup = function(group)
+SingleSelect.prototype.renderGroup = function(group)
 {		
-	var groupElement = $('<span />')
+	var groupTitle = $('<span />')
 			.text(group.attr('label'));
 
 	var options = $('<li />')
 		.addClass('select-group-title')
-		.append(groupElement);
+		.append(groupTitle);
 	
 	var children = group.children();
 	for (var i = 0, length = children.length; i < length; i++)

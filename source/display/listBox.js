@@ -23,7 +23,7 @@ ListBox.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length == 0)
+	if (selectedOptions.length === 0)
 	{
 		this.textElement
 			.text('None')

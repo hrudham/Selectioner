@@ -1,4 +1,4 @@
-Selectioner = 
+this.Selectioner = 
 {
 	Base: {},
 	Dialog: {},

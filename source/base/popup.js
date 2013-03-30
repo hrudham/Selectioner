@@ -19,21 +19,19 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	
 	this.render();
 	
-	var dialog = this;
+	var popup = this;
 	
 	var toggleDialog = function() 
 	{ 
-		if (dialog.isShown())
+		if (popup.isShown())
 		{
-			dialog.hide();
+			popup.hide();
 		}
 		else
 		{
-			dialog.show();
+			popup.show();
 		}
 	};
-	
-	var display = this.display;
 	
 	this.display
 		.element
@@ -42,7 +40,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'focusin.selectioner', 
 			function(event) 
 			{ 
-				dialog.show();
+				popup.show();
 			}
 		)
 		.children()
@@ -62,13 +60,13 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'mousedown.selectioner focusin.selectioner',
 			function(event)
 			{
-				if (dialog.isShown() &&
-					event.target !== dialog.display.element[0] &&
-					!$.contains(dialog.display.element[0], event.target) &&
-					event.target !== dialog.element[0] &&
-					!$.contains(dialog.element[0], event.target))
+				if (popup.isShown() &&
+					event.target !== popup.display.element[0] &&
+					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== popup.element[0] &&
+					!$.contains(popup.element[0], event.target))
 				{
-					dialog.hide();
+					popup.hide();
 				}
 			}
 		);
@@ -79,7 +77,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 			'resize.selectioner',
 			function()
 			{
-				dialog.hide();
+				popup.hide();
 			}
 		);
 		
@@ -141,18 +139,18 @@ PopupBase.prototype.show = function()
 	this.render();
 	this.reposition();
 	this.element.css({ visibility: 'visible', zIndex: '' });
-	this.select.trigger('show-dialog.selectioner');
+	this.trigger('show.selectioner');
 	this._isVisible = true;
 };
 
 PopupBase.prototype.hide = function()
 {
 	this.element.css({ visibility: 'hidden', zIndex: '-1' });
-	this.select.trigger('hide-dialog.selectioner');
+	this.trigger('hide.selectioner');
 	this._isVisible = false;
 };
 
 PopupBase.prototype.isShown = function()
 {
 	return this._isVisible;
-}
+};

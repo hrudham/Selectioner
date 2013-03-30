@@ -4,5 +4,13 @@
  * https://github.com/hrudham/Selectioner/blob/master/LICENSE
  */
  
+ /* 
+	jshint strict: true
+	jslint vars: true 
+	global Selectioner, window, document, jQuery 
+*/
+
+ /* jshint scripturl: true */
 (function ($)
 {
+	'use strict';

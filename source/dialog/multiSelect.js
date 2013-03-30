@@ -41,7 +41,7 @@ MultiSelect.prototype.renderOption = function(option)
 	return element;
 };
 
-MultiSelect.prototype.renderOptionGroup = function(group)
+MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;
 	var toggleGroupSelect = function(event)
@@ -60,14 +60,14 @@ MultiSelect.prototype.renderOptionGroup = function(group)
 		checkboxes.trigger('change.selectioner');
 	};
 	
-	var groupElement = $('<a />')
+	var groupTitle = $('<a />')
 			.attr('href', 'javascript:;')
 			.on('click', toggleGroupSelect)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
 		.addClass('select-group-title')
-		.append(groupElement);
+		.append(groupTitle);
 	
 	var children = group.children();
 	for (var i = 0, length = children.length; i < length; i++)
