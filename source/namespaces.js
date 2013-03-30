@@ -1,4 +1,4 @@
-this.Selectioner = 
+window.Selectioner = 
 {
 	Base: {},
 	Dialog: {},

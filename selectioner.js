@@ -14,7 +14,7 @@
 (function ($)
 {
 	'use strict';
-this.Selectioner = 
+window.Selectioner = 
 {
 	Base: {},
 	Dialog: {},
