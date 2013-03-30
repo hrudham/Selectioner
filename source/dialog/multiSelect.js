@@ -66,7 +66,7 @@ MultiSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass('select-group-title')
+		.addClass(settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();

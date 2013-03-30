@@ -1,4 +1,4 @@
-.select-dialog
+.select-popup
 {
 	border: 1px solid #AAA;
 	background-color: #FFF;
@@ -11,72 +11,72 @@
 	overflow: auto;
 }
 
-.select-dialog.above
+.select-popup.above
 {
 	box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
 }
 
-.select-dialog.below
+.select-popup.below
 {
 	box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
 }
 
-.select-dialog.over
+.select-popup.over
 {
 	box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
 }
 
-.select-dialog ul
+.select-popup ul
 {
 	margin: 0px;
 	padding: 0px;
 }
 
-.select-dialog  a
+.select-popup  a
 {
 	display: block;
 	text-decoration: none;
 	color: #333;
 }
 
-.select-dialog  a:hover
+.select-popup  a:hover
 {
 	background-color: #F5F5F5;
 }
 
-.select-dialog > ul > li
+.select-popup > ul > li
 {
 	padding: 0px 4px;
 }
 
-.select-dialog ul li
+.select-popup ul li
 {
 	list-style: none;
 	overflow: auto;
 }
 
-.select-dialog ul li label
+.select-popup ul li label
 {
 	display: block;
 	font-weight: normal;
 }
 
-.select-dialog ul li span
+.select-popup ul li span
 {
 	cursor: default;
 }
 
-.select-dialog ul li label:hover
+.select-popup ul li label:hover
 {
 	background-color: #F5F5F5;
 }
 
-.select-dialog ul li input[type="checkbox"]
+.select-popup ul li input[type="checkbox"]
 {
 	float: left;
 }
 
-.select-dialog .select-group-title
+.select-popup .select-group-title
 {
 	font-weight: bold;
 }

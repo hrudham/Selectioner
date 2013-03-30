@@ -16,11 +16,11 @@ Dailog.prototype.render = function()
 	for (var i = 0, length = children.length; i < length; i++)
 	{
 		var child = $(children[i]);
-		if (children[i].tagName === 'OPTION')
+		if (children[i].tagName == 'OPTION')
 		{
 			element.append(this.renderOption(child));
 		}
-		else if (children[i].tagName === 'OPTGROUP')
+		else if (children[i].tagName == 'OPTGROUP')
 		{
 			element.append(this.renderGroup(child));
 		}

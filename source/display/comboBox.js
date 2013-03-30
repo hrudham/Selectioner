@@ -8,14 +8,14 @@ ComboBox.prototype = new Selectioner.Base.Display();
 ComboBox.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
 	var button = $('<span />')
-		.addClass('select-button')
+		.addClass(settings.cssPrefix + 'button')
 		.on('focus', function() {  });
 	
 	this.element

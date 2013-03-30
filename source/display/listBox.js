@@ -5,13 +5,13 @@ ListBox.prototype = new Selectioner.Base.Display();
 ListBox.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement = $('<span />')
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass('select-button');
+	var button = $('<span />').addClass(settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)

@@ -55,6 +55,7 @@ var getSourceFiles = function ()
         [
             sourcePath + 'header.js',
 			sourcePath + 'namespaces.js',
+			sourcePath + 'settings.js',
 			sourcePath + 'Utility/copyCss.js',
 			sourcePath + 'Utility/copyData.js',
 			sourcePath + 'Base/eventable.js',
@@ -110,7 +111,7 @@ function jsHintify(filePath)
 	if (!success)
 	{
 		var errors = jsHint.errors;
-		log(colors.yellow + 'JSHint Errors:\n');
+		log(colors.yellow + '\nJSHint Errors:\n');
 		log(colors.cyan + '  Path: ' + colors.white + filePath + ':');
 		for (var i = 0, length = errors.length; i < length; i++)
 		{

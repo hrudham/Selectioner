@@ -14,7 +14,7 @@ The following global NPM packages are also required:
 
 #### Jake
 
-Jake is a Rake port for NodeJS. You can this with the [NPM](http://github.com/isaacs/npm).
+[Jake](https://github.com/mde/jake) is a Rake port for NodeJS. You can this with the [NPM](http://github.com/isaacs/npm).
 
 		$ npm install jake -g
 

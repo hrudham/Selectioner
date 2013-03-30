@@ -8,7 +8,7 @@ Display.prototype.initialize = function(select, dialog)
 		
 	this.render();		
 	this.update();
-		
+	
 	Selectioner.Utility.copyData(select, this.element);
 	Selectioner.Utility.copyCss(select, this.element);
 	
@@ -35,36 +35,98 @@ Display.prototype.initialize = function(select, dialog)
 				);
 	}
 	
+	// Make sure the display updates any time 
+	// it's underlying select element changes.
 	this.select
 		.on
 			(
 				'change.selectioner', 
-				function(event)
+				function()
 				{
 					display.update();
 				}
 			);
-	
-	dialog.initialize(select);
 			
+	// Initialize the dialog in order to associated
+	// it with the underlying select element.
+	dialog.initialize(select);
+	
+	// Bind this display to a popup.
 	var popup = new Selectioner.Base.Popup();
 	popup.initialize(select, this, dialog);
-			
+	
+	// Hide or show the pop-up on mouse-down or focus-in.
+	this.element
+		.on
+		(
+			'focusin.selectioner', 
+			function() 
+			{ 
+				popup.show();
+			}
+		)
+		.children()
+		.on
+		(
+			'mousedown.selectioner', 
+			function(event) 
+			{ 
+				event.stopPropagation(); 
+				if (popup.isShown())
+				{
+					popup.hide();
+				}
+				else
+				{
+					popup.show();
+				}
+			}
+		);
+	
+	// Hide the pop-up whenever it loses focus to an 
+	// element that is not part of the pop-up or display.
+	$(document)
+		.on
+		(
+			'mousedown.selectioner focusin.selectioner',
+			function(event)
+			{
+				if (popup.isShown() &&
+					event.target !== popup.display.element[0] &&
+					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== popup.element[0] &&
+					!$.contains(popup.element[0], event.target))
+				{
+					popup.hide();
+				}
+			}
+		);
+		
+	$(window)
+		.on
+		(
+			'resize.selectioner',
+			function()
+			{
+				popup.hide();
+			}
+		);
+
 	popup
 		.on
 			(
 				'show.selectioner',
-				function(event)
+				function()
 				{
-					display.element.addClass('select-visible');
+					display.element.addClass(settings.cssPrefix + 'visible');
 				}
 			)
 		.on
 			(
 				'hide.selectioner',
-				function(event)
+				function()
 				{
-					display.element.removeClass('select-visible');
+					display.element.removeClass(settings.cssPrefix + 'visible');
 				}
 			);
 };
@@ -72,13 +134,13 @@ Display.prototype.initialize = function(select, dialog)
 Display.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement = $('<span />')
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass('select-button');
+	var button = $('<span />').addClass(settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)

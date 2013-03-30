@@ -21,7 +21,12 @@
 	Display: {},
 	Extensions: {},
 	Popup: {},
+	Settings: {},
 	Utility: {}
+};
+var settings = Selectioner.Settings = 
+{
+	cssPrefix: 'select-'
 };
 // Copy over the class and style attributes from the source element to the target element.
 var copyCss = Selectioner.Utility.copyCss = function(source, target)
@@ -173,7 +178,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	this.dialog = dialog;
 
 	this.element = $('<div />')
-		.addClass('select-dialog')
+		.addClass(settings.cssPrefix + 'popup')
 		.css
 		({
 			visibility: 'hidden',
@@ -182,69 +187,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 		});
 	
 	this.render();
-	
-	var popup = this;
-	
-	var toggleDialog = function() 
-	{ 
-		if (popup.isShown())
-		{
-			popup.hide();
-		}
-		else
-		{
-			popup.show();
-		}
-	};
-	
-	this.display
-		.element
-		.on
-		(
-			'focusin.selectioner', 
-			function(event) 
-			{ 
-				popup.show();
-			}
-		)
-		.children()
-		.on
-		(
-			'mousedown.selectioner', 
-			function(event) 
-			{ 
-				event.stopPropagation(); 
-				toggleDialog(); 
-			}
-		);
-		
-	$(document)
-		.on
-		(
-			'mousedown.selectioner focusin.selectioner',
-			function(event)
-			{
-				if (popup.isShown() &&
-					event.target !== popup.display.element[0] &&
-					!$.contains(popup.display.element[0], event.target) &&
-					event.target !== popup.element[0] &&
-					!$.contains(popup.element[0], event.target))
-				{
-					popup.hide();
-				}
-			}
-		);
-		
-	$(window)
-		.on
-		(
-			'resize.selectioner',
-			function()
-			{
-				popup.hide();
-			}
-		);
-		
+			
 	$('body').append(this.element);
 };
 
@@ -328,7 +271,7 @@ Display.prototype.initialize = function(select, dialog)
 		
 	this.render();		
 	this.update();
-		
+	
 	Selectioner.Utility.copyData(select, this.element);
 	Selectioner.Utility.copyCss(select, this.element);
 	
@@ -355,36 +298,98 @@ Display.prototype.initialize = function(select, dialog)
 				);
 	}
 	
+	// Make sure the display updates any time 
+	// it's underlying select element changes.
 	this.select
 		.on
 			(
 				'change.selectioner', 
-				function(event)
+				function()
 				{
 					display.update();
 				}
 			);
-	
-	dialog.initialize(select);
 			
+	// Initialize the dialog in order to associated
+	// it with the underlying select element.
+	dialog.initialize(select);
+	
+	// Bind this display to a popup.
 	var popup = new Selectioner.Base.Popup();
 	popup.initialize(select, this, dialog);
-			
+	
+	// Hide or show the pop-up on mouse-down or focus-in.
+	this.element
+		.on
+		(
+			'focusin.selectioner', 
+			function() 
+			{ 
+				popup.show();
+			}
+		)
+		.children()
+		.on
+		(
+			'mousedown.selectioner', 
+			function(event) 
+			{ 
+				event.stopPropagation(); 
+				if (popup.isShown())
+				{
+					popup.hide();
+				}
+				else
+				{
+					popup.show();
+				}
+			}
+		);
+	
+	// Hide the pop-up whenever it loses focus to an 
+	// element that is not part of the pop-up or display.
+	$(document)
+		.on
+		(
+			'mousedown.selectioner focusin.selectioner',
+			function(event)
+			{
+				if (popup.isShown() &&
+					event.target !== popup.display.element[0] &&
+					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== popup.element[0] &&
+					!$.contains(popup.element[0], event.target))
+				{
+					popup.hide();
+				}
+			}
+		);
+		
+	$(window)
+		.on
+		(
+			'resize.selectioner',
+			function()
+			{
+				popup.hide();
+			}
+		);
+
 	popup
 		.on
 			(
 				'show.selectioner',
-				function(event)
+				function()
 				{
-					display.element.addClass('select-visible');
+					display.element.addClass(settings.cssPrefix + 'visible');
 				}
 			)
 		.on
 			(
 				'hide.selectioner',
-				function(event)
+				function()
 				{
-					display.element.removeClass('select-visible');
+					display.element.removeClass(settings.cssPrefix + 'visible');
 				}
 			);
 };
@@ -392,13 +397,13 @@ Display.prototype.initialize = function(select, dialog)
 Display.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement = $('<span />')
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass('select-button');
+	var button = $('<span />').addClass(settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)
@@ -452,11 +457,11 @@ Dailog.prototype.render = function()
 	for (var i = 0, length = children.length; i < length; i++)
 	{
 		var child = $(children[i]);
-		if (children[i].tagName === 'OPTION')
+		if (children[i].tagName == 'OPTION')
 		{
 			element.append(this.renderOption(child));
 		}
-		else if (children[i].tagName === 'OPTGROUP')
+		else if (children[i].tagName == 'OPTGROUP')
 		{
 			element.append(this.renderGroup(child));
 		}
@@ -471,13 +476,13 @@ ListBox.prototype = new Selectioner.Base.Display();
 ListBox.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement = $('<span />')
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass('select-button');
+	var button = $('<span />').addClass(settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)
@@ -524,14 +529,14 @@ ComboBox.prototype = new Selectioner.Base.Display();
 ComboBox.prototype.render = function()
 {	
 	this.element = $('<span />')
-		.addClass('select-display')
+		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
 	this.textElement
-		.addClass('select-text');
+		.addClass(settings.cssPrefix + 'text');
 	
 	var button = $('<span />')
-		.addClass('select-button')
+		.addClass(settings.cssPrefix + 'button')
 		.on('focus', function() {  });
 	
 	this.element
@@ -586,7 +591,7 @@ SingleSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass('select-group-title')
+		.addClass(settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();
@@ -674,7 +679,7 @@ MultiSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass('select-group-title')
+		.addClass(settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();

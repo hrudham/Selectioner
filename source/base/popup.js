@@ -9,7 +9,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	this.dialog = dialog;
 
 	this.element = $('<div />')
-		.addClass('select-dialog')
+		.addClass(settings.cssPrefix + 'popup')
 		.css
 		({
 			visibility: 'hidden',
@@ -18,69 +18,7 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 		});
 	
 	this.render();
-	
-	var popup = this;
-	
-	var toggleDialog = function() 
-	{ 
-		if (popup.isShown())
-		{
-			popup.hide();
-		}
-		else
-		{
-			popup.show();
-		}
-	};
-	
-	this.display
-		.element
-		.on
-		(
-			'focusin.selectioner', 
-			function(event) 
-			{ 
-				popup.show();
-			}
-		)
-		.children()
-		.on
-		(
-			'mousedown.selectioner', 
-			function(event) 
-			{ 
-				event.stopPropagation(); 
-				toggleDialog(); 
-			}
-		);
-		
-	$(document)
-		.on
-		(
-			'mousedown.selectioner focusin.selectioner',
-			function(event)
-			{
-				if (popup.isShown() &&
-					event.target !== popup.display.element[0] &&
-					!$.contains(popup.display.element[0], event.target) &&
-					event.target !== popup.element[0] &&
-					!$.contains(popup.element[0], event.target))
-				{
-					popup.hide();
-				}
-			}
-		);
-		
-	$(window)
-		.on
-		(
-			'resize.selectioner',
-			function()
-			{
-				popup.hide();
-			}
-		);
-		
+			
 	$('body').append(this.element);
 };
 
