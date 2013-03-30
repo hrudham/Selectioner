@@ -1,7 +1,9 @@
 Selectioner = 
 {
-	Extensions: {},
+	Base: {},
 	Dialog: {},
 	Display: {},
-	Popup: {}
+	Extensions: {},
+	Popup: {},
+	Utility: {}
 };
