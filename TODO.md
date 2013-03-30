@@ -1,10 +1,12 @@
 # Selectioner To-Do
 
 - Convert component communication to be purely event driven.
+	- Move events away from elements an directly onto the custom objects.
 - Allow for CSS class prefixes
 - Stop setting CSS explicitly in JS; use classes instead.
-- Build a required CSS file with just the basics that will get the control to work. Add an additional CSS file for cosmetic purposes.
-- Allow the dialog to animate when opening.
+	- Allow the dialog to animate when opening.
+- Build a required CSS file with just the basics that will get the control to work.
+	- Add an additional CSS file for cosmetic purposes.
 - Review how the open / close eventing works.
 - Add highlighting / outlining back again.
 - Fix the issue where clicking on a label open the dialog, then clicking on the display itself, results in the dialog not closing.

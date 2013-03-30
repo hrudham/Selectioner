@@ -35,11 +35,18 @@
 		
 		this.display
 			.element
-			.on('focusin.selectioner', function() { dialog.show(); })
+			.on
+			(
+				'focusin.selectioner', 
+				function(event) 
+				{ 
+					dialog.show();
+				}
+			)
 			.children()
 			.on
 			(
-				'mousedown', 
+				'mousedown.selectioner', 
 				function(event) 
 				{ 
 					event.stopPropagation(); 

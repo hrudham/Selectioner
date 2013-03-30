@@ -50,11 +50,18 @@
 		
 		this.display
 			.element
-			.on('focusin.selectioner', function() { dialog.show(); })
+			.on
+			(
+				'focusin.selectioner', 
+				function(event) 
+				{ 
+					dialog.show();
+				}
+			)
 			.children()
 			.on
 			(
-				'mousedown', 
+				'mousedown.selectioner', 
 				function(event) 
 				{ 
 					event.stopPropagation(); 
@@ -457,16 +464,16 @@
 	};
 })();
 (function(){
-	var inputIdIndex = 0;
-
 	var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
+	
+	MultiSelect._inputIdIndex = 0;
 					
 	MultiSelect.prototype = new Selectioner.Dialog.Base();
 
 	MultiSelect.prototype.renderOption = function(option)
 	{
 		var element = $('<li />');
-		var checkboxId = 'MultiSelectCheckbox' + inputIdIndex++;
+		var checkboxId = 'MultiSelectCheckbox' + MultiSelect._inputIdIndex++;
 		var checkbox = $('<input type="checkbox" />')
 			.attr('id', checkboxId);
 						
