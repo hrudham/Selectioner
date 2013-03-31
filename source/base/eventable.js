@@ -96,21 +96,19 @@ Eventable.prototype.trigger = function (name, data)
     if (eventHandlers)
     {
         var target = this;
-        eventHandlers.forEach
-            (
-                function (eventHandler)
-                {
-                    eventHandler.handler.call
-                        (
-                            eventHandler.context,
-                            {
-                                target: target,
-                                name: name,
-                                data: data
-                            }
-                        );
-                }
-            );
+		for (var i = 0, length = eventHandlers.length; i < length; i++)
+		{
+			var eventHandler = eventHandlers[i];
+			eventHandler.handler.call
+				(
+					eventHandler.context,
+					{
+						target: target,
+						name: name,
+						data: data
+					}
+				);
+		}
     }
 
     return this;

@@ -38,7 +38,7 @@ PopupBase.prototype.reposition = function()
 		.removeClass('over');
 	
 	// If this popup would appear off-screen if below the display, then make it appear above it instead.
-	if (window.innerHeight + scrollTop < top + popUpHeight)
+	if ($(window).height() + scrollTop < top + popUpHeight)
 	{
 		top = offset.top - popUpHeight + 1;
 		
