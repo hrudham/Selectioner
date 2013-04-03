@@ -1,15 +1,15 @@
-var Dailog = Selectioner.Base.Dialog = function() {};
+var Dialog = Selectioner.Base.Dialog = function() {};
 
-Dailog.prototype = new Eventable();
+Dialog.prototype = new Eventable();
 
-Dailog.prototype.initialize = function(select)
+Dialog.prototype.initialize = function(select)
 {	
 	this.select = select;
 };
 
-Dailog.prototype.render = function()
+Dialog.prototype.render = function()
 {
-	var element = $('<ul />');
+	this.element = $('<ul />');
 
 	var children = this.select.children();
 	
@@ -18,13 +18,11 @@ Dailog.prototype.render = function()
 		var child = $(children[i]);
 		if (children[i].tagName == 'OPTION')
 		{
-			element.append(this.renderOption(child));
+			this.element.append(this.renderOption(child));
 		}
 		else if (children[i].tagName == 'OPTGROUP')
 		{
-			element.append(this.renderGroup(child));
+			this.element.append(this.renderGroup(child));
 		}
-	}	
-
-	return element;	
+	}
 };

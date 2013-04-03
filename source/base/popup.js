@@ -67,15 +67,18 @@ PopupBase.prototype.reposition = function()
 
 PopupBase.prototype.render = function()
 {
+	this.dialog.render();
+	
 	this.element
 		.empty()
-		.append(this.dialog.render());
+		.append(this.dialog.element);
 };
 
 PopupBase.prototype.show = function()
 {
 	this.render();
 	this.reposition();
+
 	this.element.css({ visibility: 'visible', zIndex: '' });
 	this.trigger('show.selectioner');
 	this._isVisible = true;

@@ -234,15 +234,18 @@ PopupBase.prototype.reposition = function()
 
 PopupBase.prototype.render = function()
 {
+	this.dialog.render();
+	
 	this.element
 		.empty()
-		.append(this.dialog.render());
+		.append(this.dialog.element);
 };
 
 PopupBase.prototype.show = function()
 {
 	this.render();
 	this.reposition();
+
 	this.element.css({ visibility: 'visible', zIndex: '' });
 	this.trigger('show.selectioner');
 	this._isVisible = true;
@@ -363,6 +366,7 @@ Display.prototype.initialize = function(select, dialog)
 			}
 		);
 		
+	// Hide the dialog any time the window resizes.
 	$(window)
 		.on
 		(
@@ -437,18 +441,18 @@ Display.prototype.update = function()
 		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
 	}
 };
-var Dailog = Selectioner.Base.Dialog = function() {};
+var Dialog = Selectioner.Base.Dialog = function() {};
 
-Dailog.prototype = new Eventable();
+Dialog.prototype = new Eventable();
 
-Dailog.prototype.initialize = function(select)
+Dialog.prototype.initialize = function(select)
 {	
 	this.select = select;
 };
 
-Dailog.prototype.render = function()
+Dialog.prototype.render = function()
 {
-	var element = $('<ul />');
+	this.element = $('<ul />');
 
 	var children = this.select.children();
 	
@@ -457,15 +461,13 @@ Dailog.prototype.render = function()
 		var child = $(children[i]);
 		if (children[i].tagName == 'OPTION')
 		{
-			element.append(this.renderOption(child));
+			this.element.append(this.renderOption(child));
 		}
 		else if (children[i].tagName == 'OPTGROUP')
 		{
-			element.append(this.renderGroup(child));
+			this.element.append(this.renderGroup(child));
 		}
-	}	
-
-	return element;	
+	}
 };
 var ListBox = Selectioner.Display.ListBox = function() {};
 

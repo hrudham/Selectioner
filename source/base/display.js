@@ -102,6 +102,7 @@ Display.prototype.initialize = function(select, dialog)
 			}
 		);
 		
+	// Hide the dialog any time the window resizes.
 	$(window)
 		.on
 		(

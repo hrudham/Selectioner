@@ -20,3 +20,11 @@
 
 - Get validation working in ASP.NET MVC.
 - Consider implementing responsive support for mobile.
+- Max-height determined by the top X items, rather than hard-coded in CSS.
+
+## Stuff to Remember
+
+- Make sure that zooming works
+- Test on Mobile
+- Use keyboard naviation
+- Make sure that focus highlighting / outlining works.

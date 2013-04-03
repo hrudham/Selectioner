@@ -9,6 +9,12 @@
 	margin-top: -1px;
 	max-height: 158px;
 	overflow: auto;
+	top: 0px; /* Stop page from overflowing when the control is created. */
+	
+	-moz-box-sizing: content-box;
+	-o-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	box-sizing: content-box;
 }
 
 .select-popup.above
@@ -73,7 +79,8 @@
 
 .select-popup ul li input[type="checkbox"]
 {
-	float: left;
+	vertical-align: middle;
+	margin: 0px 6px 0px 3px;
 }
 
 .select-popup .select-group-title
@@ -87,8 +94,8 @@
 	padding: 0px;
 	outline: none;
 	position: relative;
-	margin: 2px;
 	border: 1px solid #AAA;
+	padding: 2px;
 }
 
 .select-display:focus
@@ -99,17 +106,30 @@
 .select-display > .select-text
 {
 	border: none;
-	background-color: #FFF;
-	display: inline-block;
+	display: block;
 	min-width: 126px;
 	text-align: left;
-	padding: 2px 24px 2px 1px;
+	padding: 0px 24px 0px 2px;
 	overflow: hidden;
 	margin: 0px;
-	height: 16px;
-	line-height: 16px;
 	vertical-align: middle;
 	outline: none;
+	background-color: transparent;	/* for text inputs, which usually have a white background. */
+	
+	-moz-box-shadow: none;
+	-o-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.select-display > .select-text:focus
+{
+	outline: none;
+	
+	-moz-box-shadow: none;
+	-o-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
 }
 
 .select-display > span.select-text
@@ -118,11 +138,6 @@
 	-moz-user-select: none;
 	-webkit-user-select: none;
 	-ms-user-select: none;
-}
-
-.select-display .select-text
-{
-	padding-left: 2px;
 }
 
 .select-display .none
