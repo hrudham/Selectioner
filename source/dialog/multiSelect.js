@@ -29,7 +29,7 @@ MultiSelect.prototype.renderOption = function(option)
 			function() 
 			{
 				option[0].selected = this.checked;
-				dialog.select.trigger('change.selectioner');
+				dialog.select.trigger('change');
 			}
 		);
 		

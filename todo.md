@@ -13,6 +13,7 @@
 
 ## Required Functionality
 
+- At some point we need to get the single-select to close as soon as an option is chosen.
 - Keyboard navigation.
 - Disabled element support.
 - Write an auto-complete extension.

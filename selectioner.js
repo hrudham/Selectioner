@@ -643,7 +643,7 @@ SingleSelect.prototype.renderOption = function(option)
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
-		select.trigger('change.selectioner');
+		select.trigger('change');
 	};
 
 	var selectAnchor = $('<a />')
@@ -714,7 +714,7 @@ MultiSelect.prototype.renderOption = function(option)
 			function() 
 			{
 				option[0].selected = this.checked;
-				dialog.select.trigger('change.selectioner');
+				dialog.select.trigger('change');
 			}
 		);
 		

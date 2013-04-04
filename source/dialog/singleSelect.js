@@ -9,7 +9,7 @@ SingleSelect.prototype.renderOption = function(option)
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
-		select.trigger('change.selectioner');
+		select.trigger('change');
 	};
 
 	var selectAnchor = $('<a />')

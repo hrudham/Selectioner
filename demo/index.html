@@ -36,7 +36,8 @@
 			<script>
 				$(function(){
 					$('#BasicSingle')
-						.on('blur', function() { $('#SingleSelectValue').text(' Selected: ' + $('#BasicSingle').val()); })
+						.on('blur', function() { $('#SingleSelectValue').text(' Blur: ' + $('#BasicSingle').val()); })
+						.on('change', function() { $('#SingleSelectValue').text(' Change: ' + $('#BasicSingle').val()); })
 						.singleSelect();
 				});
 			</script>
