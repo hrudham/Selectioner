@@ -7,9 +7,16 @@
 		<script src="../dependencies/jquery-1.9.1.js"></script>
 		<script src="../selectioner.js"></script>
 		<style>
-			.custom-select-style
+			.select-display,
+			.select-display input[type="text"]
 			{
-				color: #00F;
+				color: #F00;
+			}
+		
+			.select-display.custom-select-style,
+			.select-display.custom-select-style input[type="text"]
+			{
+				color: #333;
 			}
 		</style>
 	</head>
@@ -18,16 +25,19 @@
 		<h2>Single-select</h2>
 		<p>
 			<label for="BasicSingle">Basic: </label>
-			<select data-option="SelectData" id="BasicSingle" style="color: #F00;">
+			<select data-option="SelectData" id="BasicSingle" class="custom-select-style">
 				<option data-option="Data1">Option 1</option>
 				<option>Option 2</option>
 				<option>Option 3</option>
 				<option>Option 4</option>
 				<option>Option 5</option>
 			</select>
+			<span id="SingleSelectValue"></span>
 			<script>
 				$(function(){
-					$('#BasicSingle').singleSelect();
+					$('#BasicSingle')
+						.on('blur', function() { $('#SingleSelectValue').text(' Selected: ' + $('#BasicSingle').val()); })
+						.singleSelect();
 				});
 			</script>
 		</p>
@@ -58,7 +68,7 @@
 		<h2>Multi-select</h2>
 		<p>
 			<label for="BasicMultiple">Basic Multiple: </label>
-			<select data-option="SelectData" id="BasicMultiple" multiple="multiple">
+			<select data-option="SelectData" id="BasicMultiple" multiple="multiple" class="custom-select-style">
 				<option>Option 1</option>
 				<option data-option="Data1">Option 2</option>
 				<option>Option 3</option>
@@ -73,7 +83,7 @@
 		</p>
 		<p>
 			<label for="OptGroupMultiple">OptGroup Multiple: </label>
-			<select data-option="SelectData" id="OptGroupMultiple" multiple="multiple">
+			<select data-option="SelectData" id="OptGroupMultiple" multiple="multiple" class="custom-select-style">
 				<optgroup data-group="Group1" label="Group 1">
 					<option selected="selected">Option 1.1</option>
 					<option selected="selected">Option 1.2</option>
@@ -97,7 +107,7 @@
 		</p>
 		<p>
 			<label for="MixedMultiple">Mixed Multiple: </label>
-			<select data-option="SelectData" id="MixedMultiple" multiple="multiple">
+			<select data-option="SelectData" id="MixedMultiple" multiple="multiple" class="custom-select-style">
 				<option selected="selected">Option 2.1</option>
 				<option data-option="Data1">Option 2.2</option>
 				<optgroup label="Group 1">
@@ -121,7 +131,7 @@
 		<p>
 			<label for="BasicComboText">Basic: </label>
 			<input type="text" id="BasicComboText" placeholder="Select an option" />
-			<select data-option="SelectData" id="BasicComboSelect">
+			<select data-option="SelectData" id="BasicComboSelect" class="custom-select-style">
 				<option>Option 1</option>
 				<option data-option="Data1">Option 2</option>
 				<option>Option 3</option>
@@ -137,7 +147,7 @@
 		<p>
 			<label for="OptGroupComboText">OptGroup: </label>
 			<input type="text" id="OptGroupComboText" placeholder="Select an option" value="Custom entry" />
-			<select data-option="SelectData" id="OptGroupComboSelect">
+			<select data-option="SelectData" id="OptGroupComboSelect" class="custom-select-style">
 				<optgroup label="Group 1">
 					<option>Option 1.1</option>
 					<option data-option="Data1">Option 1.2</option>

@@ -74,6 +74,7 @@ PopupBase.prototype.render = function()
 		.append(this.dialog.element);
 };
 
+// Shows the pop-up.
 PopupBase.prototype.show = function()
 {
 	this.render();
@@ -84,6 +85,7 @@ PopupBase.prototype.show = function()
 	this._isVisible = true;
 };
 
+// Simply hides the pop-up.
 PopupBase.prototype.hide = function()
 {
 	this.element.css({ visibility: 'hidden', zIndex: '-1' });

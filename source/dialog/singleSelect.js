@@ -17,8 +17,8 @@ SingleSelect.prototype.renderOption = function(option)
 		.on('click', selectOption)
 		.text(option.text());
 		
-	Selectioner.Utility.copyData(option, selectAnchor);
-	Selectioner.Utility.copyCss(option, selectAnchor);
+	Selectioner.Utility.copyDataAttributes(option, selectAnchor);
+	Selectioner.Utility.copyCssClasses(option, selectAnchor);
 
 	return $('<li />').append(selectAnchor);
 };
@@ -44,8 +44,8 @@ SingleSelect.prototype.renderGroup = function(group)
 			$('<ul >').append(options)
 		);
 	
-	Selectioner.Utility.copyData(group, groupElement);
-	Selectioner.Utility.copyCss(group, groupElement);
+	Selectioner.Utility.copyDataAttributes(group, groupElement);
+	Selectioner.Utility.copyCssClasses(group, groupElement);
 
 	return groupElement;
 };

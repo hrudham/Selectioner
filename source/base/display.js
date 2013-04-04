@@ -9,9 +9,6 @@ Display.prototype.initialize = function(select, dialog)
 	this.render();		
 	this.update();
 	
-	Selectioner.Utility.copyData(select, this.element);
-	Selectioner.Utility.copyCss(select, this.element);
-	
 	this.select
 		.css('display', 'none')
 		.after(this.element);
@@ -62,6 +59,7 @@ Display.prototype.initialize = function(select, dialog)
 			'focusin.selectioner', 
 			function() 
 			{ 
+				select.trigger('focusin');
 				popup.show();
 			}
 		)
@@ -72,6 +70,7 @@ Display.prototype.initialize = function(select, dialog)
 			function(event) 
 			{ 
 				event.stopPropagation(); 
+				select.trigger('mousedown');
 				if (popup.isShown())
 				{
 					popup.hide();
@@ -98,6 +97,7 @@ Display.prototype.initialize = function(select, dialog)
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
+					display.leave();
 				}
 			}
 		);
@@ -110,6 +110,7 @@ Display.prototype.initialize = function(select, dialog)
 			function()
 			{
 				popup.hide();
+				display.leave();
 			}
 		);
 
@@ -132,6 +133,16 @@ Display.prototype.initialize = function(select, dialog)
 			);
 };
 
+// Indicates that this control lost focus, so 
+// simlulate the <select /> losing focus as well.
+Display.prototype.leave = function()
+{
+	this.select
+		.trigger('focusout')
+		.trigger('blur');
+	this.updateAttributes();
+};
+
 Display.prototype.render = function()
 {	
 	this.element = $('<span />')
@@ -148,8 +159,19 @@ Display.prototype.render = function()
 		.append(this.textElement);
 };
 
+Display.prototype.updateAttributes = function()
+{
+	// Classes and data attributes are copied over whenever this updates in case
+	// there is some other JS out there updating the <select /> element, 
+	// such as in the case of jQuery Validation.
+	Selectioner.Utility.copyDataAttributes(this.select, this.element);
+	Selectioner.Utility.copyCssClasses(this.select, this.element);
+};
+
 Display.prototype.update = function()
-{	
+{
+	this.updateAttributes();
+
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
