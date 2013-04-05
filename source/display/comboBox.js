@@ -40,7 +40,8 @@ ComboBox.prototype.textChanged = function()
 	// If it doesn't match an option, select the 
 	// option with no value.
 	var text = this.textElement.val();
-	var option = this.select.find('option:contains("' + text + '")');
+	var option = this.select.find('option')
+		.filter(function() { return $(this).text() == text; });
 	
 	if (option.length != 1)
 	{
