@@ -39,9 +39,9 @@ ComboBox.prototype.textChanged = function()
 	// the drop-down, and select it if it does.
 	// If it doesn't match an option, select the 
 	// option with no value.
-	var text = this.textElement.val();
+	var text = this.textElement.val().toUpperCase();
 	var option = this.select.find('option')
-		.filter(function() { return $(this).text() == text; });
+		.filter(function() { return $(this).text().toUpperCase() == text; });
 	
 	if (option.length != 1)
 	{
