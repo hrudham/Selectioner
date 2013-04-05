@@ -6,21 +6,49 @@ var ComboBox = Selectioner.Display.ComboBox = function(textElement)
 ComboBox.prototype = new Selectioner.Base.Display();
 	
 ComboBox.prototype.render = function()
-{	
+{
+	// If the select element does not already 
+	// have an option without a value, then add one.
+	var emptyOption = this.getEmptyOptions();
+	if (emptyOption.length === 0)
+	{
+		this.select.prepend($('<option />'));
+	}
+
 	this.element = $('<span />')
 		.addClass(settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
 		
+	var comboBox = this;
+		
 	this.textElement
-		.addClass(settings.cssPrefix + 'text');
+		.addClass(settings.cssPrefix + 'text')
+		.on('change.selectioner', function() { comboBox.textChanged(); });
 	
 	var button = $('<span />')
-		.addClass(settings.cssPrefix + 'button')
-		.on('focus', function() {  });
+		.addClass(settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)
 		.append(this.textElement);
+};
+
+ComboBox.prototype.textChanged = function()
+{
+	// Find out if the text matches an item in 
+	// the drop-down, and select it if it does.
+	// If it doesn't match an option, select the 
+	// option with no value.
+	var text = this.textElement.val();
+	var option = this.select.find('option:contains("' + text + '")');
+	
+	if (option.length != 1)
+	{
+		option = this.getEmptyOptions();
+	}
+	
+	option[0].selected = true;
+	this.select.trigger('change');
 };
 
 ComboBox.prototype.update = function()
@@ -40,4 +68,12 @@ ComboBox.prototype.update = function()
 	{
 		this.textElement.val(value);
 	}
+};
+
+ComboBox.prototype.getEmptyOptions = function()
+{
+	// Find all options that either have an 
+	// empty value, or have no value and no text.
+	return this.select
+		.find('option[value=""], option:empty:not([value])');
 };
