@@ -2,6 +2,28 @@ var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 
 SingleSelect.prototype = new Selectioner.Base.Dialog();
 
+SingleSelect.prototype.render = function()
+{
+	this.element = $('<ul />');
+
+	var children = this.select.children();
+	
+	for (var i = 0, length = children.length; i < length; i++)
+	{
+		var child = $(children[i]);
+		if (children[i].tagName == 'OPTION')
+		{
+			this.element.append(this.renderOption(child));
+		}
+		else if (children[i].tagName == 'OPTGROUP')
+		{
+			this.element.append(this.renderGroup(child));
+		}
+	}
+};
+
+// Render an the equivilant control that represents an 
+// <option /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderOption = function(option)
 {
 	var select = this.select;
@@ -23,6 +45,8 @@ SingleSelect.prototype.renderOption = function(option)
 	return $('<li />').append(selectAnchor);
 };
 
+// Render an the equivilant control that represents an 
+// <optgroup /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderGroup = function(group)
 {		
 	var groupTitle = $('<span />')

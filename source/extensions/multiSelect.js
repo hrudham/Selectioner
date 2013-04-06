@@ -7,7 +7,8 @@ $.fn.multiSelect = function ()
 			function()
 			{
 				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this), new Selectioner.Dialog.MultiSelect());
+				listBox.initialize($(this));
+				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
 			}
 		);
 };

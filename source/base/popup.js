@@ -2,11 +2,10 @@ var PopupBase = Selectioner.Base.Popup = function() {};
 
 PopupBase.prototype = new Eventable();
 
-PopupBase.prototype.initialize = function(select, display, dialog)
-{	
-	this.select = select;
+PopupBase.prototype.initialize = function(display)
+{
 	this.display = display;
-	this.dialog = dialog;
+	this.dialogs = [];
 
 	this.element = $('<div />')
 		.addClass(settings.cssPrefix + 'popup')
@@ -22,6 +21,26 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	$('body').append(this.element);
 };
 
+// Add a dialog to this popup.
+PopupBase.prototype.addDialog = function(display)
+{
+	this.dialogs.push(display);
+};
+
+// Render all the dialogs that appear on this popup.
+PopupBase.prototype.render = function()
+{
+	this.element.empty();
+
+	for (var i = 0, length = this.dialogs.length; i < length; i++)
+	{
+		var dialog = this.dialogs[i];
+		dialog.render();
+		this.element.append(dialog.element);
+	}
+};
+
+// Refresh the position of the pop-up relative to it's display element.
 PopupBase.prototype.reposition = function()
 {
 	var offset = this.display.element.offset();
@@ -63,15 +82,6 @@ PopupBase.prototype.reposition = function()
 		left: offset.left + 'px',
 		top: top + 'px'
 	});
-};
-
-PopupBase.prototype.render = function()
-{
-	this.dialog.render();
-	
-	this.element
-		.empty()
-		.append(this.dialog.element);
 };
 
 // Shows the pop-up.

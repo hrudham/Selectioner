@@ -7,7 +7,8 @@ $.fn.comboSelect = function (textInput)
 			function()
 			{
 				var comboBox = new Selectioner.Display.ComboBox(textInput);
-				comboBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
+				comboBox.initialize($(this));
+				comboBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };

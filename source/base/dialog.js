@@ -7,22 +7,10 @@ Dialog.prototype.initialize = function(select)
 	this.select = select;
 };
 
+// Render the dialog. This method should be explicity 
+// overridden by prototypes that inherit from it, 
+// and must set this.element to some jQuery object.
 Dialog.prototype.render = function()
 {
-	this.element = $('<ul />');
-
-	var children = this.select.children();
-	
-	for (var i = 0, length = children.length; i < length; i++)
-	{
-		var child = $(children[i]);
-		if (children[i].tagName == 'OPTION')
-		{
-			this.element.append(this.renderOption(child));
-		}
-		else if (children[i].tagName == 'OPTGROUP')
-		{
-			this.element.append(this.renderGroup(child));
-		}
-	}
+	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };

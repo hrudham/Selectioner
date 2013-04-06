@@ -7,7 +7,8 @@ $.fn.singleSelect = function ()
 			function()
 			{
 				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
+				listBox.initialize($(this));
+				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };

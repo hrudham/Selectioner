@@ -1,9 +1,13 @@
 var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 
 MultiSelect._inputIdIndex = 0;
-				
-MultiSelect.prototype = new Selectioner.Base.Dialog();
 
+// Inherit from the SingleSelect dialog, not the base dialog.
+MultiSelect.prototype = new Selectioner.Dialog.SingleSelect();
+
+// Render an the equivilant control that represents an
+// <option /> element for the underlying <select /> element. 
+// This overrides the SingleSelect version of this method.
 MultiSelect.prototype.renderOption = function(option)
 {
 	var element = $('<li />');
@@ -41,6 +45,9 @@ MultiSelect.prototype.renderOption = function(option)
 	return element;
 };
 
+// Render an the equivilant control that represents an 
+// <optgroup /> element for the underlying <select /> element. 
+// This overrides the SingleSelect version of this method.
 MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;

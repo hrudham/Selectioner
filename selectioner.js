@@ -213,11 +213,10 @@ Eventable.prototype.trigger = function (name, data)
 
 PopupBase.prototype = new Eventable();
 
-PopupBase.prototype.initialize = function(select, display, dialog)
-{	
-	this.select = select;
+PopupBase.prototype.initialize = function(display)
+{
 	this.display = display;
-	this.dialog = dialog;
+	this.dialogs = [];
 
 	this.element = $('<div />')
 		.addClass(settings.cssPrefix + 'popup')
@@ -233,6 +232,26 @@ PopupBase.prototype.initialize = function(select, display, dialog)
 	$('body').append(this.element);
 };
 
+// Add a dialog to this popup.
+PopupBase.prototype.addDialog = function(display)
+{
+	this.dialogs.push(display);
+};
+
+// Render all the dialogs that appear on this popup.
+PopupBase.prototype.render = function()
+{
+	this.element.empty();
+
+	for (var i = 0, length = this.dialogs.length; i < length; i++)
+	{
+		var dialog = this.dialogs[i];
+		dialog.render();
+		this.element.append(dialog.element);
+	}
+};
+
+// Refresh the position of the pop-up relative to it's display element.
 PopupBase.prototype.reposition = function()
 {
 	var offset = this.display.element.offset();
@@ -276,15 +295,6 @@ PopupBase.prototype.reposition = function()
 	});
 };
 
-PopupBase.prototype.render = function()
-{
-	this.dialog.render();
-	
-	this.element
-		.empty()
-		.append(this.dialog.element);
-};
-
 // Shows the pop-up.
 PopupBase.prototype.show = function()
 {
@@ -312,11 +322,11 @@ PopupBase.prototype.isShown = function()
 
 Display.prototype = new Eventable();
 
-Display.prototype.initialize = function(select, dialog)
+Display.prototype.initialize = function(select)
 {
 	this.select = select;
 		
-	this.render();		
+	this.render();
 	this.update();
 	
 	this.select
@@ -353,14 +363,10 @@ Display.prototype.initialize = function(select, dialog)
 					display.update();
 				}
 			);
-			
-	// Initialize the dialog in order to associated
-	// it with the underlying select element.
-	dialog.initialize(select);
 	
 	// Bind this display to a popup.
-	var popup = new Selectioner.Base.Popup();
-	popup.initialize(select, this, dialog);
+	var popup = this.popup = new Selectioner.Base.Popup();
+	popup.initialize(this);
 	
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
@@ -412,7 +418,7 @@ Display.prototype.initialize = function(select, dialog)
 			}
 		);
 		
-	// Hide the dialog any time the window resizes.
+	// Hide the popup any time the window resizes.
 	$(window)
 		.on
 		(
@@ -443,6 +449,17 @@ Display.prototype.initialize = function(select, dialog)
 			);
 };
 
+// Add a dialog to this display.
+Display.prototype.addDialog = function(dialog)
+{
+	// Initialize the dialog in order to associated
+	// it with the underlying select element.
+	dialog.initialize(this.select);
+	
+	// Add the dialog to the popup.
+	this.popup.addDialog(dialog);
+};
+
 // Indicates that this control lost focus, so 
 // simlulate the <select /> losing focus as well.
 Display.prototype.leave = function()
@@ -451,22 +468,6 @@ Display.prototype.leave = function()
 		.trigger('focusout')
 		.trigger('blur');
 	this.updateAttributes();
-};
-
-Display.prototype.render = function()
-{	
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
-		
-	this.textElement = $('<span />')
-		.addClass(settings.cssPrefix + 'text');
-	
-	var button = $('<span />').addClass(settings.cssPrefix + 'button');
-	
-	this.element
-		.append(button)
-		.append(this.textElement);
 };
 
 Display.prototype.updateAttributes = function()
@@ -478,36 +479,20 @@ Display.prototype.updateAttributes = function()
 	Selectioner.Utility.copyCssClasses(this.select, this.element);
 };
 
+// Render the display. This method should be explicity 
+// overridden by prototypes that inherit from it, 
+// and must set this.element to some jQuery object.
+Display.prototype.render = function()
+{
+	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
+};
+
+// Update the display. This is called whenever a significant 
+// change occurs, such as when a new option is selected.
 Display.prototype.update = function()
 {
-	this.updateAttributes();
-
-	var selectedOptions = this.select.find('option:selected');
-	this.textElement.removeClass('none');
-	
-	if (selectedOptions.length === 0)
-	{
-		this.textElement.text('None');
-		this.textElement.addClass('none');
-	}
-	else if (selectedOptions.length <= 2)
-	{
-		var displayText = '';
-		for (var i = 0, length = selectedOptions.length; i < length; i++)
-		{
-			displayText += selectedOptions[i].text;
-			
-			if (i < length - 1)
-			{
-				displayText += ', ';
-			}
-		}
-		this.textElement.text(displayText);
-	}
-	else
-	{
-		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
-	}
+	// This method should be explicitly overridden, but 
+	// it is not required if it will never be updated.
 };
 var Dialog = Selectioner.Base.Dialog = function() {};
 
@@ -518,24 +503,12 @@ Dialog.prototype.initialize = function(select)
 	this.select = select;
 };
 
+// Render the dialog. This method should be explicity 
+// overridden by prototypes that inherit from it, 
+// and must set this.element to some jQuery object.
 Dialog.prototype.render = function()
 {
-	this.element = $('<ul />');
-
-	var children = this.select.children();
-	
-	for (var i = 0, length = children.length; i < length; i++)
-	{
-		var child = $(children[i]);
-		if (children[i].tagName == 'OPTION')
-		{
-			this.element.append(this.renderOption(child));
-		}
-		else if (children[i].tagName == 'OPTGROUP')
-		{
-			this.element.append(this.renderGroup(child));
-		}
-	}
+	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };
 var ListBox = Selectioner.Display.ListBox = function() {};
 
@@ -673,6 +646,28 @@ ComboBox.prototype.getEmptyOptions = function()
 
 SingleSelect.prototype = new Selectioner.Base.Dialog();
 
+SingleSelect.prototype.render = function()
+{
+	this.element = $('<ul />');
+
+	var children = this.select.children();
+	
+	for (var i = 0, length = children.length; i < length; i++)
+	{
+		var child = $(children[i]);
+		if (children[i].tagName == 'OPTION')
+		{
+			this.element.append(this.renderOption(child));
+		}
+		else if (children[i].tagName == 'OPTGROUP')
+		{
+			this.element.append(this.renderGroup(child));
+		}
+	}
+};
+
+// Render an the equivilant control that represents an 
+// <option /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderOption = function(option)
 {
 	var select = this.select;
@@ -694,6 +689,8 @@ SingleSelect.prototype.renderOption = function(option)
 	return $('<li />').append(selectAnchor);
 };
 
+// Render an the equivilant control that represents an 
+// <optgroup /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderGroup = function(group)
 {		
 	var groupTitle = $('<span />')
@@ -723,9 +720,13 @@ SingleSelect.prototype.renderGroup = function(group)
 var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 
 MultiSelect._inputIdIndex = 0;
-				
-MultiSelect.prototype = new Selectioner.Base.Dialog();
 
+// Inherit from the SingleSelect dialog, not the base dialog.
+MultiSelect.prototype = new Selectioner.Dialog.SingleSelect();
+
+// Render an the equivilant control that represents an
+// <option /> element for the underlying <select /> element. 
+// This overrides the SingleSelect version of this method.
 MultiSelect.prototype.renderOption = function(option)
 {
 	var element = $('<li />');
@@ -763,6 +764,9 @@ MultiSelect.prototype.renderOption = function(option)
 	return element;
 };
 
+// Render an the equivilant control that represents an 
+// <optgroup /> element for the underlying <select /> element. 
+// This overrides the SingleSelect version of this method.
 MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;
@@ -817,7 +821,8 @@ MultiSelect.prototype.renderGroup = function(group)
 			function()
 			{
 				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
+				listBox.initialize($(this));
+				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };
@@ -830,7 +835,8 @@ MultiSelect.prototype.renderGroup = function(group)
 			function()
 			{
 				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this), new Selectioner.Dialog.MultiSelect());
+				listBox.initialize($(this));
+				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
 			}
 		);
 };
@@ -843,7 +849,8 @@ MultiSelect.prototype.renderGroup = function(group)
 			function()
 			{
 				var comboBox = new Selectioner.Display.ComboBox(textInput);
-				comboBox.initialize($(this), new Selectioner.Dialog.SingleSelect());
+				comboBox.initialize($(this));
+				comboBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
 };

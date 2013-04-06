@@ -2,11 +2,11 @@ var Display = Selectioner.Base.Display = function() {};
 
 Display.prototype = new Eventable();
 
-Display.prototype.initialize = function(select, dialog)
+Display.prototype.initialize = function(select)
 {
 	this.select = select;
 		
-	this.render();		
+	this.render();
 	this.update();
 	
 	this.select
@@ -43,14 +43,10 @@ Display.prototype.initialize = function(select, dialog)
 					display.update();
 				}
 			);
-			
-	// Initialize the dialog in order to associated
-	// it with the underlying select element.
-	dialog.initialize(select);
 	
 	// Bind this display to a popup.
-	var popup = new Selectioner.Base.Popup();
-	popup.initialize(select, this, dialog);
+	var popup = this.popup = new Selectioner.Base.Popup();
+	popup.initialize(this);
 	
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
@@ -102,7 +98,7 @@ Display.prototype.initialize = function(select, dialog)
 			}
 		);
 		
-	// Hide the dialog any time the window resizes.
+	// Hide the popup any time the window resizes.
 	$(window)
 		.on
 		(
@@ -133,6 +129,17 @@ Display.prototype.initialize = function(select, dialog)
 			);
 };
 
+// Add a dialog to this display.
+Display.prototype.addDialog = function(dialog)
+{
+	// Initialize the dialog in order to associated
+	// it with the underlying select element.
+	dialog.initialize(this.select);
+	
+	// Add the dialog to the popup.
+	this.popup.addDialog(dialog);
+};
+
 // Indicates that this control lost focus, so 
 // simlulate the <select /> losing focus as well.
 Display.prototype.leave = function()
@@ -141,22 +148,6 @@ Display.prototype.leave = function()
 		.trigger('focusout')
 		.trigger('blur');
 	this.updateAttributes();
-};
-
-Display.prototype.render = function()
-{	
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
-		
-	this.textElement = $('<span />')
-		.addClass(settings.cssPrefix + 'text');
-	
-	var button = $('<span />').addClass(settings.cssPrefix + 'button');
-	
-	this.element
-		.append(button)
-		.append(this.textElement);
 };
 
 Display.prototype.updateAttributes = function()
@@ -168,34 +159,18 @@ Display.prototype.updateAttributes = function()
 	Selectioner.Utility.copyCssClasses(this.select, this.element);
 };
 
+// Render the display. This method should be explicity 
+// overridden by prototypes that inherit from it, 
+// and must set this.element to some jQuery object.
+Display.prototype.render = function()
+{
+	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
+};
+
+// Update the display. This is called whenever a significant 
+// change occurs, such as when a new option is selected.
 Display.prototype.update = function()
 {
-	this.updateAttributes();
-
-	var selectedOptions = this.select.find('option:selected');
-	this.textElement.removeClass('none');
-	
-	if (selectedOptions.length === 0)
-	{
-		this.textElement.text('None');
-		this.textElement.addClass('none');
-	}
-	else if (selectedOptions.length <= 2)
-	{
-		var displayText = '';
-		for (var i = 0, length = selectedOptions.length; i < length; i++)
-		{
-			displayText += selectedOptions[i].text;
-			
-			if (i < length - 1)
-			{
-				displayText += ', ';
-			}
-		}
-		this.textElement.text(displayText);
-	}
-	else
-	{
-		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
-	}
+	// This method should be explicitly overridden, but 
+	// it is not required if it will never be updated.
 };
