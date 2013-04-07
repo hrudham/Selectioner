@@ -65,9 +65,11 @@ var getSourceFiles = function ()
 			sourcePath + 'dialog/singleSelect.js',
 			sourcePath + 'dialog/multiSelect.js',
 			sourcePath + 'dialog/comboSelect.js',
+			sourcePath + 'dialog/autoComplete.js',
             sourcePath + 'extensions/singleSelect.js',
             sourcePath + 'extensions/multiSelect.js',
 			sourcePath + 'extensions/comboSelect.js',
+			sourcePath + 'extensions/autoComplete.js',
             sourcePath + 'footer.js',
         ];
     return paths;

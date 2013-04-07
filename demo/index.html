@@ -147,5 +147,104 @@
 				});
 			</script>
 		</p>
+		<h2>Auto-complete</h2>
+		<p>
+			<label for="BasicAutoCompleteText">Basic: </label>
+			<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
+			<select id="BasicAutoCompleteSelect">
+				<option></option>
+				<option>Aberlour</option>
+				<option>Amrut</option>
+				<option>An Cnoc</option>
+				<option>Ardbeg</option>
+				<option>Ardmore</option>
+				<option>Isle of Arran</option>
+				<option>Auchentoshan</option>
+				<option>Balblair</option>
+				<option>Balmenach</option>
+				<option>The Balvenie</option>
+				<option>Ben Nevis</option>
+				<option>BenRiach</option>
+				<option>Benrinnes</option>
+				<option>Benromach</option>
+				<option>Bladnoch</option>
+				<option>Blair Athol</option>
+				<option>Bowmore</option>
+				<option>Braeval</option>
+				<option>Brora</option>
+				<option>Bruichladdich</option>
+				<option>Buffalo Trace</option>
+				<option>Bunnahabhain</option>
+				<option>Old Bushmills</option>
+				<option>Caol Ila</option>
+				<option>Caperdonich</option>
+				<option>Cardhu</option>
+				<option>Clynelish</option>
+				<option>Cooley</option>
+				<option>Cragganmore</option>
+				<option>Craigellachie</option>
+				<option>Dallas Dhu</option>
+				<option>Dalmore</option>
+				<option>Dalwhinnie</option>
+				<option>Deanston</option>
+				<option>Drayman's</option>
+				<option>Dufftown</option>
+				<option>Edradour</option>
+				<option>Fettercairn</option>
+				<option>Glen Albyn</option>
+				<option>Glencadam</option>
+				<option>Glendronach</option>
+				<option>Glen Elgin</option>
+				<option>Glenfarclas</option>
+				<option>Glenfiddich</option>
+				<option>Glen Garioch</option>
+				<option>Glenglassaugh</option>
+				<option>Glengoyne</option>
+				<option>Glen Grant</option>
+				<option>Glen Keith</option>
+				<option>Glenkinchie</option>
+				<option>The Glenlivet</option>
+				<option>Glenmorangie</option>
+				<option>Glen Ord</option>
+				<option>Glenrothes</option>
+				<option>Highland Park</option>
+				<option>Jack Daniels</option>
+				<option>James Sedgwick</option>
+				<option>Jim Beam</option>
+				<option>Isle of Jura</option>
+				<option>Karuizawa</option>
+				<option>Kilchoman</option>
+				<option>Knockdhu</option>
+				<option>Lagavulin</option>
+				<option>Laphroaig</option>
+				<option>Longmorn</option>
+				<option>Macallan</option>
+				<option>Maker's Mark</option>
+				<option>Midleton</option>
+				<option>Millburn</option>
+				<option>Miyagikyo</option>
+				<option>Mortlach</option>
+				<option>Oban</option>
+				<option>Penderyn</option>
+				<option>Port Ellen</option>
+				<option>Old Pultney</option>
+				<option>Royal Brackla</option>
+				<option>Springbank</option>
+				<option>Strathisla</option>
+				<option>Strathmill</option>
+				<option>Talisker</option>
+				<option>Tamdhu</option>
+				<option>Tomatin</option>
+				<option>Wild Turkey</option>
+				<option>Woodford Reserve</option>
+				<option>Yamazaki</option>
+				<option>Yoichi</option>
+			</select>
+			<script>
+				$(function(){
+					$('#BasicAutoCompleteSelect').autoComplete('#BasicAutoCompleteText');
+				});
+			</script>
+		</p>
 	</body>
 </html>
