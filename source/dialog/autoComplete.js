@@ -1,6 +1,6 @@
 var AutoComplete = Selectioner.Dialog.AutoComplete = function(textElement) 
 {
-	var autoComplete = this;
+	var dialog = this;
 	
 	this.textElement = $(textElement);
 	
@@ -9,7 +9,15 @@ var AutoComplete = Selectioner.Dialog.AutoComplete = function(textElement)
 			'keyup', 
 			function(event)
 			{
-				autoComplete.update();
+				dialog.update();
+				if (!dialog.popup.isShown())
+				{
+					dialog.popup.show();
+				}
+				else
+				{
+					dialog.popup.reposition();
+				}
 			}
 		);
 };
@@ -23,9 +31,9 @@ AutoComplete.prototype.render = function()
 	this.element = $('<ul />');
 	this.update();
 	
+	var dialog = this;
+	var select = this.select;
 	var children = this.select.find('option');
-	
-	var select = this.select;	
 	
 	var buildOption = function(option)
 	{
@@ -38,8 +46,8 @@ AutoComplete.prototype.render = function()
 					function(event)
 					{
 						option[0].selected = true;
+						dialog.popup.hide();
 						select.trigger('change');
-						
 					}
 				);
 		
@@ -77,7 +85,7 @@ AutoComplete.prototype.update = function()
 				return index < Selectioner.Settings.maxAutoCompleteItems;
 			}
 		);
-	
+			
 	children.not(visibleChildren).css('display', 'none');
 	visibleChildren.css('display', '');
 };

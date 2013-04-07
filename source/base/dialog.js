@@ -14,3 +14,9 @@ Dialog.prototype.render = function()
 {
 	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };
+
+// Associates a dialog with a popup.
+Dialog.prototype.setPopup = function(popup)
+{
+	this.popup = popup;
+};

@@ -22,9 +22,10 @@ PopupBase.prototype.initialize = function(display)
 };
 
 // Add a dialog to this popup.
-PopupBase.prototype.addDialog = function(display)
+PopupBase.prototype.addDialog = function(dialog)
 {
-	this.dialogs.push(display);
+	dialog.setPopup(this);
+	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.

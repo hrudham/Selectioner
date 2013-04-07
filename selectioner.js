@@ -169,9 +169,10 @@ PopupBase.prototype.initialize = function(display)
 };
 
 // Add a dialog to this popup.
-PopupBase.prototype.addDialog = function(display)
+PopupBase.prototype.addDialog = function(dialog)
 {
-	this.dialogs.push(display);
+	dialog.setPopup(this);
+	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.
@@ -433,6 +434,12 @@ Dialog.prototype.render = function()
 {
 	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };
+
+// Associates a dialog with a popup.
+Dialog.prototype.setPopup = function(popup)
+{
+	this.popup = popup;
+};
 var ListBox = Selectioner.Display.ListBox = function() {};
 
 ListBox.prototype = new Selectioner.Base.Display();
@@ -605,11 +612,13 @@ SingleSelect.prototype.render = function()
 // <option /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderOption = function(option)
 {
+	var dialog = this;
 	var select = this.select;
 
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
+		dialog.popup.hide();
 		select.trigger('change');
 	};
 	
@@ -761,7 +770,7 @@ ComboSelect.prototype.renderOption = function(option)
 };
 var AutoComplete = Selectioner.Dialog.AutoComplete = function(textElement) 
 {
-	var autoComplete = this;
+	var dialog = this;
 	
 	this.textElement = $(textElement);
 	
@@ -770,7 +779,15 @@ ComboSelect.prototype.renderOption = function(option)
 			'keyup', 
 			function(event)
 			{
-				autoComplete.update();
+				dialog.update();
+				if (!dialog.popup.isShown())
+				{
+					dialog.popup.show();
+				}
+				else
+				{
+					dialog.popup.reposition();
+				}
 			}
 		);
 };
@@ -784,9 +801,9 @@ AutoComplete.prototype.render = function()
 	this.element = $('<ul />');
 	this.update();
 	
+	var dialog = this;
+	var select = this.select;
 	var children = this.select.find('option');
-	
-	var select = this.select;	
 	
 	var buildOption = function(option)
 	{
@@ -799,8 +816,8 @@ AutoComplete.prototype.render = function()
 					function(event)
 					{
 						option[0].selected = true;
+						dialog.popup.hide();
 						select.trigger('change');
-						
 					}
 				);
 		
@@ -838,7 +855,7 @@ AutoComplete.prototype.update = function()
 				return index < Selectioner.Settings.maxAutoCompleteItems;
 			}
 		);
-	
+			
 	children.not(visibleChildren).css('display', 'none');
 	visibleChildren.css('display', '');
 };

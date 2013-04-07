@@ -12,10 +12,8 @@
 
 ## Required Functionality
 
-- At some point we need to get the single-select to close as soon as an option is chosen.
 - Keyboard navigation.
 - Disabled element support.
-- Write an auto-complete extension.
 - Test and implement with AJAX.
 
 ## Nice To Have
@@ -27,5 +25,5 @@
 
 - Make sure that zooming works
 - Test on Mobile
-- Use keyboard naviation
+- Test with keyboard naviation
 - Make sure that focus highlighting / outlining works.

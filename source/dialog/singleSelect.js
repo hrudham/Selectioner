@@ -26,11 +26,13 @@ SingleSelect.prototype.render = function()
 // <option /> element for the underlying <select /> element. 
 SingleSelect.prototype.renderOption = function(option)
 {
+	var dialog = this;
 	var select = this.select;
 
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
+		dialog.popup.hide();
 		select.trigger('change');
 	};
 	
