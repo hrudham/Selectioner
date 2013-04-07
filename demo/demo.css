@@ -5,9 +5,13 @@ html
 	color: #333;
 }
 
-input
+select,
+textarea,
+input[type="text"]
 {
 	font-size: 12px;
+	margin: 0px;
+	min-width: 156px;
 }
 
 h1, h2, h3, h4

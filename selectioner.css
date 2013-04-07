@@ -95,7 +95,7 @@
 	outline: none;
 	position: relative;
 	border: 1px solid #AAA;
-	padding: 2px;
+	padding: 1px;
 	
 	-moz-user-select: none;
 	-webkit-user-select: none;
@@ -110,11 +110,10 @@
 .select-display > .select-text
 {
 	border: none;
-	display: block;
+	display: inline-block; /* IE10 does not like "block"; it incorrectly calculates the height of the control */
 	min-width: 126px;
 	text-align: left;
 	padding: 0px 24px 0px 2px;
-	overflow: hidden;
 	margin: 0px;
 	vertical-align: middle;
 	outline: none;

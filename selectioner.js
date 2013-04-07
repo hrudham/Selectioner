@@ -323,6 +323,7 @@ Display.prototype.initialize = function(select)
 			}
 		)
 		.children()
+		.andSelf()
 		.on
 		(
 			'mousedown.selectioner', 
