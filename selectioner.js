@@ -511,7 +511,8 @@ ComboBox.prototype.render = function()
 	var emptyOptions = this.getEmptyOptions();
 	if (emptyOptions.length === 0)
 	{
-		throw new Error('ComboBox elements require an empty <option></option> in their underlying <select /> elements. Please add one.');
+		// We require an <option></option> element in the underlying select.
+		throw new Error('ComboBox elements require an empty and value-less <option></option> in their underlying <select /> elements.');
 	}
 
 	this.element = $('<span />')
