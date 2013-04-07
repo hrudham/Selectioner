@@ -21,78 +21,11 @@
 	Display: {},
 	Extensions: {},
 	Popup: {},
-	Settings: {},
-	Utility: {}
+	Settings: {}
 };
 var settings = Selectioner.Settings = 
 {
-	cssPrefix: 'select-',
-	dataAttributePrefix: 'select-', 
-	canCopyCssClasses: true,
-	canCopyDataAttributes: true
-};
-// Copy over the class attributes from the source element to the target element.
-// Also removes those that had been copied previously but no longer exist on the source element.
-var copyCssClasses = Selectioner.Utility.copyCssClasses = function(source, target)
-{
-	if (Selectioner.Settings.canCopyCssClasses)
-	{
-		// Get all the classes on the source element.
-		var classes = (source.attr('class') || '').split(' ');
-	
-		var dataAttributeName = Selectioner.Settings.dataAttributePrefix + 'parent-css-class';
-		
-		// Remove any old classes on the target that no longer exist 
-		// on the source element that were originally copied from it.
-		var oldClasses = target.data(dataAttributeName) || [];
-		for (var i = 0, length = oldClasses.length; i < length; i++)
-		{
-			var oldClass = oldClasses[i];
-			if (classes.indexOf(oldClass) < 0)
-			{
-				target.removeClass(oldClass);
-			}
-		}
-		
-		// Save all the classes that belonged to the parent as a data attribute.
-		target.data(dataAttributeName, classes);
-		
-		// Add the source's classes to the target element.
-		for (var j = 0, classLength = classes.length; j < classLength; j++)
-		{
-			target.addClass(classes[j]);
-		}
-	}
-};
-// Copies over all HTML5 data attributes from one element to another.
-// Note that we intentionally avoid using jQuery's data() method, 
-// as we don't want things like data-attr="[Object object]".
-var copyDataAttributes = Selectioner.Utility.copyDataAttributes = function(source, target)
-{
-	if (Selectioner.Settings.canCopyDataAttributes)
-	{
-		// Get all of the source element's data-attributes.
-		var dataAttributes = {};
-		source.each
-			(
-				function()
-				{
-					for (var i = 0, length = this.attributes.length; i < length; i++)
-					{
-						var attr = this.attributes[i];
-						if (attr.name.indexOf('data-') === 0)
-						{
-							dataAttributes[attr.name] = attr.value;
-						}
-					}
-				}
-			);
-			
-		for (var attr in dataAttributes)
-		{
-			target.attr(attr, dataAttributes[attr]);
-		}
-	}
+	cssPrefix: 'select-'
 };
 var Eventable = Selectioner.Base.Eventable = function () { };
     
@@ -298,20 +231,26 @@ PopupBase.prototype.reposition = function()
 // Shows the pop-up.
 PopupBase.prototype.show = function()
 {
-	this.render();
-	this.reposition();
+	if (!this.isShown())
+	{
+		this._isVisible = true;
+		this.render();
+		this.reposition();
 
-	this.element.css({ visibility: 'visible', zIndex: '' });
-	this.trigger('show.selectioner');
-	this._isVisible = true;
+		this.element.css({ visibility: 'visible', zIndex: '' });
+		this.trigger('show.selectioner');
+	}
 };
 
 // Simply hides the pop-up.
 PopupBase.prototype.hide = function()
 {
-	this.element.css({ visibility: 'hidden', zIndex: '-1' });
-	this.trigger('hide.selectioner');
-	this._isVisible = false;
+	if (this.isShown())
+	{
+		this._isVisible = false;
+		this.element.css({ visibility: 'hidden', zIndex: '-1' });
+		this.trigger('hide.selectioner');
+	}
 };
 
 PopupBase.prototype.isShown = function()
@@ -374,8 +313,7 @@ Display.prototype.initialize = function(select)
 		(
 			'focusin.selectioner', 
 			function() 
-			{ 
-				select.trigger('focusin');
+			{
 				popup.show();
 			}
 		)
@@ -385,8 +323,7 @@ Display.prototype.initialize = function(select)
 			'mousedown.selectioner', 
 			function(event) 
 			{ 
-				event.stopPropagation(); 
-				select.trigger('mousedown');
+				event.stopPropagation();
 				if (popup.isShown())
 				{
 					popup.hide();
@@ -413,7 +350,6 @@ Display.prototype.initialize = function(select)
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
-					display.leave();
 				}
 			}
 		);
@@ -426,7 +362,6 @@ Display.prototype.initialize = function(select)
 			function()
 			{
 				popup.hide();
-				display.leave();
 			}
 		);
 
@@ -458,25 +393,6 @@ Display.prototype.addDialog = function(dialog)
 	
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
-};
-
-// Indicates that this control lost focus, so 
-// simlulate the <select /> losing focus as well.
-Display.prototype.leave = function()
-{
-	this.select
-		.trigger('focusout')
-		.trigger('blur');
-	this.updateAttributes();
-};
-
-Display.prototype.updateAttributes = function()
-{
-	// Classes and data attributes are copied over whenever this updates in case
-	// there is some other JS out there updating the <select /> element, 
-	// such as in the case of jQuery Validation.
-	Selectioner.Utility.copyDataAttributes(this.select, this.element);
-	Selectioner.Utility.copyCssClasses(this.select, this.element);
 };
 
 // Render the display. This method should be explicity 
@@ -531,9 +447,7 @@ ListBox.prototype.render = function()
 };
 
 ListBox.prototype.update = function()
-{	
-	this.updateAttributes();
-
+{
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
@@ -618,8 +532,6 @@ ComboBox.prototype.textChanged = function()
 
 ComboBox.prototype.update = function()
 {
-	this.updateAttributes();
-
 	var selectedOption = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 		
@@ -682,9 +594,6 @@ SingleSelect.prototype.renderOption = function(option)
 		.attr('href', 'javascript:;')
 		.on('click', selectOption)
 		.text(option.text());
-		
-	Selectioner.Utility.copyDataAttributes(option, selectAnchor);
-	Selectioner.Utility.copyCssClasses(option, selectAnchor);
 
 	return $('<li />').append(selectAnchor);
 };
@@ -711,9 +620,6 @@ SingleSelect.prototype.renderGroup = function(group)
 		(
 			$('<ul >').append(options)
 		);
-	
-	Selectioner.Utility.copyDataAttributes(group, groupElement);
-	Selectioner.Utility.copyCssClasses(group, groupElement);
 
 	return groupElement;
 };
@@ -757,9 +663,6 @@ MultiSelect.prototype.renderOption = function(option)
 		);
 		
 	element.append(label);
-	
-	Selectioner.Utility.copyDataAttributes(option, element);
-	Selectioner.Utility.copyCssClasses(option, element);
 
 	return element;
 };
@@ -807,9 +710,6 @@ MultiSelect.prototype.renderGroup = function(group)
 			$('<ul >').append(options)
 		);
 	
-	Selectioner.Utility.copyDataAttributes(group, groupElement);
-	Selectioner.Utility.copyCssClasses(group, groupElement);
-
 	return groupElement;
 };
 $.fn.singleSelect = function ()

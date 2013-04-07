@@ -64,7 +64,6 @@ This will create a control that will allow you to select a single item, or enter
 ### What features it has
 
 - It has basic keyboard support; you can use most of it's functionality without a mouse.
-- It automatically copies over CSS classes and data attributes from it's underlying `select` element.
 - The pop-up always attempts to make sure it appears on the screen; it will try not to cause any overflow.
 - It stays in sync with it's underlying `<select />` element and preserves element IDs, so the correct information is sent when a POST occurs.
 

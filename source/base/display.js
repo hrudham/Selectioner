@@ -54,8 +54,7 @@ Display.prototype.initialize = function(select)
 		(
 			'focusin.selectioner', 
 			function() 
-			{ 
-				select.trigger('focusin');
+			{
 				popup.show();
 			}
 		)
@@ -65,8 +64,7 @@ Display.prototype.initialize = function(select)
 			'mousedown.selectioner', 
 			function(event) 
 			{ 
-				event.stopPropagation(); 
-				select.trigger('mousedown');
+				event.stopPropagation();
 				if (popup.isShown())
 				{
 					popup.hide();
@@ -93,7 +91,6 @@ Display.prototype.initialize = function(select)
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
-					display.leave();
 				}
 			}
 		);
@@ -106,7 +103,6 @@ Display.prototype.initialize = function(select)
 			function()
 			{
 				popup.hide();
-				display.leave();
 			}
 		);
 
@@ -138,25 +134,6 @@ Display.prototype.addDialog = function(dialog)
 	
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
-};
-
-// Indicates that this control lost focus, so 
-// simlulate the <select /> losing focus as well.
-Display.prototype.leave = function()
-{
-	this.select
-		.trigger('focusout')
-		.trigger('blur');
-	this.updateAttributes();
-};
-
-Display.prototype.updateAttributes = function()
-{
-	// Classes and data attributes are copied over whenever this updates in case
-	// there is some other JS out there updating the <select /> element, 
-	// such as in the case of jQuery Validation.
-	Selectioner.Utility.copyDataAttributes(this.select, this.element);
-	Selectioner.Utility.copyCssClasses(this.select, this.element);
 };
 
 // Render the display. This method should be explicity 

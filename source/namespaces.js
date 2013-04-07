@@ -5,6 +5,5 @@ window.Selectioner =
 	Display: {},
 	Extensions: {},
 	Popup: {},
-	Settings: {},
-	Utility: {}
+	Settings: {}
 };

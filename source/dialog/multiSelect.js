@@ -38,9 +38,6 @@ MultiSelect.prototype.renderOption = function(option)
 		);
 		
 	element.append(label);
-	
-	Selectioner.Utility.copyDataAttributes(option, element);
-	Selectioner.Utility.copyCssClasses(option, element);
 
 	return element;
 };
@@ -88,8 +85,5 @@ MultiSelect.prototype.renderGroup = function(group)
 			$('<ul >').append(options)
 		);
 	
-	Selectioner.Utility.copyDataAttributes(group, groupElement);
-	Selectioner.Utility.copyCssClasses(group, groupElement);
-
 	return groupElement;
 };

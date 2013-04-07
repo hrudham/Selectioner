@@ -96,6 +96,10 @@
 	position: relative;
 	border: 1px solid #AAA;
 	padding: 2px;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
 }
 
 .select-display:focus
@@ -135,9 +139,6 @@
 .select-display > span.select-text
 {
 	cursor: pointer;
-	-moz-user-select: none;
-	-webkit-user-select: none;
-	-ms-user-select: none;
 }
 
 .select-display .none

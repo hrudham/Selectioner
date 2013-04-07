@@ -54,8 +54,6 @@ ComboBox.prototype.textChanged = function()
 
 ComboBox.prototype.update = function()
 {
-	this.updateAttributes();
-
 	var selectedOption = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 		

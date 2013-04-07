@@ -19,9 +19,7 @@ ListBox.prototype.render = function()
 };
 
 ListBox.prototype.update = function()
-{	
-	this.updateAttributes();
-
+{
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	

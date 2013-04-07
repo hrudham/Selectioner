@@ -87,20 +87,26 @@ PopupBase.prototype.reposition = function()
 // Shows the pop-up.
 PopupBase.prototype.show = function()
 {
-	this.render();
-	this.reposition();
+	if (!this.isShown())
+	{
+		this._isVisible = true;
+		this.render();
+		this.reposition();
 
-	this.element.css({ visibility: 'visible', zIndex: '' });
-	this.trigger('show.selectioner');
-	this._isVisible = true;
+		this.element.css({ visibility: 'visible', zIndex: '' });
+		this.trigger('show.selectioner');
+	}
 };
 
 // Simply hides the pop-up.
 PopupBase.prototype.hide = function()
 {
-	this.element.css({ visibility: 'hidden', zIndex: '-1' });
-	this.trigger('hide.selectioner');
-	this._isVisible = false;
+	if (this.isShown())
+	{
+		this._isVisible = false;
+		this.element.css({ visibility: 'hidden', zIndex: '-1' });
+		this.trigger('hide.selectioner');
+	}
 };
 
 PopupBase.prototype.isShown = function()

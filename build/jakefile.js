@@ -56,8 +56,6 @@ var getSourceFiles = function ()
             sourcePath + 'header.js',
 			sourcePath + 'namespaces.js',
 			sourcePath + 'settings.js',
-			sourcePath + 'Utility/copyCssClasses.js',
-			sourcePath + 'Utility/copyDataAttributes.js',
 			sourcePath + 'Base/eventable.js',
 			sourcePath + 'Base/popup.js',
 			sourcePath + 'Base/display.js',
