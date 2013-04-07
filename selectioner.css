@@ -39,11 +39,12 @@
 	padding: 0px;
 }
 
-.select-popup  a
+.select-popup a
 {
 	display: block;
 	text-decoration: none;
 	color: #333;
+	outline: none;
 }
 
 .select-popup  a:hover
@@ -82,6 +83,7 @@
 {
 	vertical-align: middle;
 	margin: 0px 6px 0px 3px;
+	outline: none;
 }
 
 .select-popup .select-group-title

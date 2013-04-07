@@ -5,7 +5,7 @@ Display.prototype = new Eventable();
 Display.prototype.initialize = function(select)
 {
 	this.select = select;
-		
+	
 	this.render();
 	this.update();
 	
