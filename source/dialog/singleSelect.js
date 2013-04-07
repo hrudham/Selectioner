@@ -33,13 +33,22 @@ SingleSelect.prototype.renderOption = function(option)
 		option[0].selected = true;
 		select.trigger('change');
 	};
+	
+	var text = option.text();
 
 	var selectAnchor = $('<a />')
 		.attr('href', 'javascript:;')
 		.on('click', selectOption)
-		.text(option.text());
+		.text(text || Selectioner.Settings.emptyOptionText);
+	
+	var listItem = $('<li />');
+	
+	if (!text)
+	{
+		listItem.addClass('none');
+	}
 
-	return $('<li />').append(selectAnchor);
+	return listItem.append(selectAnchor);
 };
 
 // Render an the equivilant control that represents an 

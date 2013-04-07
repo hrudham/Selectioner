@@ -64,6 +64,7 @@ var getSourceFiles = function ()
 			sourcePath + 'display/comboBox.js',
 			sourcePath + 'dialog/singleSelect.js',
 			sourcePath + 'dialog/multiSelect.js',
+			sourcePath + 'dialog/comboSelect.js',
             sourcePath + 'extensions/singleSelect.js',
             sourcePath + 'extensions/multiSelect.js',
 			sourcePath + 'extensions/comboSelect.js',

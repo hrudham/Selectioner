@@ -25,7 +25,9 @@
 };
 var settings = Selectioner.Settings = 
 {
-	cssPrefix: 'select-'
+	cssPrefix: 'select-',
+	noSelectionText: 'Select an option',
+	emptyOptionText: 'None'
 };
 var Eventable = Selectioner.Base.Eventable = function () { };
     
@@ -184,7 +186,8 @@ PopupBase.prototype.render = function()
 	}
 };
 
-// Refresh the position of the pop-up relative to it's display element.
+// Refresh the position of the pop-up 
+// relative to it's display element.
 PopupBase.prototype.reposition = function()
 {
 	var offset = this.display.element.offset();
@@ -200,7 +203,8 @@ PopupBase.prototype.reposition = function()
 		.removeClass('above')
 		.removeClass('over');
 	
-	// If this popup would appear off-screen if below the display, then make it appear above it instead.
+	// If this popup would appear off-screen if below 
+	// the display, then make it appear above it instead.
 	if ($(window).height() + scrollTop < top + popUpHeight)
 	{
 		top = offset.top - popUpHeight + 1;
@@ -253,6 +257,7 @@ PopupBase.prototype.hide = function()
 	}
 };
 
+// Simply indicates whether the popup is shown to the user currently.
 PopupBase.prototype.isShown = function()
 {
 	return this._isVisible;
@@ -451,15 +456,25 @@ ListBox.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length === 0)
+	if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
 	{
-		this.textElement
-			.text('None')
-			.addClass('none');
+		var text = Selectioner.Settings.noSelectionText;
+		
+		if (!text)
+		{
+			this.textElement.html('&nbsp;');
+		}
+		else
+		{
+			this.textElement.text(text);
+		}
+		
+		this.textElement.addClass('none');
 	}
 	else if (selectedOptions.length <= 2)
 	{
 		var displayText = '';
+		
 		for (var i = 0, length = selectedOptions.length; i < length; i++)
 		{
 			displayText += selectedOptions[i].text;
@@ -469,6 +484,7 @@ ListBox.prototype.update = function()
 				displayText += ', ';
 			}
 		}
+		
 		this.textElement.text(displayText);
 	}
 	else
@@ -479,6 +495,11 @@ ListBox.prototype.update = function()
 var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
 {
 	this.textElement = $(textElement);
+	
+	if (!this.textElement.is('[placeholder]'))
+	{
+		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
+	}
 };
 
 ComboBox.prototype = new Selectioner.Base.Display();
@@ -589,13 +610,22 @@ SingleSelect.prototype.renderOption = function(option)
 		option[0].selected = true;
 		select.trigger('change');
 	};
+	
+	var text = option.text();
 
 	var selectAnchor = $('<a />')
 		.attr('href', 'javascript:;')
 		.on('click', selectOption)
-		.text(option.text());
+		.text(text || Selectioner.Settings.emptyOptionText);
+	
+	var listItem = $('<li />');
+	
+	if (!text)
+	{
+		listItem.addClass('none');
+	}
 
-	return $('<li />').append(selectAnchor);
+	return listItem.append(selectAnchor);
 };
 
 // Render an the equivilant control that represents an 
@@ -712,6 +742,21 @@ MultiSelect.prototype.renderGroup = function(group)
 	
 	return groupElement;
 };
+var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
+
+ComboSelect.prototype = new Selectioner.Dialog.SingleSelect();
+
+// Render an the equivilant control that represents an 
+// <option /> element for the underlying <select /> element. 
+ComboSelect.prototype.renderOption = function(option)
+{
+	if (!option.is('option[value=""], option:empty:not([value])'))
+	{
+		return Selectioner.Dialog.SingleSelect.prototype.renderOption.call(this, option);
+	}
+	
+	return null;
+};
 $.fn.singleSelect = function ()
 {
 	this
@@ -750,7 +795,7 @@ MultiSelect.prototype.renderGroup = function(group)
 			{
 				var comboBox = new Selectioner.Display.ComboBox(textInput);
 				comboBox.initialize($(this));
-				comboBox.addDialog(new Selectioner.Dialog.SingleSelect());
+				comboBox.addDialog(new Selectioner.Dialog.ComboSelect());
 			}
 		);
 };

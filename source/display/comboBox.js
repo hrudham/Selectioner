@@ -1,6 +1,11 @@
 var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
 {
 	this.textElement = $(textElement);
+	
+	if (!this.textElement.is('[placeholder]'))
+	{
+		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
+	}
 };
 
 ComboBox.prototype = new Selectioner.Base.Display();

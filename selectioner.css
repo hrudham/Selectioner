@@ -141,9 +141,10 @@
 	cursor: pointer;
 }
 
+.select-popup ul li.none a,
 .select-display .none
 {
-	color: #CCC;
+	color: #999;
 }
 
 .select-display .select-button

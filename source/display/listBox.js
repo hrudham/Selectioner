@@ -23,15 +23,25 @@ ListBox.prototype.update = function()
 	var selectedOptions = this.select.find('option:selected');
 	this.textElement.removeClass('none');
 	
-	if (selectedOptions.length === 0)
+	if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
 	{
-		this.textElement
-			.text('None')
-			.addClass('none');
+		var text = Selectioner.Settings.noSelectionText;
+		
+		if (!text)
+		{
+			this.textElement.html('&nbsp;');
+		}
+		else
+		{
+			this.textElement.text(text);
+		}
+		
+		this.textElement.addClass('none');
 	}
 	else if (selectedOptions.length <= 2)
 	{
 		var displayText = '';
+		
 		for (var i = 0, length = selectedOptions.length; i < length; i++)
 		{
 			displayText += selectedOptions[i].text;
@@ -41,6 +51,7 @@ ListBox.prototype.update = function()
 				displayText += ', ';
 			}
 		}
+		
 		this.textElement.text(displayText);
 	}
 	else

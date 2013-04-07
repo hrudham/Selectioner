@@ -13,19 +13,16 @@
 		<p>
 			<label for="BasicSingle">Basic: </label>
 			<select id="BasicSingle">
+				<option></option><!-- empty option -->
 				<option>Option 1</option>
 				<option>Option 2</option>
 				<option>Option 3</option>
 				<option>Option 4</option>
 				<option>Option 5</option>
 			</select>
-			<span id="SingleSelectValue"></span>
 			<script>
 				$(function(){
-					$('#BasicSingle')
-						.on('blur', function() { $('#SingleSelectValue').text(' Blur: ' + $('#BasicSingle').val()); })
-						.on('change', function() { $('#SingleSelectValue').text(' Change: ' + $('#BasicSingle').val()); })
-						.singleSelect();
+					$('#BasicSingle').singleSelect();
 				});
 			</script>
 		</p>
@@ -96,8 +93,9 @@
 		<h2>Combo-select</h2>
 		<p>
 			<label for="BasicComboText">Basic: </label>
-			<input type="text" id="BasicComboText" placeholder="Select an option" />
+			<input type="text" id="BasicComboText" placeholder="Choose an option" />
 			<select id="BasicComboSelect">
+				<option></option>
 				<option>Cape Town</option>
 				<option>Durban</option>
 				<option>Johannesburg</option>
@@ -112,7 +110,7 @@
 		</p>
 		<p>
 			<label for="OptGroupComboText">OptGroup: </label>
-			<input type="text" id="OptGroupComboText" placeholder="Select an option" value="Custom entry" />
+			<input type="text" id="OptGroupComboText" value="Custom entry" />
 			<select id="OptGroupComboSelect">
 				<optgroup label="Group 1">
 					<option>Option 1.1</option>

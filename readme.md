@@ -12,7 +12,7 @@ A light-weight jQuery replacement for HTML select boxes.
 
 ### What it works in
 
-Tested in Google Chrome 26, Firefox 19, Safari 5, Opera 12, Internet Explorer 9 and Internet Explorer 8.
+Tested in Google Chrome 26, Firefox 19, Safari 5, Opera 12, Internet Explorer 8, 9 and 10.
 
 It's actually functional in Internet Explorer 6 and 7, although there are numerous cosmetic bugs. These could be corrected if you are willing to write your own CSS, but they are not going to be officially supported by this project. 
 

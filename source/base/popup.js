@@ -40,7 +40,8 @@ PopupBase.prototype.render = function()
 	}
 };
 
-// Refresh the position of the pop-up relative to it's display element.
+// Refresh the position of the pop-up 
+// relative to it's display element.
 PopupBase.prototype.reposition = function()
 {
 	var offset = this.display.element.offset();
@@ -56,7 +57,8 @@ PopupBase.prototype.reposition = function()
 		.removeClass('above')
 		.removeClass('over');
 	
-	// If this popup would appear off-screen if below the display, then make it appear above it instead.
+	// If this popup would appear off-screen if below 
+	// the display, then make it appear above it instead.
 	if ($(window).height() + scrollTop < top + popUpHeight)
 	{
 		top = offset.top - popUpHeight + 1;
@@ -109,6 +111,7 @@ PopupBase.prototype.hide = function()
 	}
 };
 
+// Simply indicates whether the popup is shown to the user currently.
 PopupBase.prototype.isShown = function()
 {
 	return this._isVisible;
