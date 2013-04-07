@@ -1,7 +1,7 @@
 $.fn.multiSelect = function ()
 {
 	this
-		.filter('select[multiple]')
+		.filter('select[multiple]:visible')
 		.each
 		(
 			function()

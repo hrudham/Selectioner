@@ -4,14 +4,12 @@ ListBox.prototype = new Selectioner.Base.Display();
 
 ListBox.prototype.render = function()
 {	
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
+	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
-		.addClass(settings.cssPrefix + 'text');
+		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass(settings.cssPrefix + 'button');
+	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)

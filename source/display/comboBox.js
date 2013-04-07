@@ -20,18 +20,16 @@ ComboBox.prototype.render = function()
 		throw new Error('ComboBox elements require an empty and value-less <option></option> in their underlying <select /> elements.');
 	}
 
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
+	this.element = $('<span />');
 		
 	var comboBox = this;
 		
 	this.textElement
-		.addClass(settings.cssPrefix + 'text')
+		.addClass(Selectioner.Settings.cssPrefix + 'text')
 		.on('change.selectioner', function() { comboBox.textChanged(); });
 	
 	var button = $('<span />')
-		.addClass(settings.cssPrefix + 'button');
+		.addClass(Selectioner.Settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)

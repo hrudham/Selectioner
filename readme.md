@@ -9,6 +9,7 @@ A light-weight jQuery replacement for HTML select boxes.
 - Single-select
 - Multi-select
 - Combo-box
+- Auto-complete
 
 ### What it works in
 
@@ -55,15 +56,32 @@ This will create a control that will allow you to select a single item, or enter
 
 ```html
 <input type="text" id="MyComboText" placeholder="Select an option" />
-<select id="MyComboSelect" multiple="multiple"> ... </select>
+<select id="MyComboSelect">
+	<option></option> <!-- an empty option is required -->
+	...
+</select>
 <script>
 	$('#MyComboSelect').comboSelect('#MyComboText');
 </script>
 ```
 
+### Auto-complete
+
+This will create a control that will allow to select an item, or enter your own. The items displayed will be filtered based upon what you type, and limited to a maximum of five items. Please note that this does not support `optgroup` elements.
+
+```html
+<input type="text" id="MyAutoCompleteText" placeholder="Select an option" />
+<select id="MyAutoCompleteSelect">
+	<option></option> <!-- an empty option is required -->
+	...
+</select>
+<script>
+	$('#MyAutoCompleteSelect').autoComplete('#MyAutoCompleteText');
+</script>
+```
+
 ### What features it has
 
-- It has basic keyboard support; you can use most of it's functionality without a mouse.
 - The pop-up always attempts to make sure it appears on the screen; it will try not to cause any overflow.
 - It stays in sync with it's underlying `<select />` element and preserves element IDs, so the correct information is sent when a POST occurs.
 

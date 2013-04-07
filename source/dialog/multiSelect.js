@@ -70,7 +70,7 @@ MultiSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass(settings.cssPrefix + 'group-title')
+		.addClass(Selectioner.Settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();

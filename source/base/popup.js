@@ -8,7 +8,7 @@ PopupBase.prototype.initialize = function(display)
 	this.dialogs = [];
 
 	this.element = $('<div />')
-		.addClass(settings.cssPrefix + 'popup')
+		.addClass(Selectioner.Settings.cssPrefix + 'popup')
 		.css
 		({
 			visibility: 'hidden',

@@ -155,7 +155,7 @@ PopupBase.prototype.initialize = function(display)
 	this.dialogs = [];
 
 	this.element = $('<div />')
-		.addClass(settings.cssPrefix + 'popup')
+		.addClass(Selectioner.Settings.cssPrefix + 'popup')
 		.css
 		({
 			visibility: 'hidden',
@@ -275,6 +275,10 @@ Display.prototype.initialize = function(select)
 	this.render();
 	this.update();
 	
+	this.element
+		.addClass(Selectioner.Settings.cssPrefix + 'display')
+		.prop('tabindex', this.select.prop('tabindex'));
+		
 	this.select
 		.css('display', 'none')
 		.after(this.element);
@@ -379,7 +383,7 @@ Display.prototype.initialize = function(select)
 				'show.selectioner',
 				function()
 				{
-					display.element.addClass(settings.cssPrefix + 'visible');
+					display.element.addClass(Selectioner.Settings.cssPrefix + 'visible');
 				}
 			)
 		.on
@@ -387,7 +391,7 @@ Display.prototype.initialize = function(select)
 				'hide.selectioner',
 				function()
 				{
-					display.element.removeClass(settings.cssPrefix + 'visible');
+					display.element.removeClass(Selectioner.Settings.cssPrefix + 'visible');
 				}
 			);
 };
@@ -446,14 +450,12 @@ ListBox.prototype = new Selectioner.Base.Display();
 
 ListBox.prototype.render = function()
 {	
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
+	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
-		.addClass(settings.cssPrefix + 'text');
+		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass(settings.cssPrefix + 'button');
+	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)
@@ -523,18 +525,16 @@ ComboBox.prototype.render = function()
 		throw new Error('ComboBox elements require an empty and value-less <option></option> in their underlying <select /> elements.');
 	}
 
-	this.element = $('<span />')
-		.addClass(settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
+	this.element = $('<span />');
 		
 	var comboBox = this;
 		
 	this.textElement
-		.addClass(settings.cssPrefix + 'text')
+		.addClass(Selectioner.Settings.cssPrefix + 'text')
 		.on('change.selectioner', function() { comboBox.textChanged(); });
 	
 	var button = $('<span />')
-		.addClass(settings.cssPrefix + 'button');
+		.addClass(Selectioner.Settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)
@@ -647,7 +647,7 @@ SingleSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass(settings.cssPrefix + 'group-title')
+		.addClass(Selectioner.Settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();
@@ -736,7 +736,7 @@ MultiSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass(settings.cssPrefix + 'group-title')
+		.addClass(Selectioner.Settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();
@@ -862,7 +862,7 @@ AutoComplete.prototype.update = function()
 $.fn.singleSelect = function ()
 {
 	this
-		.filter('select:not([multiple])')
+		.filter('select:not([multiple]):visible')
 		.each
 		(
 			function()
@@ -876,7 +876,7 @@ AutoComplete.prototype.update = function()
 $.fn.multiSelect = function ()
 {
 	this
-		.filter('select[multiple]')
+		.filter('select[multiple]:visible')
 		.each
 		(
 			function()
@@ -890,7 +890,7 @@ AutoComplete.prototype.update = function()
 $.fn.comboSelect = function (textInput)
 {
 	this
-		.filter('select:not([multiple])')
+		.filter('select:not([multiple]):visible')
 		.each
 		(
 			function()
@@ -904,7 +904,7 @@ AutoComplete.prototype.update = function()
 $.fn.autoComplete = function (textInput)
 {
 	this
-		.filter('select:not([multiple])')
+		.filter('select:not([multiple]):visible')
 		.each
 		(
 			function()

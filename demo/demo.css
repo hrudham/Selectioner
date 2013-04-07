@@ -19,7 +19,7 @@ h1, h2, h3, h4
 	font-family: Calibri, Verdana, Arial;
 	padding: 4px;
 	text-transform: uppercase;
-	margin: 16px 0px;
+	margin: 0px 0px 16px 0px;
 }
 
 h1
@@ -44,10 +44,22 @@ h3, h4
 	border-left: solid 1px #4F81BD;
 }
 
-label
+.box
+{
+	width: 320px;
+	float: left;
+	box-sizing: border-box;
+	padding-right: 16px;
+	padding: 8px;
+	border: solid 1px #EEE;
+	margin: 0px 8px 8px 0px;
+}
+
+.box > p > label
 {
 	cursor: pointer;
 	font-weight: bold;
 	display: inline-block;
 	min-width: 120px;
+	margin: 0px 0px 4px 0px;
 }

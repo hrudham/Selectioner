@@ -9,242 +9,238 @@
 		<script src="../selectioner.js"></script>
 	</head>
 	<body>
-		<h1>Normal Select</h1>
-		<p>
-			<label for="NormalSingle">Normal Select: </label>
-			<select id="NormalSingle">
-				<option></option><!-- empty option -->
-				<option>Option 1</option>
-				<option>Option 2</option>
-				<option>Option 3</option>
-				<option>Option 4</option>
-				<option>Option 5</option>
-			</select>
-		</p>
 		<h1>Selectioner</h1>
-		<h2>Single-select</h2>
-		<p>
-			<label for="BasicSingle">Basic: </label>
-			<select id="BasicSingle">
-				<option></option><!-- empty option -->
-				<option>Option 1</option>
-				<option>Option 2</option>
-				<option>Option 3</option>
-				<option>Option 4</option>
-				<option>Option 5</option>
-			</select>
-			<script>
-				$(function(){
-					$('#BasicSingle').singleSelect();
-				});
-			</script>
-		</p>
-		<p>
-			<label for="OptGroupSingle">OptGroup: </label>
-			<select id="OptGroupSingle">
-				<optgroup label="Group 1">
-					<option selected="selected">Option 1.1</option>
-					<option>Option 1.2</option>
-					<option>Option 1.3</option>
-					<option>Option 1.4</option>
-					<option>Option 1.5</option>
-				</optgroup>
-				<optgroup label="Group 2">
-					<option selected="selected">Option 2.1</option>
-					<option>Option 2.2</option>
-					<option>Option 2.3</option>
-					<option>Option 2.4</option>
-					<option>Option 2.5</option>
-				</optgroup>
-			</select>
-			<script>
-				$(function(){
-					$('#OptGroupSingle').singleSelect();
-				});
-			</script>
-		</p>
-		<h2>Multi-select</h2>
-		<p>
-			<label for="BasicMultiple">Basic Multiple: </label>
-			<select id="BasicMultiple" multiple="multiple">
-				<option>Option 1</option>
-				<option>Option 2</option>
-				<option>Option 3</option>
-				<option>Option 4</option>
-				<option>Option 5</option>
-			</select>
-			<script>
-				$(function(){
-					$('#BasicMultiple').multiSelect();
-				});
-			</script>
-		</p>
-		<p>
-			<label for="OptGroupMultiple">OptGroup Multiple: </label>
-			<select id="OptGroupMultiple" multiple="multiple">
-				<optgroup label="Group 1">
-					<option selected="selected">Option 1.1</option>
-					<option selected="selected">Option 1.2</option>
-					<option>Option 1.3</option>
-					<option>Option 1.4</option>
-					<option>Option 1.5</option>
-				</optgroup>
-				<optgroup label="Group 2">
-					<option selected="selected">Option 2.1</option>
-					<option>Option 2.2</option>
-					<option>Option 2.3</option>
-					<option>Option 2.4</option>
-					<option>Option 2.5</option>
-				</optgroup>
-			</select>
-			<script>
-				$(function(){
-					$('#OptGroupMultiple').multiSelect();
-				});
-			</script>
-		</p>
-		<h2>Combo-select</h2>
-		<p>
-			<label for="BasicComboText">Basic: </label>
-			<input type="text" id="BasicComboText" placeholder="Choose an option" value="Custom entry" />
-			<select id="BasicComboSelect">
-				<option></option>
-				<option>Cape Town</option>
-				<option>Durban</option>
-				<option>Johannesburg</option>
-				<option>Bloemfontein</option>
-				<option>Pietermaritzburg</option>
-			</select>
-			<script>
-				$(function(){
-					$('#BasicComboSelect').comboSelect('#BasicComboText');
-				});
-			</script>
-		</p>
-		<p>
-			<label for="OptGroupComboText">OptGroup: </label>
-			<input type="text" id="OptGroupComboText" />
-			<select id="OptGroupComboSelect">
-				<option value=''></option>
-				<optgroup label="Group 1">
-					<option>Option 1.1</option>
-					<option>Option 1.2</option>
-					<option>Option 1.3</option>
-					<option>Option 1.4</option>
-					<option>Option 1.5</option>
-				</optgroup>
-				<optgroup label="Group 2">
-					<option>Option 2.1</option>
-					<option>Option 2.2</option>
-					<option>Option 2.3</option>
-					<option>Option 2.4</option>
-					<option>Option 2.5</option>
-				</optgroup>
-			</select>
-			<script>
-				$(function(){
-					$('#OptGroupComboSelect').comboSelect('#OptGroupComboText');
-				});
-			</script>
-		</p>
-		<h2>Auto-complete</h2>
-		<p>
-			<label for="BasicAutoCompleteText">Basic: </label>
-			<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
-			<select id="BasicAutoCompleteSelect">
-				<option></option>
-				<option>Aberlour</option>
-				<option>Amrut</option>
-				<option>An Cnoc</option>
-				<option>Ardbeg</option>
-				<option>Ardmore</option>
-				<option>Auchentoshan</option>
-				<option>Balblair</option>
-				<option>Balmenach</option>
-				<option>Ben Nevis</option>
-				<option>BenRiach</option>
-				<option>Benrinnes</option>
-				<option>Benromach</option>
-				<option>Bladnoch</option>
-				<option>Blair Athol</option>
-				<option>Bowmore</option>
-				<option>Braeval</option>
-				<option>Brora</option>
-				<option>Bruichladdich</option>
-				<option>Buffalo Trace</option>
-				<option>Bunnahabhain</option>
-				<option>Old Bushmills</option>
-				<option>Caol Ila</option>
-				<option>Caperdonich</option>
-				<option>Cardhu</option>
-				<option>Clynelish</option>
-				<option>Cooley</option>
-				<option>Cragganmore</option>
-				<option>Craigellachie</option>
-				<option>Dallas Dhu</option>
-				<option>Dalmore</option>
-				<option>Dalwhinnie</option>
-				<option>Deanston</option>
-				<option>Drayman's</option>
-				<option>Dufftown</option>
-				<option>Edradour</option>
-				<option>Fettercairn</option>
-				<option>Glen Albyn</option>
-				<option>Glencadam</option>
-				<option>Glendronach</option>
-				<option>Glen Elgin</option>
-				<option>Glenfarclas</option>
-				<option>Glenfiddich</option>
-				<option>Glen Garioch</option>
-				<option>Glenglassaugh</option>
-				<option>Glengoyne</option>
-				<option>Glen Grant</option>
-				<option>Glen Keith</option>
-				<option>Glenkinchie</option>
-				<option>Glenmorangie</option>
-				<option>Glen Ord</option>
-				<option>Glenrothes</option>
-				<option>Highland Park</option>
-				<option>Isle of Arran</option>
-				<option>Isle of Jura</option>
-				<option>Jack Daniels</option>
-				<option>James Sedgwick</option>
-				<option>Jim Beam</option>
-				<option>Karuizawa</option>
-				<option>Kilchoman</option>
-				<option>Knockdhu</option>
-				<option>Lagavulin</option>
-				<option>Laphroaig</option>
-				<option>Longmorn</option>
-				<option>Macallan</option>
-				<option>Maker's Mark</option>
-				<option>Midleton</option>
-				<option>Millburn</option>
-				<option>Miyagikyo</option>
-				<option>Mortlach</option>
-				<option>Oban</option>
-				<option>Penderyn</option>
-				<option>Port Ellen</option>
-				<option>Old Pultney</option>
-				<option>Royal Brackla</option>
-				<option>Springbank</option>
-				<option>Strathisla</option>
-				<option>Strathmill</option>
-				<option>Talisker</option>
-				<option>Tamdhu</option>
-				<option>The Balvenie</option>
-				<option>The Glenlivet</option>
-				<option>Tomatin</option>
-				<option>Wild Turkey</option>
-				<option>Woodford Reserve</option>
-				<option>Yamazaki</option>
-				<option>Yoichi</option>
-			</select>
-			<script>
-				$(function(){
-					$('#BasicAutoCompleteSelect').autoComplete('#BasicAutoCompleteText');
-				});
-			</script>
-		</p>
+		<div class="box">
+			<h2>Single-select</h2>
+			<p>
+				<label for="BasicSingle">Basic: </label>
+				<select id="BasicSingle">
+					<option></option><!-- empty option -->
+					<option>Option 1</option>
+					<option>Option 2</option>
+					<option>Option 3</option>
+					<option>Option 4</option>
+					<option>Option 5</option>
+				</select>
+				<script>
+					$(function(){
+						$('#BasicSingle').singleSelect();
+					});
+				</script>
+			</p>
+			<p>
+				<label for="OptGroupSingle">OptGroup: </label>
+				<select id="OptGroupSingle">
+					<optgroup label="Group 1">
+						<option selected="selected">Option 1.1</option>
+						<option>Option 1.2</option>
+						<option>Option 1.3</option>
+						<option>Option 1.4</option>
+						<option>Option 1.5</option>
+					</optgroup>
+					<optgroup label="Group 2">
+						<option selected="selected">Option 2.1</option>
+						<option>Option 2.2</option>
+						<option>Option 2.3</option>
+						<option>Option 2.4</option>
+						<option>Option 2.5</option>
+					</optgroup>
+				</select>
+				<script>
+					$(function(){
+						$('#OptGroupSingle').singleSelect();
+					});
+				</script>
+			</p>
+		</div>
+		<div class="box">
+			<h2>Multi-select</h2>
+			<p>
+				<label for="BasicMultiple">Basic Multiple: </label>
+				<select id="BasicMultiple" multiple="multiple">
+					<option>Option 1</option>
+					<option>Option 2</option>
+					<option>Option 3</option>
+					<option>Option 4</option>
+					<option>Option 5</option>
+				</select>
+				<script>
+					$(function(){
+						$('#BasicMultiple').multiSelect();
+					});
+				</script>
+			</p>
+			<p>
+				<label for="OptGroupMultiple">OptGroup Multiple: </label>
+				<select id="OptGroupMultiple" multiple="multiple">
+					<optgroup label="Group 1">
+						<option selected="selected">Option 1.1</option>
+						<option selected="selected">Option 1.2</option>
+						<option>Option 1.3</option>
+						<option>Option 1.4</option>
+						<option>Option 1.5</option>
+					</optgroup>
+					<optgroup label="Group 2">
+						<option selected="selected">Option 2.1</option>
+						<option>Option 2.2</option>
+						<option>Option 2.3</option>
+						<option>Option 2.4</option>
+						<option>Option 2.5</option>
+					</optgroup>
+				</select>
+				<script>
+					$(function(){
+						$('#OptGroupMultiple').multiSelect();
+					});
+				</script>
+			</p>
+		</div>
+		<div class="box">
+			<h2>Combo-select</h2>
+			<p>
+				<label for="BasicComboText">Basic: </label>
+				<input type="text" id="BasicComboText" placeholder="Choose an option" value="Custom entry" />
+				<select id="BasicComboSelect">
+					<option></option>
+					<option>Cape Town</option>
+					<option>Durban</option>
+					<option>Johannesburg</option>
+					<option>Bloemfontein</option>
+					<option>Pietermaritzburg</option>
+				</select>
+				<script>
+					$(function(){
+						$('#BasicComboSelect').comboSelect('#BasicComboText');
+					});
+				</script>
+			</p>		
+			<p>
+				<label for="OptGroupComboText">OptGroup: </label>
+				<input type="text" id="OptGroupComboText" />
+				<select id="OptGroupComboSelect">
+					<option value=''></option>
+					<optgroup label="Group 1">
+						<option>Option 1.1</option>
+						<option>Option 1.2</option>
+						<option>Option 1.3</option>
+						<option>Option 1.4</option>
+						<option>Option 1.5</option>
+					</optgroup>
+					<optgroup label="Group 2">
+						<option>Option 2.1</option>
+						<option>Option 2.2</option>
+						<option>Option 2.3</option>
+						<option>Option 2.4</option>
+						<option>Option 2.5</option>
+					</optgroup>
+				</select>
+				<script>
+					$(function(){
+						$('#OptGroupComboSelect').comboSelect('#OptGroupComboText');
+					});
+				</script>
+			</p>
+		</div>
+		<div class="box">
+			<h2>Auto-complete</h2>
+			<p>
+				<label for="BasicAutoCompleteText">Basic: </label>
+				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
+				<select id="BasicAutoCompleteSelect">
+					<option></option>
+					<option>Aberlour</option>
+					<option>Amrut</option>
+					<option>An Cnoc</option>
+					<option>Ardbeg</option>
+					<option>Ardmore</option>
+					<option>Auchentoshan</option>
+					<option>Balblair</option>
+					<option>Balmenach</option>
+					<option>Ben Nevis</option>
+					<option>BenRiach</option>
+					<option>Benrinnes</option>
+					<option>Benromach</option>
+					<option>Bladnoch</option>
+					<option>Blair Athol</option>
+					<option>Bowmore</option>
+					<option>Braeval</option>
+					<option>Brora</option>
+					<option>Bruichladdich</option>
+					<option>Buffalo Trace</option>
+					<option>Bunnahabhain</option>
+					<option>Old Bushmills</option>
+					<option>Caol Ila</option>
+					<option>Caperdonich</option>
+					<option>Cardhu</option>
+					<option>Clynelish</option>
+					<option>Cooley</option>
+					<option>Cragganmore</option>
+					<option>Craigellachie</option>
+					<option>Dallas Dhu</option>
+					<option>Dalmore</option>
+					<option>Dalwhinnie</option>
+					<option>Deanston</option>
+					<option>Drayman's</option>
+					<option>Dufftown</option>
+					<option>Edradour</option>
+					<option>Fettercairn</option>
+					<option>Glen Albyn</option>
+					<option>Glencadam</option>
+					<option>Glendronach</option>
+					<option>Glen Elgin</option>
+					<option>Glenfarclas</option>
+					<option>Glenfiddich</option>
+					<option>Glen Garioch</option>
+					<option>Glenglassaugh</option>
+					<option>Glengoyne</option>
+					<option>Glen Grant</option>
+					<option>Glen Keith</option>
+					<option>Glenkinchie</option>
+					<option>Glenmorangie</option>
+					<option>Glen Ord</option>
+					<option>Glenrothes</option>
+					<option>Highland Park</option>
+					<option>Isle of Arran</option>
+					<option>Isle of Jura</option>
+					<option>Jack Daniels</option>
+					<option>James Sedgwick</option>
+					<option>Jim Beam</option>
+					<option>Karuizawa</option>
+					<option>Kilchoman</option>
+					<option>Knockdhu</option>
+					<option>Lagavulin</option>
+					<option>Laphroaig</option>
+					<option>Longmorn</option>
+					<option>Macallan</option>
+					<option>Maker's Mark</option>
+					<option>Midleton</option>
+					<option>Millburn</option>
+					<option>Miyagikyo</option>
+					<option>Mortlach</option>
+					<option>Oban</option>
+					<option>Penderyn</option>
+					<option>Port Ellen</option>
+					<option>Old Pultney</option>
+					<option>Royal Brackla</option>
+					<option>Springbank</option>
+					<option>Strathisla</option>
+					<option>Strathmill</option>
+					<option>Talisker</option>
+					<option>Tamdhu</option>
+					<option>The Balvenie</option>
+					<option>The Glenlivet</option>
+					<option>Tomatin</option>
+					<option>Wild Turkey</option>
+					<option>Woodford Reserve</option>
+					<option>Yamazaki</option>
+					<option>Yoichi</option>
+				</select>
+				<script>
+					$(function(){
+						$('#BasicAutoCompleteSelect').autoComplete('#BasicAutoCompleteText');
+					});
+				</script>
+			</p>
+		</div>
 	</body>
 </html>

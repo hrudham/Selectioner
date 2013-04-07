@@ -9,6 +9,10 @@ Display.prototype.initialize = function(select)
 	this.render();
 	this.update();
 	
+	this.element
+		.addClass(Selectioner.Settings.cssPrefix + 'display')
+		.prop('tabindex', this.select.prop('tabindex'));
+		
 	this.select
 		.css('display', 'none')
 		.after(this.element);
@@ -113,7 +117,7 @@ Display.prototype.initialize = function(select)
 				'show.selectioner',
 				function()
 				{
-					display.element.addClass(settings.cssPrefix + 'visible');
+					display.element.addClass(Selectioner.Settings.cssPrefix + 'visible');
 				}
 			)
 		.on
@@ -121,7 +125,7 @@ Display.prototype.initialize = function(select)
 				'hide.selectioner',
 				function()
 				{
-					display.element.removeClass(settings.cssPrefix + 'visible');
+					display.element.removeClass(Selectioner.Settings.cssPrefix + 'visible');
 				}
 			);
 };

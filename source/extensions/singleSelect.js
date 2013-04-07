@@ -1,7 +1,7 @@
 $.fn.singleSelect = function ()
 {
 	this
-		.filter('select:not([multiple])')
+		.filter('select:not([multiple]):visible')
 		.each
 		(
 			function()
