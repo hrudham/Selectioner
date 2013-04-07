@@ -507,12 +507,11 @@ ComboBox.prototype = new Selectioner.Base.Display();
 	
 ComboBox.prototype.render = function()
 {
-	// If the select element does not already 
-	// have an option without a value, then add one.
-	var emptyOption = this.getEmptyOptions();
-	if (emptyOption.length === 0)
+	// Make sure we have an empty option, otherwise throw an error.
+	var emptyOptions = this.getEmptyOptions();
+	if (emptyOptions.length === 0)
 	{
-		this.select.prepend($('<option />'));
+		throw new Error('ComboBox elements require an empty <option></option> in their underlying <select /> elements. Please add one.');
 	}
 
 	this.element = $('<span />')
