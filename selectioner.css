@@ -3,7 +3,7 @@
 	border: 1px solid #AAA;
 	background-color: #FFF;
 	line-height: 20px;
-	z-index: 60000;
+	z-index: 1073741823; /* (Size of int32) / 2 */
 	text-align: left;
 	padding: 4px 0px;
 	margin-top: -1px;

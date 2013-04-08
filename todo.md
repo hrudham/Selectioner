@@ -19,6 +19,8 @@
 
 - Consider implementing responsive support for mobile.
 - jQuery validation support.
+- dir="rtl" support.
+- Manual refresh call via JS.
 
 ## Stuff to Remember
 
