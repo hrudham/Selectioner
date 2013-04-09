@@ -28,7 +28,8 @@
 	cssPrefix: 'select-',
 	noSelectionText: 'Select an option',
 	emptyOptionText: 'None',
-	maxAutoCompleteItems: 5
+	maxAutoCompleteItems: 5,
+	isSelectionerDataAttributeName: 'is-selectioner'
 };
 var Eventable = Selectioner.Base.Eventable = function () { };
     
@@ -271,33 +272,38 @@ Display.prototype = new Eventable();
 Display.prototype.initialize = function(select)
 {
 	this.select = select;
-	
-	var cssClass = Selectioner.Settings.cssPrefix + 'display';
-	
-	var nextElement = select.next();
-	if (nextElement.hasClass(cssClass))
+		
+	if (select.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName))
 	{
-		// If this select element has already been 
-		// processed, don't process it again.
-		nextElement.remove();
+		// This is an existing selectioner.
 	}
-	
+	else
+	{
+		// This selectioner needs to be rendered out.
+		this.createDisplay();
+		this.createPopup();
+		
+		select
+			.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName, true)
+			.data('selectioner', { display: this })
+			.after(this.element);
+	}
+};
+
+Display.prototype.createDisplay = function()
+{
+	var display = this;
+
 	this.render();
 	this.update();
 	
 	this.element
-		.addClass(cssClass)
+		.addClass(Selectioner.Settings.cssPrefix + 'display')
 		.prop('tabindex', this.select.prop('tabindex'));
-				
-	this.select
-		.css('display', 'none')
-		.after(this.element);
-	
-	var display = this;
-	
+		
 	// Find any labels associated with this select element,
 	// and make them focus on this display instead.
-	var selectId = select.attr('id');
+	var selectId = this.select.attr('id');
 	if (selectId !== undefined)
 	{
 		this.labels = $(document)
@@ -310,20 +316,24 @@ Display.prototype.initialize = function(select)
 						display.element.focus();
 					}
 				);
+				
+		// Make sure the display updates any time 
+		// it's underlying select element changes.
+		this.select
+			.on
+				(
+					'change.selectioner', 
+					function()
+					{
+						display.update();
+					}
+				);
 	}
-	
-	// Make sure the display updates any time 
-	// it's underlying select element changes.
-	this.select
-		.on
-			(
-				'change.selectioner', 
-				function()
-				{
-					display.update();
-				}
-			);
-	
+};
+
+// Create a new dialog for this <select /> element.
+Display.prototype.createPopup = function()
+{		
 	// Bind this display to a popup.
 	var popup = this.popup = new Selectioner.Base.Popup();
 	popup.initialize(this);
@@ -387,13 +397,15 @@ Display.prototype.initialize = function(select)
 			}
 		);
 
+	var cssClass = Selectioner.Settings.cssPrefix + 'visible';
+		
 	popup
 		.on
 			(
 				'show.selectioner',
 				function()
 				{
-					display.element.addClass(Selectioner.Settings.cssPrefix + 'visible');
+					popup.display.element.addClass(cssClass);
 				}
 			)
 		.on
@@ -401,7 +413,7 @@ Display.prototype.initialize = function(select)
 				'hide.selectioner',
 				function()
 				{
-					display.element.removeClass(Selectioner.Settings.cssPrefix + 'visible');
+					popup.display.element.removeClass(cssClass);
 				}
 			);
 };
@@ -431,6 +443,14 @@ Display.prototype.update = function()
 {
 	// This method should be explicitly overridden, but 
 	// it is not required if it will never be updated.
+};
+
+// Removes this display element, and restores 
+// the original elements used to build it.
+Display.prototype.remove = function()
+{
+	this.select.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName);
+	this.element.add(this.popup.element).remove();
 };
 var Dialog = Selectioner.Base.Dialog = function() {};
 
@@ -513,20 +533,24 @@ ListBox.prototype.update = function()
 		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
 	}
 };
-var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
-{
-	this.textElement = $(textElement);
-	
-	if (!this.textElement.is('[placeholder]'))
-	{
-		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
-	}
-};
+var ComboBox = Selectioner.Display.ComboBox = function() {};
 
 ComboBox.prototype = new Selectioner.Base.Display();
 	
 ComboBox.prototype.render = function()
 {
+	this.textElement = this.select.next();
+	
+	if (!this.textElement.is('input[type="text"]'))
+	{
+		throw new Error('ComboBox expects the element to follow it\'s target <select /> to be an <input type="text" />');
+	}
+	
+	if (!this.textElement.is('[placeholder]'))
+	{
+		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
+	}
+
 	// Make sure we have an empty option, otherwise throw an error.
 	var emptyOptions = this.getEmptyOptions();
 	if (emptyOptions.length === 0)
@@ -593,6 +617,12 @@ ComboBox.prototype.getEmptyOptions = function()
 	// empty value, or have no value and no text.
 	return this.select
 		.find('option[value=""], option:empty:not([value])');
+};
+
+ComboBox.prototype.remove = function()
+{
+	this.select.after(this.textElement);
+	Selectioner.Base.Display.prototype.remove.call(this);
 };
 var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 

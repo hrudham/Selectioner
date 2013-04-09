@@ -1,17 +1,21 @@
-var ComboBox = Selectioner.Display.ComboBox = function(textElement) 
-{
-	this.textElement = $(textElement);
-	
-	if (!this.textElement.is('[placeholder]'))
-	{
-		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
-	}
-};
+var ComboBox = Selectioner.Display.ComboBox = function() {};
 
 ComboBox.prototype = new Selectioner.Base.Display();
 	
 ComboBox.prototype.render = function()
 {
+	this.textElement = this.select.next();
+	
+	if (!this.textElement.is('input[type="text"]'))
+	{
+		throw new Error('ComboBox expects the element to follow it\'s target <select /> to be an <input type="text" />');
+	}
+	
+	if (!this.textElement.is('[placeholder]'))
+	{
+		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
+	}
+
 	// Make sure we have an empty option, otherwise throw an error.
 	var emptyOptions = this.getEmptyOptions();
 	if (emptyOptions.length === 0)
@@ -78,4 +82,10 @@ ComboBox.prototype.getEmptyOptions = function()
 	// empty value, or have no value and no text.
 	return this.select
 		.find('option[value=""], option:empty:not([value])');
+};
+
+ComboBox.prototype.remove = function()
+{
+	this.select.after(this.textElement);
+	Selectioner.Base.Display.prototype.remove.call(this);
 };

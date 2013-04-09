@@ -117,7 +117,6 @@
 			<h2>Combo-select</h2>
 			<p>
 				<label for="BasicComboText">Basic: </label>
-				<input type="text" id="BasicComboText" placeholder="Choose an option" value="Custom entry" />
 				<select id="BasicComboSelect">
 					<option></option>
 					<option>Cape Town</option>
@@ -126,15 +125,15 @@
 					<option>Bloemfontein</option>
 					<option>Pietermaritzburg</option>
 				</select>
+				<input type="text" id="BasicComboText" placeholder="Choose an option" value="Custom entry" />
 				<script>
 					$(function(){
-						$('#BasicComboSelect').comboSelect('#BasicComboText');
+						$('#BasicComboSelect').comboSelect();
 					});
 				</script>
 			</p>		
 			<p>
 				<label for="OptGroupComboText">OptGroup: </label>
-				<input type="text" id="OptGroupComboText" />
 				<select id="OptGroupComboSelect">
 					<option value=''></option>
 					<optgroup label="Group 1">
@@ -152,9 +151,10 @@
 						<option>Option 2.5</option>
 					</optgroup>
 				</select>
+				<input type="text" id="OptGroupComboText" />
 				<script>
 					$(function(){
-						$('#OptGroupComboSelect').comboSelect('#OptGroupComboText');
+						$('#OptGroupComboSelect').comboSelect();
 					});
 				</script>
 			</p>
@@ -163,7 +163,6 @@
 			<h2>Auto-complete</h2>
 			<p>
 				<label for="BasicAutoCompleteText">Basic: </label>
-				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
 				<select id="BasicAutoCompleteSelect">
 					<option></option>
 					<option>Aberlour</option>
@@ -253,6 +252,7 @@
 					<option>Yamazaki</option>
 					<option>Yoichi</option>
 				</select>
+				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
 				<script>
 					$(function(){
 						$('#BasicAutoCompleteSelect').autoComplete('#BasicAutoCompleteText');
