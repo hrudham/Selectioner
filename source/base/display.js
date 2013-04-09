@@ -6,13 +6,24 @@ Display.prototype.initialize = function(select)
 {
 	this.select = select;
 	
+	var cssClass = Selectioner.Settings.cssPrefix + 'display';
+	
+	var nextElement = select.next();
+	if (nextElement.hasClass(cssClass))
+	{
+		// If this select element has already been 
+		// processed, then get ride of it.
+		// TODO: Remove the pop-up as well.
+		nextElement.remove();
+	}
+	
 	this.render();
 	this.update();
 	
 	this.element
-		.addClass(Selectioner.Settings.cssPrefix + 'display')
+		.addClass(cssClass)
 		.prop('tabindex', this.select.prop('tabindex'));
-		
+				
 	this.select
 		.css('display', 'none')
 		.after(this.element);

@@ -25,6 +25,9 @@
 ## Stuff to Remember
 
 - Make sure that zooming works
+- Work out how to handle "hidden" selects (both those with "display: none", and those in hidden elements.
+- Work out how to handle removing selectioner items.
+- Work out how to handle re-parsing the HTML, such as after dynamically generated <select /> elements are added to the DOM via AJAX or other JS calls.
 - Test on Mobile
 - Test with keyboard naviation
 - Make sure that focus highlighting / outlining works.

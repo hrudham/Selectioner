@@ -1,7 +1,7 @@
 $.fn.autoComplete = function (textInput)
 {
 	this
-		.filter('select:not([multiple]):visible')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()

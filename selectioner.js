@@ -272,13 +272,23 @@ Display.prototype.initialize = function(select)
 {
 	this.select = select;
 	
+	var cssClass = Selectioner.Settings.cssPrefix + 'display';
+	
+	var nextElement = select.next();
+	if (nextElement.hasClass(cssClass))
+	{
+		// If this select element has already been 
+		// processed, don't process it again.
+		nextElement.remove();
+	}
+	
 	this.render();
 	this.update();
 	
 	this.element
-		.addClass(Selectioner.Settings.cssPrefix + 'display')
+		.addClass(cssClass)
 		.prop('tabindex', this.select.prop('tabindex'));
-		
+				
 	this.select
 		.css('display', 'none')
 		.after(this.element);
@@ -862,7 +872,7 @@ AutoComplete.prototype.update = function()
 $.fn.singleSelect = function ()
 {
 	this
-		.filter('select:not([multiple]):visible')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()
@@ -876,7 +886,7 @@ AutoComplete.prototype.update = function()
 $.fn.multiSelect = function ()
 {
 	this
-		.filter('select[multiple]:visible')
+		.filter('select[multiple]')
 		.each
 		(
 			function()
@@ -890,7 +900,7 @@ AutoComplete.prototype.update = function()
 $.fn.comboSelect = function (textInput)
 {
 	this
-		.filter('select:not([multiple]):visible')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()
@@ -904,7 +914,7 @@ AutoComplete.prototype.update = function()
 $.fn.autoComplete = function (textInput)
 {
 	this
-		.filter('select:not([multiple]):visible')
+		.filter('select:not([multiple])')
 		.each
 		(
 			function()
