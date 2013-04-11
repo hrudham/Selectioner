@@ -8,7 +8,9 @@ $.fn.autoComplete = function (textInput)
 			{
 				var comboBox = new Selectioner.Display.ComboBox(textInput);
 				comboBox.initialize($(this));
-				comboBox.addDialog(new Selectioner.Dialog.AutoComplete(textInput));
+				comboBox.addDialog(new Selectioner.Dialog.AutoComplete());
 			}
 		);
+		
+	return this;
 };

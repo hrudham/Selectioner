@@ -11,4 +11,6 @@ $.fn.multiSelect = function ()
 				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
 			}
 		);
+		
+	return this;
 };

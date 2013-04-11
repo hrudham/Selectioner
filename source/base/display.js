@@ -5,6 +5,11 @@ Display.prototype = new Eventable();
 Display.prototype.initialize = function(select)
 {
 	this.select = select;
+	
+	if (select.data('selectioner'))
+	{
+		throw new Error('This <select /> element has already been process by the Selectioner.');
+	}
 		
 	if (select.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName))
 	{
@@ -182,6 +187,8 @@ Display.prototype.update = function()
 // the original elements used to build it.
 Display.prototype.remove = function()
 {
-	this.select.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName);
+	this.select
+		.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName)
+		.off('.selectioner');
 	this.element.add(this.popup.element).remove();
 };

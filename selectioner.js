@@ -272,6 +272,11 @@ Display.prototype = new Eventable();
 Display.prototype.initialize = function(select)
 {
 	this.select = select;
+	
+	if (select.data('selectioner'))
+	{
+		throw new Error('This <select /> element has already been process by the Selectioner.');
+	}
 		
 	if (select.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName))
 	{
@@ -449,7 +454,9 @@ Display.prototype.update = function()
 // the original elements used to build it.
 Display.prototype.remove = function()
 {
-	this.select.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName);
+	this.select
+		.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName)
+		.off('.selectioner');
 	this.element.add(this.popup.element).remove();
 };
 var Dialog = Selectioner.Base.Dialog = function() {};
@@ -808,11 +815,31 @@ ComboSelect.prototype.renderOption = function(option)
 	
 	return null;
 };
-var AutoComplete = Selectioner.Dialog.AutoComplete = function(textElement) 
+var AutoComplete = Selectioner.Dialog.AutoComplete = function() {};
+
+AutoComplete.prototype = new Selectioner.Base.Dialog();
+
+// Render an the equivilant control that represents an 
+// <option /> element for the underlying <select /> element. 
+AutoComplete.prototype.render = function()
 {
-	var dialog = this;
+	this.textElement = this.select
+		.data('selectioner')
+		.display
+		.element
+		.find('input[type="text"]');
 	
-	this.textElement = $(textElement);
+	if (this.textElement.length === 0)
+	{
+		throw new Error('AutoComplete expects the Display to contain an <input type="text" /> element');
+	}
+
+	this.element = $('<ul />');
+	this.update();
+	
+	var dialog = this;
+	var select = this.select;
+	var children = this.select.find('option');
 	
 	this.textElement.on
 		(
@@ -830,20 +857,6 @@ ComboSelect.prototype.renderOption = function(option)
 				}
 			}
 		);
-};
-
-AutoComplete.prototype = new Selectioner.Base.Dialog();
-
-// Render an the equivilant control that represents an 
-// <option /> element for the underlying <select /> element. 
-AutoComplete.prototype.render = function()
-{
-	this.element = $('<ul />');
-	this.update();
-	
-	var dialog = this;
-	var select = this.select;
-	var children = this.select.find('option');
 	
 	var buildOption = function(option)
 	{
@@ -912,6 +925,8 @@ AutoComplete.prototype.update = function()
 				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
+	
+	return this;
 };
 $.fn.multiSelect = function ()
 {
@@ -926,6 +941,8 @@ AutoComplete.prototype.update = function()
 				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
 			}
 		);
+		
+	return this;
 };
 $.fn.comboSelect = function (textInput)
 {
@@ -940,6 +957,8 @@ AutoComplete.prototype.update = function()
 				comboBox.addDialog(new Selectioner.Dialog.ComboSelect());
 			}
 		);
+		
+	return this;
 };
 $.fn.autoComplete = function (textInput)
 {
@@ -951,8 +970,10 @@ AutoComplete.prototype.update = function()
 			{
 				var comboBox = new Selectioner.Display.ComboBox(textInput);
 				comboBox.initialize($(this));
-				comboBox.addDialog(new Selectioner.Dialog.AutoComplete(textInput));
+				comboBox.addDialog(new Selectioner.Dialog.AutoComplete());
 			}
 		);
+		
+	return this;
 };
 })(jQuery);

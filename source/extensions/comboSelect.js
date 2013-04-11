@@ -11,4 +11,6 @@ $.fn.comboSelect = function (textInput)
 				comboBox.addDialog(new Selectioner.Dialog.ComboSelect());
 			}
 		);
+		
+	return this;
 };

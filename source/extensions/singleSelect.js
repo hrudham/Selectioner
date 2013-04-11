@@ -11,4 +11,6 @@ $.fn.singleSelect = function ()
 				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
 			}
 		);
+	
+	return this;
 };
