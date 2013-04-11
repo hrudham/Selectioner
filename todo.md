@@ -31,3 +31,11 @@
 - Test on Mobile
 - Test with keyboard naviation
 - Make sure that focus highlighting / outlining works.
+
+## Things to test
+
+- Really long items in a list, and when they are selected, such as:
+	- "Thisisaverylongoptionwithoutanyspaces"
+	- "This is a very long option that will definitely wrap".
+- Really huge collections of <option /> elements.
+	- Can we render async? Are we adding elements as a block of elements or individually?
