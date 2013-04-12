@@ -557,6 +557,9 @@ ComboBox.prototype.render = function()
 	{
 		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
 	}
+	
+	// Turn off auto-completion on the text box.
+	this.textElement.attr('autocomplete', 'off');
 
 	// Make sure we have an empty option, otherwise throw an error.
 	var emptyOptions = this.getEmptyOptions();
@@ -858,6 +861,11 @@ AutoComplete.prototype.render = function()
 			}
 		);
 	
+	this.update();
+};
+
+AutoComplete.prototype.update = function()
+{
 	var buildOption = function(option)
 	{
 		var selectAnchor = $('<a />')
@@ -876,20 +884,34 @@ AutoComplete.prototype.render = function()
 		
 		return $('<li />').append(selectAnchor);
 	};
+
+	var filterText = this.textElement.val().toLowerCase();
+	
+	var children = this.select.find('option');
+	var filteredOptions = $();
 	
 	for (var i = 0, length = children.length; i < length; i++)
 	{
 		var option = $(children[i]);
-		this.element.append(buildOption(option));
+		var text = option.text().toLowerCase();
+		
+		if (text !== '' && text.indexOf(filterText) === 0)
+		{
+			filteredOptions = filteredOptions.add(buildOption(option));
+			
+			if (filteredOptions.length > Selectioner.Settings.maxAutoCompleteItems)
+			{
+				break;
+			}
+		}
 	}
 	
-	this.update();
-};
+	this.element
+		.empty()
+		.append(filteredOptions);
 
-AutoComplete.prototype.update = function()
-{
-	var filterText = this.textElement.val().toLowerCase();
-
+	
+	/*
 	var children = this.element.find('li');
 	
 	var visibleChildren = children
@@ -911,6 +933,7 @@ AutoComplete.prototype.update = function()
 			
 	children.not(visibleChildren).css('display', 'none');
 	visibleChildren.css('display', '');
+	*/
 };
 $.fn.singleSelect = function ()
 {

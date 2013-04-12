@@ -22,7 +22,7 @@
 - dir="rtl" support.
 - Manual refresh call via JS.
 
-## Stuff to Remember
+## Stuff to Remember / Think about
 
 - Make sure that zooming works
 - Work out how to handle "hidden" selects (both those with "display: none", and those in hidden elements.
@@ -31,6 +31,10 @@
 - Test on Mobile
 - Test with keyboard naviation
 - Make sure that focus highlighting / outlining works.
+- Provide easier access to the Selectioner object on the <select /> element. 
+	- Something like $('select').selectioner() instead of $('select').data('selectioner').
+	- Calling this method could automatically attempt to work out what the best selectioner to
+	  convert this <select /> to would be, and do so.
 
 ## Things to test
 

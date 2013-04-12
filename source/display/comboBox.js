@@ -15,6 +15,9 @@ ComboBox.prototype.render = function()
 	{
 		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
 	}
+	
+	// Turn off auto-completion on the text box.
+	this.textElement.attr('autocomplete', 'off');
 
 	// Make sure we have an empty option, otherwise throw an error.
 	var emptyOptions = this.getEmptyOptions();
