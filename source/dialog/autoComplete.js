@@ -89,29 +89,4 @@ AutoComplete.prototype.update = function()
 	this.element
 		.empty()
 		.append(filteredOptions);
-
-	
-	/*
-	var children = this.element.find('li');
-	
-	var visibleChildren = children
-		.filter
-		(
-			function() 
-			{ 
-				var text = $(this).text().toLowerCase();
-				return text !== '' && text.indexOf(filterText) === 0; 
-			}
-		)
-		.filter
-		(
-			function(index)
-			{
-				return index < Selectioner.Settings.maxAutoCompleteItems;
-			}
-		);
-			
-	children.not(visibleChildren).css('display', 'none');
-	visibleChildren.css('display', '');
-	*/
 };
