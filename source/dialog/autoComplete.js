@@ -46,6 +46,8 @@ AutoComplete.prototype.render = function()
 
 AutoComplete.prototype.update = function()
 {
+	var dialog = this;
+
 	var buildOption = function(option)
 	{
 		var selectAnchor = $('<a />')
@@ -58,7 +60,7 @@ AutoComplete.prototype.update = function()
 					{
 						option[0].selected = true;
 						dialog.popup.hide();
-						select.trigger('change');
+						dialog.select.trigger('change');
 					}
 				);
 		
