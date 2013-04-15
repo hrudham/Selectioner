@@ -5,9 +5,8 @@
 	line-height: 20px;
 	z-index: 1073741823; /* (Size of int32) / 2 */
 	text-align: left;
-	padding: 4px 0px;
 	margin-top: -1px;
-	max-height: 158px;
+	max-height: 168px;
 	overflow: auto;
 	top: 0px; /* Stop page from overflowing when the control is created. */
 	
@@ -37,6 +36,11 @@
 {
 	margin: 0px;
 	padding: 0px;
+}
+
+.select-popup > ul
+{
+	padding: 4px 0px;
 }
 
 .select-popup a

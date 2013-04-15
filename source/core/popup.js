@@ -22,20 +22,41 @@ Popup.prototype.initialize = function(selectioner)
 // Add a dialog to this popup.
 Popup.prototype.addDialog = function(dialog)
 {
+	// Initialize the dialog in order to associated
+	// it with the underlying target element.
+	var dialogElement;
+	
+	if (!(dialog instanceof Selectioner.Core.Dialog))
+	{
+		// This is a static dialog in the form of a CSS selector or vanilla HTML.
+		// An example could be buttons added at the end of dialog.
+		// We basically wrap this up as a very simple, vanilla dialog.
+		var staticDialog = new Selectioner.Core.Dialog();
+		var element = $(dialog);
+		staticDialog.render = function()
+		{
+			this.element = element;
+		};
+		
+		dialog = staticDialog;
+	}
+		
+	dialog.initialize(this.selectioner);
 	dialog.setPopup(this);
+	dialog.render();
+	dialogElement = dialog.element;
+		
+	this.element.append(dialogElement);
+	
 	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.
 Popup.prototype.render = function()
 {
-	this.element.empty();
-
 	for (var i = 0, length = this.dialogs.length; i < length; i++)
 	{
-		var dialog = this.dialogs[i];
-		dialog.render();
-		this.element.append(dialog.element);
+		this.dialogs[i].update();
 	}
 };
 

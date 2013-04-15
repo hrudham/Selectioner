@@ -1,4 +1,4 @@
-$.fn.autoComplete = function (textInput)
+$.fn.autoComplete = function ()
 {
 	this
 		.each
@@ -8,7 +8,7 @@ $.fn.autoComplete = function (textInput)
 				new Selectioner
 					(
 						this, 
-						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Display.ComboBox(),
 						new Selectioner.Dialog.AutoComplete()
 					);
 			}

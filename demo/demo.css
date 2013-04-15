@@ -63,3 +63,19 @@ h3, h4
 	min-width: 120px;
 	margin: 0px 0px 4px 0px;
 }
+
+.select-popup a.button
+{
+	background-color: #3377FF;
+	display: inline-block;
+	border-radius: 4px;
+	padding: 1px 8px;
+	color: #FFF;
+	text-decoration: none;
+	margin: 4px;
+}
+
+.select-popup a.button:hover
+{
+	background-color: #4488FF;
+}

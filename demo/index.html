@@ -260,5 +260,47 @@
 				</script>
 			</p>
 		</div>
+		<div class="box">
+			<h2>Custom</h2>
+			<p>
+				<label for="CustomAutoCompleteText">Custom: </label>
+				<select id="CustomAutoCompleteSelect">
+					<option></option>
+					<option>Red</option>
+					<option>Green</option>
+					<option>Blue</option>
+				</select>
+				<div id="CustomAutoCompleteButtons" style="border-top: 1px dotted #CCC; text-align: right;">
+					<a href="javascript:;" class="button">Close</a>
+				</div>
+				<script>
+					$(function(){
+						// Hook up an event handler to the button's click event
+						
+						// Build the custom selectioner.
+						var customSelectioner = new Selectioner
+							(
+								$('#CustomAutoCompleteSelect'), 
+								new Selectioner.Display.ListBox(),
+								[
+									'<div style="font-style: italic; color: #999; text-align: center; margin-top: 4px; border-bottom: 1px dotted #CCC;">Base Colour</div>',
+									new Selectioner.Dialog.SingleSelect(),
+									'#CustomAutoCompleteButtons'
+								]
+							);
+							
+						$('#CustomAutoCompleteButtons .button')
+							.on
+								(
+									'click', 
+									function() 
+									{ 
+										customSelectioner.display.popup.hide();
+									}
+								);
+					});
+				</script>
+			</p>
+		</div>
 	</body>
 </html>

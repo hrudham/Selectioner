@@ -13,8 +13,19 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 
 	if (target.data('selectioner'))
 	{
-		throw new Error('Selectioner: The target element has already been processed.');
+		// This occurs if we attempt to provide more than one Selectioner on a single element.
+		throw new Error('The target element has already has a Selectioner associated with it.');
 	}
+	else if (target.next().hasClass(Selectioner.Settings.cssPrefix + 'display'))
+	{
+		// Remove any old Displays that may already have been rendered.
+		// This can occur if someone saves a webpage as-is to their PC, 
+		// and then opens it in their browser from their file-system.
+		// This will unfortunately break for any control that "steals" 
+		// elements from elsewhere on the page, such as the ComboBox,
+		// but at least it won't be rendered twice.
+		target.next().remove();
+	}	
 
 	// Initialize the display;
 	display.initialize(this);
@@ -23,14 +34,6 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 	for (var i = 0, length = dialogs.length; i < length; i++)
 	{
 		display.addDialog(dialogs[i]);
-	}
-	
-	// Remove any old Displays that may already have been rendered.
-	// This can occur if someone saves a webpage as-is to their PC, 
-	// and then opens it in their browser.
-	if (target.next().html() == this.display.element.html())
-	{
-		target.next().remove();
 	}
 
 	// Store a reference to the selectioner object on the underlying 

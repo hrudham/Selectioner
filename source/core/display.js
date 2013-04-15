@@ -145,10 +145,6 @@ Display.prototype.createPopup = function()
 // Add a dialog to this display.
 Display.prototype.addDialog = function(dialog)
 {
-	// Initialize the dialog in order to associated
-	// it with the underlying target element.
-	dialog.initialize(this.selectioner);
-
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
 };

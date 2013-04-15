@@ -144,8 +144,19 @@ Eventable.prototype.trigger = function (name, data)
 
 	if (target.data('selectioner'))
 	{
-		throw new Error('Selectioner: The target element has already been processed.');
+		// This occurs if we attempt to provide more than one Selectioner on a single element.
+		throw new Error('The target element has already has a Selectioner associated with it.');
 	}
+	else if (target.next().hasClass(Selectioner.Settings.cssPrefix + 'display'))
+	{
+		// Remove any old Displays that may already have been rendered.
+		// This can occur if someone saves a webpage as-is to their PC, 
+		// and then opens it in their browser from their file-system.
+		// This will unfortunately break for any control that "steals" 
+		// elements from elsewhere on the page, such as the ComboBox,
+		// but at least it won't be rendered twice.
+		target.next().remove();
+	}	
 
 	// Initialize the display;
 	display.initialize(this);
@@ -154,14 +165,6 @@ Eventable.prototype.trigger = function (name, data)
 	for (var i = 0, length = dialogs.length; i < length; i++)
 	{
 		display.addDialog(dialogs[i]);
-	}
-	
-	// Remove any old Displays that may already have been rendered.
-	// This can occur if someone saves a webpage as-is to their PC, 
-	// and then opens it in their browser.
-	if (target.next().html() == this.display.element.html())
-	{
-		target.next().remove();
 	}
 
 	// Store a reference to the selectioner object on the underlying 
@@ -215,20 +218,41 @@ Popup.prototype.initialize = function(selectioner)
 // Add a dialog to this popup.
 Popup.prototype.addDialog = function(dialog)
 {
+	// Initialize the dialog in order to associated
+	// it with the underlying target element.
+	var dialogElement;
+	
+	if (!(dialog instanceof Selectioner.Core.Dialog))
+	{
+		// This is a static dialog in the form of a CSS selector or vanilla HTML.
+		// An example could be buttons added at the end of dialog.
+		// We basically wrap this up as a very simple, vanilla dialog.
+		var staticDialog = new Selectioner.Core.Dialog();
+		var element = $(dialog);
+		staticDialog.render = function()
+		{
+			this.element = element;
+		};
+		
+		dialog = staticDialog;
+	}
+		
+	dialog.initialize(this.selectioner);
 	dialog.setPopup(this);
+	dialog.render();
+	dialogElement = dialog.element;
+		
+	this.element.append(dialogElement);
+	
 	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.
 Popup.prototype.render = function()
 {
-	this.element.empty();
-
 	for (var i = 0, length = this.dialogs.length; i < length; i++)
 	{
-		var dialog = this.dialogs[i];
-		dialog.render();
-		this.element.append(dialog.element);
+		this.dialogs[i].update();
 	}
 };
 
@@ -456,10 +480,6 @@ Display.prototype.createPopup = function()
 // Add a dialog to this display.
 Display.prototype.addDialog = function(dialog)
 {
-	// Initialize the dialog in order to associated
-	// it with the underlying target element.
-	dialog.initialize(this.selectioner);
-
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
 };
@@ -512,12 +532,22 @@ Dialog.prototype.setPopup = function(popup)
 	this.popup = popup;
 };
 
+// Update the dialog. This is called whenever a significant
+// change occurs, such as when a new option is selected,
+// or the pop-up is displayed.
+Dialog.prototype.update = function()
+{
+	// This method should be explicitly overridden, but
+	// it is not required if it will never be updated.
+};
+
 Dialog.prototype.validateTarget = function()
 {
 	// This method should be overwritten to validate the expected target of a dialog.
 	// If an invalid target element is found, descriptive errors should be thrown.
 	// This may be ignored if no validation is required.
 };
+
 var ListBox = Selectioner.Display.ListBox = function() {};
 
 ListBox.prototype = new Selectioner.Core.Display();
@@ -1054,7 +1084,7 @@ AutoComplete.prototype.update = function()
 		
 	return this;
 };
-$.fn.autoComplete = function (textInput)
+$.fn.autoComplete = function ()
 {
 	this
 		.each
@@ -1064,7 +1094,7 @@ AutoComplete.prototype.update = function()
 				new Selectioner
 					(
 						this, 
-						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Display.ComboBox(),
 						new Selectioner.Dialog.AutoComplete()
 					);
 			}

@@ -10,6 +10,7 @@
 - Keyboard navigation.
 - Disabled element support.
 - Test and implement with AJAX.
+- Expose hide and show functions on the root Selectioner object.
 
 ## Nice To Have
 
@@ -17,6 +18,7 @@
 - jQuery validation support.
 - dir="rtl" support.
 - Manual refresh call via JS.
+- Overridable options / settings.
 
 ## Stuff to Remember / Think about
 
