@@ -1,9 +1,17 @@
 var ListBox = Selectioner.Display.ListBox = function() {};
 
-ListBox.prototype = new Selectioner.Base.Display();
+ListBox.prototype = new Selectioner.Core.Display();
+
+ListBox.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select'))
+	{
+		throw new Error('ListBox expects it\'s underlying target element to to be a <select /> element');
+	}
+};
 
 ListBox.prototype.render = function()
-{	
+{
 	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
@@ -18,7 +26,7 @@ ListBox.prototype.render = function()
 
 ListBox.prototype.update = function()
 {
-	var selectedOptions = this.select.find('option:selected');
+	var selectedOptions = this.selectioner.target.find('option:selected');
 	this.textElement.removeClass('none');
 	
 	if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
@@ -54,6 +62,6 @@ ListBox.prototype.update = function()
 	}
 	else
 	{
-		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
+		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
 	}
 };

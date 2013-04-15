@@ -1,10 +1,9 @@
-var Dialog = Selectioner.Base.Dialog = function() {};
+var Dialog = Selectioner.Core.Dialog = function() {};
 
-Dialog.prototype = new Eventable();
-
-Dialog.prototype.initialize = function(select)
+Dialog.prototype.initialize = function(selectioner)
 {	
-	this.select = select;
+	this.selectioner = selectioner;
+	this.validateTarget();
 };
 
 // Render the dialog. This method should be explicity 
@@ -19,4 +18,11 @@ Dialog.prototype.render = function()
 Dialog.prototype.setPopup = function(popup)
 {
 	this.popup = popup;
+};
+
+Dialog.prototype.validateTarget = function()
+{
+	// This method should be overwritten to validate the expected target of a dialog.
+	// If an invalid target element is found, descriptive errors should be thrown.
+	// This may be ignored if no validation is required.
 };

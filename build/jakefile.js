@@ -1,6 +1,34 @@
 /* See http://howtonode.org/intro-to-jake for more information on how this works. */
 var fileSystem = require('fs');
 
+// Obtain the source paths.
+var getSourceFiles = function ()
+{
+    var sourcePath = settings.defaultSourcePath;
+
+    var paths =
+        [
+            sourcePath + 'header.js',
+			sourcePath + 'Core/eventable.js',
+			sourcePath + 'Core/selectioner.js',
+			sourcePath + 'Core/popup.js',
+			sourcePath + 'Core/display.js',
+			sourcePath + 'Core/dialog.js',
+			sourcePath + 'display/listBox.js',
+			sourcePath + 'display/comboBox.js',
+			sourcePath + 'dialog/singleSelect.js',
+			sourcePath + 'dialog/multiSelect.js',
+			sourcePath + 'dialog/comboSelect.js',
+			sourcePath + 'dialog/autoComplete.js',
+            sourcePath + 'extensions/singleSelect.js',
+            sourcePath + 'extensions/multiSelect.js',
+			sourcePath + 'extensions/comboSelect.js',
+			sourcePath + 'extensions/autoComplete.js',
+            sourcePath + 'footer.js',
+        ];
+    return paths;
+};
+
 var settings =
     {
         encoding: 'utf-8',
@@ -45,35 +73,6 @@ var getDestinationFiles = function()
         };
     return paths;
 }
-
-// Obtain the source paths.
-var getSourceFiles = function ()
-{
-    var sourcePath = settings.defaultSourcePath;
-
-    var paths =
-        [
-            sourcePath + 'header.js',
-			sourcePath + 'namespaces.js',
-			sourcePath + 'settings.js',
-			sourcePath + 'Base/eventable.js',
-			sourcePath + 'Base/popup.js',
-			sourcePath + 'Base/display.js',
-			sourcePath + 'Base/dialog.js',
-			sourcePath + 'display/listBox.js',
-			sourcePath + 'display/comboBox.js',
-			sourcePath + 'dialog/singleSelect.js',
-			sourcePath + 'dialog/multiSelect.js',
-			sourcePath + 'dialog/comboSelect.js',
-			sourcePath + 'dialog/autoComplete.js',
-            sourcePath + 'extensions/singleSelect.js',
-            sourcePath + 'extensions/multiSelect.js',
-			sourcePath + 'extensions/comboSelect.js',
-			sourcePath + 'extensions/autoComplete.js',
-            sourcePath + 'footer.js',
-        ];
-    return paths;
-};
 
 // Mash an array of source files into the destination file.
 function mash(sources, destination)

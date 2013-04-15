@@ -1,14 +1,17 @@
 $.fn.singleSelect = function ()
 {
 	this
-		.filter('select:not([multiple])')
+		//.filter('select:not([multiple])')
 		.each
 		(
 			function()
 			{
-				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this));
-				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.SingleSelect()
+					);
 			}
 		);
 	

@@ -1,4 +1,4 @@
-var Eventable = Selectioner.Base.Eventable = function () { };
+var Eventable = function () { };
     
 Eventable.prototype.on = function (name, handler, context)
 {

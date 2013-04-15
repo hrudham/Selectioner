@@ -2,12 +2,8 @@
 
 ## Required Fixes
 
-- Convert component communication to be purely event driven.
-	- Start with the "render" and "update" methods.
 - Build a required CSS file with just the basics that will get the control to work.
 	- Add an additional CSS file for cosmetic purposes.
-- Stop setting CSS explicitly in JS; use classes instead.
-	-  Allow the dialog to animate when opening.
 
 ## Required Functionality
 
@@ -43,3 +39,9 @@
 	- "This is a very long option that will definitely wrap".
 - Really huge collections of <option /> elements.
 	- Can we render async? Are we adding elements as a block of elements or individually?
+
+## Pipe dreams
+
+- Remove jQuery as a dependency.
+- Convert everything to CommonJS / RequireJS, and use Google Closure Compiler to compile out the final, non-AMD JS.
+	- http://www.nonblocking.io/2011/12/experimental-support-for-common-js-and.html

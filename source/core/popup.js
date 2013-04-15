@@ -1,10 +1,8 @@
-var PopupBase = Selectioner.Base.Popup = function() {};
+var Popup = function() {};
 
-PopupBase.prototype = new Eventable();
-
-PopupBase.prototype.initialize = function(display)
+Popup.prototype.initialize = function(selectioner)
 {
-	this.display = display;
+	this.selectioner = selectioner;
 	this.dialogs = [];
 
 	this.element = $('<div />')
@@ -13,23 +11,23 @@ PopupBase.prototype.initialize = function(display)
 		({
 			visibility: 'hidden',
 			position: 'absolute',
-			zIndex: '-1' 
+			zIndex: '-1'
 		});
-	
+
 	this.render();
-			
+
 	$('body').append(this.element);
 };
 
 // Add a dialog to this popup.
-PopupBase.prototype.addDialog = function(dialog)
+Popup.prototype.addDialog = function(dialog)
 {
 	dialog.setPopup(this);
 	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.
-PopupBase.prototype.render = function()
+Popup.prototype.render = function()
 {
 	this.element.empty();
 
@@ -41,29 +39,30 @@ PopupBase.prototype.render = function()
 	}
 };
 
-// Refresh the position of the pop-up 
+// Refresh the position of the pop-up
 // relative to it's display element.
-PopupBase.prototype.reposition = function()
+Popup.prototype.reposition = function()
 {
-	var offset = this.display.element.offset();
-	var borderWidth = this.element.outerWidth(false) - this.element.width();		
-	var width = this.display.element.outerWidth(false) - borderWidth;
-	var top = this.display.element.outerHeight(false) + offset.top;
-	
+	var displayElement = this.selectioner.display.element;
+	var offset = displayElement.offset();
+	var borderWidth = this.element.outerWidth(false) - this.element.width();
+	var width = displayElement.outerWidth(false) - borderWidth;
+	var top = displayElement.outerHeight(false) + offset.top;
+
 	var scrollTop = $(window).scrollTop();
 	var popUpHeight = this.element.outerHeight(true);
-	
+
 	this.element
 		.removeClass('below')
 		.removeClass('above')
 		.removeClass('over');
-	
-	// If this popup would appear off-screen if below 
+
+	// If this popup would appear off-screen if below
 	// the display, then make it appear above it instead.
 	if ($(window).height() + scrollTop < top + popUpHeight)
 	{
 		top = offset.top - popUpHeight + 1;
-		
+
 		if (top < scrollTop)
 		{
 			top = scrollTop;
@@ -78,7 +77,7 @@ PopupBase.prototype.reposition = function()
 	{
 		this.element.addClass('below');
 	}
-	
+
 	this.element.css
 	({
 		width: width + 'px',
@@ -88,7 +87,7 @@ PopupBase.prototype.reposition = function()
 };
 
 // Shows the pop-up.
-PopupBase.prototype.show = function()
+Popup.prototype.show = function()
 {
 	if (!this.isShown())
 	{
@@ -97,23 +96,23 @@ PopupBase.prototype.show = function()
 		this.reposition();
 
 		this.element.css({ visibility: 'visible', zIndex: '' });
-		this.trigger('show.selectioner');
+		this.selectioner.trigger('show.selectioner');
 	}
 };
 
 // Simply hides the pop-up.
-PopupBase.prototype.hide = function()
+Popup.prototype.hide = function()
 {
 	if (this.isShown())
 	{
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
-		this.trigger('hide.selectioner');
+		this.selectioner.trigger('hide.selectioner');
 	}
 };
 
 // Simply indicates whether the popup is shown to the user currently.
-PopupBase.prototype.isShown = function()
+Popup.prototype.isShown = function()
 {
 	return this._isVisible;
 };

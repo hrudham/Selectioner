@@ -2,8 +2,16 @@ var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 
 MultiSelect._inputIdIndex = 0;
 
-// Inherit from the SingleSelect dialog, not the base dialog.
+// Inherit from the SingleSelect dialog, not the core dialog.
 MultiSelect.prototype = new Selectioner.Dialog.SingleSelect();
+
+MultiSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select[multiple]'))
+	{
+		throw new Error('MultiSelect expects it\'s underlying target element to to be a <select /> element with a "multiple" attribute');
+	}
+};
 
 // Render an the equivilant control that represents an
 // <option /> element for the underlying <select /> element. 
@@ -25,7 +33,7 @@ MultiSelect.prototype.renderOption = function(option)
 		.append($('<span />').text(option.text()))
 		.attr('for', checkboxId);
 		
-	var dialog = this;
+	var selectioner = this.selectioner;
 		
 	checkbox.on
 		(
@@ -33,7 +41,7 @@ MultiSelect.prototype.renderOption = function(option)
 			function() 
 			{
 				option[0].selected = this.checked;
-				dialog.select.trigger('change');
+				selectioner.target.trigger('change');
 			}
 		);
 		

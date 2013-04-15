@@ -1,31 +1,14 @@
-var Display = Selectioner.Base.Display = function() {};
+var Display = Selectioner.Core.Display = function() {};
 
-Display.prototype = new Eventable();
-
-Display.prototype.initialize = function(select)
+Display.prototype.initialize = function(selectioner)
 {
-	this.select = select;
-	
-	if (select.data('selectioner'))
-	{
-		throw new Error('This <select /> element has already been process by the Selectioner.');
-	}
-		
-	if (select.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName))
-	{
-		// This is an existing selectioner.
-	}
-	else
-	{
-		// This selectioner needs to be rendered out.
-		this.createDisplay();
-		this.createPopup();
-		
-		select
-			.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName, true)
-			.data('selectioner', { display: this })
-			.after(this.element);
-	}
+	this.selectioner = selectioner;
+
+	this.validateTarget();
+
+	// This selectioner needs to be rendered out.
+	this.createDisplay();
+	this.createPopup();
 };
 
 Display.prototype.createDisplay = function()
@@ -34,33 +17,34 @@ Display.prototype.createDisplay = function()
 
 	this.render();
 	this.update();
-	
+
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
-		
-	// Find any labels associated with this select element,
-	// and make them focus on this display instead.
-	var selectId = this.select.attr('id');
-	if (selectId !== undefined)
+		.prop('tabindex', this.selectioner.target.prop('tabindex'));
+
+	// Find any labels associated with this underlying target
+	//  element, and make them focus on this display instead.
+	var targetId = this.selectioner.target.attr('id');
+	if (targetId !== undefined)
 	{
 		this.labels = $(document)
 			.on
 				(
 					'click.selectioner',
-					'label[for="' + selectId + '"]',
+					'label[for="' + targetId + '"]',
 					function (event)
 					{
 						display.element.focus();
 					}
 				);
-				
-		// Make sure the display updates any time 
-		// it's underlying select element changes.
-		this.select
+
+		// Make sure the display updates any time
+		// it's underlying target element changes.
+		this.selectioner
+			.target
 			.on
 				(
-					'change.selectioner', 
+					'change.selectioner',
 					function()
 					{
 						display.update();
@@ -69,19 +53,21 @@ Display.prototype.createDisplay = function()
 	}
 };
 
-// Create a new dialog for this <select /> element.
+// Create a new dialog for the underlying target element.
 Display.prototype.createPopup = function()
-{		
+{
 	// Bind this display to a popup.
-	var popup = this.popup = new Selectioner.Base.Popup();
-	popup.initialize(this);
-	
+	var popup = this.popup = new Popup();
+	popup.initialize(this.selectioner);
+
+	var displayElement = this.selectioner.display.element;
+
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
 		.on
 		(
-			'focusin.selectioner', 
-			function() 
+			'focusin.selectioner',
+			function()
 			{
 				popup.show();
 			}
@@ -90,9 +76,9 @@ Display.prototype.createPopup = function()
 		.andSelf()
 		.on
 		(
-			'mousedown.selectioner', 
-			function(event) 
-			{ 
+			'mousedown.selectioner',
+			function(event)
+			{
 				event.stopPropagation();
 				if (popup.isShown())
 				{
@@ -104,8 +90,8 @@ Display.prototype.createPopup = function()
 				}
 			}
 		);
-	
-	// Hide the pop-up whenever it loses focus to an 
+
+	// Hide the pop-up whenever it loses focus to an
 	// element that is not part of the pop-up or display.
 	$(document)
 		.on
@@ -114,8 +100,8 @@ Display.prototype.createPopup = function()
 			function(event)
 			{
 				if (popup.isShown() &&
-					event.target !== popup.display.element[0] &&
-					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== displayElement[0] &&
+					!$.contains(displayElement[0], event.target) &&
 					event.target !== popup.element[0] &&
 					!$.contains(popup.element[0], event.target))
 				{
@@ -123,7 +109,7 @@ Display.prototype.createPopup = function()
 				}
 			}
 		);
-		
+
 	// Hide the popup any time the window resizes.
 	$(window)
 		.on
@@ -136,14 +122,14 @@ Display.prototype.createPopup = function()
 		);
 
 	var cssClass = Selectioner.Settings.cssPrefix + 'visible';
-		
-	popup
+
+	this.selectioner
 		.on
 			(
 				'show.selectioner',
 				function()
 				{
-					popup.display.element.addClass(cssClass);
+					displayElement.addClass(cssClass);
 				}
 			)
 		.on
@@ -151,7 +137,7 @@ Display.prototype.createPopup = function()
 				'hide.selectioner',
 				function()
 				{
-					popup.display.element.removeClass(cssClass);
+					displayElement.removeClass(cssClass);
 				}
 			);
 };
@@ -160,35 +146,36 @@ Display.prototype.createPopup = function()
 Display.prototype.addDialog = function(dialog)
 {
 	// Initialize the dialog in order to associated
-	// it with the underlying select element.
-	dialog.initialize(this.select);
-	
+	// it with the underlying target element.
+	dialog.initialize(this.selectioner);
+
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
 };
 
-// Render the display. This method should be explicity 
-// overridden by prototypes that inherit from it, 
+// Render the display. This method should be explicity
+// overridden by prototypes that inherit from it,
 // and must set this.element to some jQuery object.
 Display.prototype.render = function()
 {
 	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };
 
-// Update the display. This is called whenever a significant 
+// Update the display. This is called whenever a significant
 // change occurs, such as when a new option is selected.
 Display.prototype.update = function()
 {
-	// This method should be explicitly overridden, but 
+	// This method should be explicitly overridden, but
 	// it is not required if it will never be updated.
 };
 
-// Removes this display element, and restores 
+// Removes this display element, and restores
 // the original elements used to build it.
 Display.prototype.remove = function()
 {
-	this.select
-		.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName)
+	this.selectioner
+		.target
 		.off('.selectioner');
+
 	this.element.add(this.popup.element).remove();
 };

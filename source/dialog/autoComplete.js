@@ -1,13 +1,21 @@
 var AutoComplete = Selectioner.Dialog.AutoComplete = function() {};
 
-AutoComplete.prototype = new Selectioner.Base.Dialog();
+AutoComplete.prototype = new Selectioner.Core.Dialog();
+
+AutoComplete.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 
 // Render an the equivilant control that represents an 
 // <option /> element for the underlying <select /> element. 
 AutoComplete.prototype.render = function()
 {
-	this.textElement = this.select
-		.data('selectioner')
+	this.textElement = this
+		.selectioner
 		.display
 		.element
 		.find('input[type="text"]');
@@ -21,8 +29,6 @@ AutoComplete.prototype.render = function()
 	this.update();
 	
 	var dialog = this;
-	var select = this.select;
-	var children = this.select.find('option');
 	
 	this.textElement.on
 		(
@@ -60,7 +66,7 @@ AutoComplete.prototype.update = function()
 					{
 						option[0].selected = true;
 						dialog.popup.hide();
-						dialog.select.trigger('change');
+						dialog.selectioner.target.trigger('change');
 					}
 				);
 		
@@ -69,7 +75,7 @@ AutoComplete.prototype.update = function()
 
 	var filterText = this.textElement.val().toLowerCase();
 	
-	var children = this.select.find('option');
+	var children = this.selectioner.target.find('option');
 	var filteredOptions = $();
 	
 	for (var i = 0, length = children.length; i < length; i++)

@@ -1,10 +1,18 @@
 var ComboBox = Selectioner.Display.ComboBox = function() {};
 
-ComboBox.prototype = new Selectioner.Base.Display();
+ComboBox.prototype = new Selectioner.Core.Display();
+
+ComboBox.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 	
 ComboBox.prototype.render = function()
 {
-	this.textElement = this.select.next();
+	this.textElement = this.selectioner.target.next();
 	
 	if (!this.textElement.is('input[type="text"]'))
 	{
@@ -50,7 +58,7 @@ ComboBox.prototype.textChanged = function()
 	// If it doesn't match an option, select the 
 	// option with no value.
 	var text = this.textElement.val().toUpperCase();
-	var option = this.select.find('option')
+	var option = this.selectioner.target.find('option')
 		.filter(function() { return $(this).text().toUpperCase() == text; });
 	
 	if (option.length != 1)
@@ -59,12 +67,12 @@ ComboBox.prototype.textChanged = function()
 	}
 	
 	option[0].selected = true;
-	this.select.trigger('change');
+	this.selectioner.target.trigger('change');
 };
 
 ComboBox.prototype.update = function()
 {
-	var selectedOption = this.select.find('option:selected');
+	var selectedOption = this.selectioner.target.find('option:selected');
 	this.textElement.removeClass('none');
 		
 	var value = selectedOption.text();
@@ -83,12 +91,16 @@ ComboBox.prototype.getEmptyOptions = function()
 {
 	// Find all options that either have an 
 	// empty value, or have no value and no text.
-	return this.select
+	return this.selectioner
+		.target
 		.find('option[value=""], option:empty:not([value])');
 };
 
 ComboBox.prototype.remove = function()
 {
-	this.select.after(this.textElement);
-	Selectioner.Base.Display.prototype.remove.call(this);
+	this.selectioner
+		.target
+		.after(this.textElement);
+		
+	Selectioner.Core.Display.prototype.remove.call(this);
 };

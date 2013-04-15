@@ -1,14 +1,16 @@
 $.fn.multiSelect = function ()
 {
 	this
-		.filter('select[multiple]')
 		.each
 		(
 			function()
 			{
-				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this));
-				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.MultiSelect()
+					);
 			}
 		);
 		

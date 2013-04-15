@@ -14,24 +14,7 @@
 (function ($)
 {
 	'use strict';
-window.Selectioner = 
-{
-	Base: {},
-	Dialog: {},
-	Display: {},
-	Extensions: {},
-	Popup: {},
-	Settings: {}
-};
-var settings = Selectioner.Settings = 
-{
-	cssPrefix: 'select-',
-	noSelectionText: 'Select an option',
-	emptyOptionText: 'None',
-	maxAutoCompleteItems: 5,
-	isSelectionerDataAttributeName: 'is-selectioner'
-};
-var Eventable = Selectioner.Base.Eventable = function () { };
+var Eventable = function () { };
     
 Eventable.prototype.on = function (name, handler, context)
 {
@@ -146,13 +129,73 @@ Eventable.prototype.trigger = function (name, data)
 
     return this;
 };
-var PopupBase = Selectioner.Base.Popup = function() {};
-
-PopupBase.prototype = new Eventable();
-
-PopupBase.prototype.initialize = function(display)
+var Selectioner = window.Selectioner = function(target, display, dialogs)
 {
+	// Convert dialogs to an array if it isn't one already.
+	if (!(dialogs instanceof Array))
+	{
+		dialogs = [ dialogs ];
+	}
+
+	// Associate the underlying target element, display and dialog with this selectioner object.
+	this.target = target = $(target);
 	this.display = display;
+	this.dialogs = dialogs;
+
+	if (target.data('selectioner'))
+	{
+		throw new Error('Selectioner: The target element has already been processed.');
+	}
+
+	// Initialize the display;
+	display.initialize(this);
+
+	// Add each dialog to the display.
+	for (var i = 0, length = dialogs.length; i < length; i++)
+	{
+		display.addDialog(dialogs[i]);
+	}
+	
+	// Remove any old Displays that may already have been rendered.
+	// This can occur if someone saves a webpage as-is to their PC, 
+	// and then opens it in their browser.
+	if (target.next().html() == this.display.element.html())
+	{
+		target.next().remove();
+	}
+
+	// Store a reference to the selectioner object on the underlying 
+	// target element, and render the display element after it.
+	target
+		.data('selectioner', this)
+		.css('display', 'none')
+		.after(this.display.element);
+};
+
+Selectioner.prototype = new Eventable();
+
+Selectioner.Settings =
+{
+	cssPrefix: 'select-',
+	noSelectionText: 'Select an option',
+	emptyOptionText: 'None',
+	maxAutoCompleteItems: 5
+};
+
+Selectioner.Core = {};
+
+Selectioner.Dialog = {};
+
+Selectioner.Display = {};
+
+Selectioner.Extensions = {};
+
+Selectioner.Popup = {};
+var Popup = function() {};
+
+Popup.prototype.initialize = function(selectioner)
+{
+	this.selectioner = selectioner;
 	this.dialogs = [];
 
 	this.element = $('<div />')
@@ -161,23 +204,23 @@ PopupBase.prototype.initialize = function(display)
 		({
 			visibility: 'hidden',
 			position: 'absolute',
-			zIndex: '-1' 
+			zIndex: '-1'
 		});
-	
+
 	this.render();
-			
+
 	$('body').append(this.element);
 };
 
 // Add a dialog to this popup.
-PopupBase.prototype.addDialog = function(dialog)
+Popup.prototype.addDialog = function(dialog)
 {
 	dialog.setPopup(this);
 	this.dialogs.push(dialog);
 };
 
 // Render all the dialogs that appear on this popup.
-PopupBase.prototype.render = function()
+Popup.prototype.render = function()
 {
 	this.element.empty();
 
@@ -189,29 +232,30 @@ PopupBase.prototype.render = function()
 	}
 };
 
-// Refresh the position of the pop-up 
+// Refresh the position of the pop-up
 // relative to it's display element.
-PopupBase.prototype.reposition = function()
+Popup.prototype.reposition = function()
 {
-	var offset = this.display.element.offset();
-	var borderWidth = this.element.outerWidth(false) - this.element.width();		
-	var width = this.display.element.outerWidth(false) - borderWidth;
-	var top = this.display.element.outerHeight(false) + offset.top;
-	
+	var displayElement = this.selectioner.display.element;
+	var offset = displayElement.offset();
+	var borderWidth = this.element.outerWidth(false) - this.element.width();
+	var width = displayElement.outerWidth(false) - borderWidth;
+	var top = displayElement.outerHeight(false) + offset.top;
+
 	var scrollTop = $(window).scrollTop();
 	var popUpHeight = this.element.outerHeight(true);
-	
+
 	this.element
 		.removeClass('below')
 		.removeClass('above')
 		.removeClass('over');
-	
-	// If this popup would appear off-screen if below 
+
+	// If this popup would appear off-screen if below
 	// the display, then make it appear above it instead.
 	if ($(window).height() + scrollTop < top + popUpHeight)
 	{
 		top = offset.top - popUpHeight + 1;
-		
+
 		if (top < scrollTop)
 		{
 			top = scrollTop;
@@ -226,7 +270,7 @@ PopupBase.prototype.reposition = function()
 	{
 		this.element.addClass('below');
 	}
-	
+
 	this.element.css
 	({
 		width: width + 'px',
@@ -236,7 +280,7 @@ PopupBase.prototype.reposition = function()
 };
 
 // Shows the pop-up.
-PopupBase.prototype.show = function()
+Popup.prototype.show = function()
 {
 	if (!this.isShown())
 	{
@@ -245,54 +289,37 @@ PopupBase.prototype.show = function()
 		this.reposition();
 
 		this.element.css({ visibility: 'visible', zIndex: '' });
-		this.trigger('show.selectioner');
+		this.selectioner.trigger('show.selectioner');
 	}
 };
 
 // Simply hides the pop-up.
-PopupBase.prototype.hide = function()
+Popup.prototype.hide = function()
 {
 	if (this.isShown())
 	{
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
-		this.trigger('hide.selectioner');
+		this.selectioner.trigger('hide.selectioner');
 	}
 };
 
 // Simply indicates whether the popup is shown to the user currently.
-PopupBase.prototype.isShown = function()
+Popup.prototype.isShown = function()
 {
 	return this._isVisible;
 };
-var Display = Selectioner.Base.Display = function() {};
+var Display = Selectioner.Core.Display = function() {};
 
-Display.prototype = new Eventable();
-
-Display.prototype.initialize = function(select)
+Display.prototype.initialize = function(selectioner)
 {
-	this.select = select;
-	
-	if (select.data('selectioner'))
-	{
-		throw new Error('This <select /> element has already been process by the Selectioner.');
-	}
-		
-	if (select.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName))
-	{
-		// This is an existing selectioner.
-	}
-	else
-	{
-		// This selectioner needs to be rendered out.
-		this.createDisplay();
-		this.createPopup();
-		
-		select
-			.attr('data-' + Selectioner.Settings.isSelectionerDataAttributeName, true)
-			.data('selectioner', { display: this })
-			.after(this.element);
-	}
+	this.selectioner = selectioner;
+
+	this.validateTarget();
+
+	// This selectioner needs to be rendered out.
+	this.createDisplay();
+	this.createPopup();
 };
 
 Display.prototype.createDisplay = function()
@@ -301,33 +328,34 @@ Display.prototype.createDisplay = function()
 
 	this.render();
 	this.update();
-	
+
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display')
-		.prop('tabindex', this.select.prop('tabindex'));
-		
-	// Find any labels associated with this select element,
-	// and make them focus on this display instead.
-	var selectId = this.select.attr('id');
-	if (selectId !== undefined)
+		.prop('tabindex', this.selectioner.target.prop('tabindex'));
+
+	// Find any labels associated with this underlying target
+	//  element, and make them focus on this display instead.
+	var targetId = this.selectioner.target.attr('id');
+	if (targetId !== undefined)
 	{
 		this.labels = $(document)
 			.on
 				(
 					'click.selectioner',
-					'label[for="' + selectId + '"]',
+					'label[for="' + targetId + '"]',
 					function (event)
 					{
 						display.element.focus();
 					}
 				);
-				
-		// Make sure the display updates any time 
-		// it's underlying select element changes.
-		this.select
+
+		// Make sure the display updates any time
+		// it's underlying target element changes.
+		this.selectioner
+			.target
 			.on
 				(
-					'change.selectioner', 
+					'change.selectioner',
 					function()
 					{
 						display.update();
@@ -336,19 +364,21 @@ Display.prototype.createDisplay = function()
 	}
 };
 
-// Create a new dialog for this <select /> element.
+// Create a new dialog for the underlying target element.
 Display.prototype.createPopup = function()
-{		
+{
 	// Bind this display to a popup.
-	var popup = this.popup = new Selectioner.Base.Popup();
-	popup.initialize(this);
-	
+	var popup = this.popup = new Popup();
+	popup.initialize(this.selectioner);
+
+	var displayElement = this.selectioner.display.element;
+
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
 		.on
 		(
-			'focusin.selectioner', 
-			function() 
+			'focusin.selectioner',
+			function()
 			{
 				popup.show();
 			}
@@ -357,9 +387,9 @@ Display.prototype.createPopup = function()
 		.andSelf()
 		.on
 		(
-			'mousedown.selectioner', 
-			function(event) 
-			{ 
+			'mousedown.selectioner',
+			function(event)
+			{
 				event.stopPropagation();
 				if (popup.isShown())
 				{
@@ -371,8 +401,8 @@ Display.prototype.createPopup = function()
 				}
 			}
 		);
-	
-	// Hide the pop-up whenever it loses focus to an 
+
+	// Hide the pop-up whenever it loses focus to an
 	// element that is not part of the pop-up or display.
 	$(document)
 		.on
@@ -381,8 +411,8 @@ Display.prototype.createPopup = function()
 			function(event)
 			{
 				if (popup.isShown() &&
-					event.target !== popup.display.element[0] &&
-					!$.contains(popup.display.element[0], event.target) &&
+					event.target !== displayElement[0] &&
+					!$.contains(displayElement[0], event.target) &&
 					event.target !== popup.element[0] &&
 					!$.contains(popup.element[0], event.target))
 				{
@@ -390,7 +420,7 @@ Display.prototype.createPopup = function()
 				}
 			}
 		);
-		
+
 	// Hide the popup any time the window resizes.
 	$(window)
 		.on
@@ -403,14 +433,14 @@ Display.prototype.createPopup = function()
 		);
 
 	var cssClass = Selectioner.Settings.cssPrefix + 'visible';
-		
-	popup
+
+	this.selectioner
 		.on
 			(
 				'show.selectioner',
 				function()
 				{
-					popup.display.element.addClass(cssClass);
+					displayElement.addClass(cssClass);
 				}
 			)
 		.on
@@ -418,7 +448,7 @@ Display.prototype.createPopup = function()
 				'hide.selectioner',
 				function()
 				{
-					popup.display.element.removeClass(cssClass);
+					displayElement.removeClass(cssClass);
 				}
 			);
 };
@@ -427,45 +457,45 @@ Display.prototype.createPopup = function()
 Display.prototype.addDialog = function(dialog)
 {
 	// Initialize the dialog in order to associated
-	// it with the underlying select element.
-	dialog.initialize(this.select);
-	
+	// it with the underlying target element.
+	dialog.initialize(this.selectioner);
+
 	// Add the dialog to the popup.
 	this.popup.addDialog(dialog);
 };
 
-// Render the display. This method should be explicity 
-// overridden by prototypes that inherit from it, 
+// Render the display. This method should be explicity
+// overridden by prototypes that inherit from it,
 // and must set this.element to some jQuery object.
 Display.prototype.render = function()
 {
 	throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
 };
 
-// Update the display. This is called whenever a significant 
+// Update the display. This is called whenever a significant
 // change occurs, such as when a new option is selected.
 Display.prototype.update = function()
 {
-	// This method should be explicitly overridden, but 
+	// This method should be explicitly overridden, but
 	// it is not required if it will never be updated.
 };
 
-// Removes this display element, and restores 
+// Removes this display element, and restores
 // the original elements used to build it.
 Display.prototype.remove = function()
 {
-	this.select
-		.removeAttr('data-' + Selectioner.Settings.isSelectionerDataAttributeName)
+	this.selectioner
+		.target
 		.off('.selectioner');
+
 	this.element.add(this.popup.element).remove();
 };
-var Dialog = Selectioner.Base.Dialog = function() {};
+var Dialog = Selectioner.Core.Dialog = function() {};
 
-Dialog.prototype = new Eventable();
-
-Dialog.prototype.initialize = function(select)
+Dialog.prototype.initialize = function(selectioner)
 {	
-	this.select = select;
+	this.selectioner = selectioner;
+	this.validateTarget();
 };
 
 // Render the dialog. This method should be explicity 
@@ -481,12 +511,27 @@ Dialog.prototype.setPopup = function(popup)
 {
 	this.popup = popup;
 };
+
+Dialog.prototype.validateTarget = function()
+{
+	// This method should be overwritten to validate the expected target of a dialog.
+	// If an invalid target element is found, descriptive errors should be thrown.
+	// This may be ignored if no validation is required.
+};
 var ListBox = Selectioner.Display.ListBox = function() {};
 
-ListBox.prototype = new Selectioner.Base.Display();
+ListBox.prototype = new Selectioner.Core.Display();
+
+ListBox.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select'))
+	{
+		throw new Error('ListBox expects it\'s underlying target element to to be a <select /> element');
+	}
+};
 
 ListBox.prototype.render = function()
-{	
+{
 	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
@@ -501,7 +546,7 @@ ListBox.prototype.render = function()
 
 ListBox.prototype.update = function()
 {
-	var selectedOptions = this.select.find('option:selected');
+	var selectedOptions = this.selectioner.target.find('option:selected');
 	this.textElement.removeClass('none');
 	
 	if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
@@ -537,16 +582,24 @@ ListBox.prototype.update = function()
 	}
 	else
 	{
-		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.select.find('option').length);
+		this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
 	}
 };
 var ComboBox = Selectioner.Display.ComboBox = function() {};
 
-ComboBox.prototype = new Selectioner.Base.Display();
+ComboBox.prototype = new Selectioner.Core.Display();
+
+ComboBox.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 	
 ComboBox.prototype.render = function()
 {
-	this.textElement = this.select.next();
+	this.textElement = this.selectioner.target.next();
 	
 	if (!this.textElement.is('input[type="text"]'))
 	{
@@ -592,7 +645,7 @@ ComboBox.prototype.textChanged = function()
 	// If it doesn't match an option, select the 
 	// option with no value.
 	var text = this.textElement.val().toUpperCase();
-	var option = this.select.find('option')
+	var option = this.selectioner.target.find('option')
 		.filter(function() { return $(this).text().toUpperCase() == text; });
 	
 	if (option.length != 1)
@@ -601,12 +654,12 @@ ComboBox.prototype.textChanged = function()
 	}
 	
 	option[0].selected = true;
-	this.select.trigger('change');
+	this.selectioner.target.trigger('change');
 };
 
 ComboBox.prototype.update = function()
 {
-	var selectedOption = this.select.find('option:selected');
+	var selectedOption = this.selectioner.target.find('option:selected');
 	this.textElement.removeClass('none');
 		
 	var value = selectedOption.text();
@@ -625,24 +678,36 @@ ComboBox.prototype.getEmptyOptions = function()
 {
 	// Find all options that either have an 
 	// empty value, or have no value and no text.
-	return this.select
+	return this.selectioner
+		.target
 		.find('option[value=""], option:empty:not([value])');
 };
 
 ComboBox.prototype.remove = function()
 {
-	this.select.after(this.textElement);
-	Selectioner.Base.Display.prototype.remove.call(this);
+	this.selectioner
+		.target
+		.after(this.textElement);
+		
+	Selectioner.Core.Display.prototype.remove.call(this);
 };
 var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 
-SingleSelect.prototype = new Selectioner.Base.Dialog();
+SingleSelect.prototype = new Selectioner.Core.Dialog();
+
+SingleSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('SingleSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 
 SingleSelect.prototype.render = function()
 {
 	this.element = $('<ul />');
 
-	var children = this.select.children();
+	var children = this.selectioner.target.children();
 	
 	for (var i = 0, length = children.length; i < length; i++)
 	{
@@ -663,13 +728,13 @@ SingleSelect.prototype.render = function()
 SingleSelect.prototype.renderOption = function(option)
 {
 	var dialog = this;
-	var select = this.select;
+	var target = this.selectioner.target;
 
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
 		dialog.popup.hide();
-		select.trigger('change');
+		target.trigger('change');
 	};
 	
 	var text = option.text();
@@ -718,8 +783,16 @@ SingleSelect.prototype.renderGroup = function(group)
 
 MultiSelect._inputIdIndex = 0;
 
-// Inherit from the SingleSelect dialog, not the base dialog.
+// Inherit from the SingleSelect dialog, not the core dialog.
 MultiSelect.prototype = new Selectioner.Dialog.SingleSelect();
+
+MultiSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select[multiple]'))
+	{
+		throw new Error('MultiSelect expects it\'s underlying target element to to be a <select /> element with a "multiple" attribute');
+	}
+};
 
 // Render an the equivilant control that represents an
 // <option /> element for the underlying <select /> element. 
@@ -741,7 +814,7 @@ MultiSelect.prototype.renderOption = function(option)
 		.append($('<span />').text(option.text()))
 		.attr('for', checkboxId);
 		
-	var dialog = this;
+	var selectioner = this.selectioner;
 		
 	checkbox.on
 		(
@@ -749,7 +822,7 @@ MultiSelect.prototype.renderOption = function(option)
 			function() 
 			{
 				option[0].selected = this.checked;
-				dialog.select.trigger('change');
+				selectioner.target.trigger('change');
 			}
 		);
 		
@@ -807,6 +880,14 @@ MultiSelect.prototype.renderGroup = function(group)
 
 ComboSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
+ComboSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
+
 // Render an the equivilant control that represents an 
 // <option /> element for the underlying <select /> element. 
 ComboSelect.prototype.renderOption = function(option)
@@ -820,14 +901,22 @@ ComboSelect.prototype.renderOption = function(option)
 };
 var AutoComplete = Selectioner.Dialog.AutoComplete = function() {};
 
-AutoComplete.prototype = new Selectioner.Base.Dialog();
+AutoComplete.prototype = new Selectioner.Core.Dialog();
+
+AutoComplete.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 
 // Render an the equivilant control that represents an 
 // <option /> element for the underlying <select /> element. 
 AutoComplete.prototype.render = function()
 {
-	this.textElement = this.select
-		.data('selectioner')
+	this.textElement = this
+		.selectioner
 		.display
 		.element
 		.find('input[type="text"]');
@@ -841,8 +930,6 @@ AutoComplete.prototype.render = function()
 	this.update();
 	
 	var dialog = this;
-	var select = this.select;
-	var children = this.select.find('option');
 	
 	this.textElement.on
 		(
@@ -880,7 +967,7 @@ AutoComplete.prototype.update = function()
 					{
 						option[0].selected = true;
 						dialog.popup.hide();
-						dialog.select.trigger('change');
+						dialog.selectioner.target.trigger('change');
 					}
 				);
 		
@@ -889,7 +976,7 @@ AutoComplete.prototype.update = function()
 
 	var filterText = this.textElement.val().toLowerCase();
 	
-	var children = this.select.find('option');
+	var children = this.selectioner.target.find('option');
 	var filteredOptions = $();
 	
 	for (var i = 0, length = children.length; i < length; i++)
@@ -915,14 +1002,17 @@ AutoComplete.prototype.update = function()
 $.fn.singleSelect = function ()
 {
 	this
-		.filter('select:not([multiple])')
+		//.filter('select:not([multiple])')
 		.each
 		(
 			function()
 			{
-				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this));
-				listBox.addDialog(new Selectioner.Dialog.SingleSelect());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.SingleSelect()
+					);
 			}
 		);
 	
@@ -931,14 +1021,16 @@ AutoComplete.prototype.update = function()
 $.fn.multiSelect = function ()
 {
 	this
-		.filter('select[multiple]')
 		.each
 		(
 			function()
 			{
-				var listBox = new Selectioner.Display.ListBox();
-				listBox.initialize($(this));
-				listBox.addDialog(new Selectioner.Dialog.MultiSelect());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.MultiSelect()
+					);
 			}
 		);
 		
@@ -947,14 +1039,16 @@ AutoComplete.prototype.update = function()
 $.fn.comboSelect = function (textInput)
 {
 	this
-		.filter('select:not([multiple])')
 		.each
 		(
 			function()
 			{
-				var comboBox = new Selectioner.Display.ComboBox(textInput);
-				comboBox.initialize($(this));
-				comboBox.addDialog(new Selectioner.Dialog.ComboSelect());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Dialog.ComboSelect()
+					);
 			}
 		);
 		
@@ -963,14 +1057,16 @@ AutoComplete.prototype.update = function()
 $.fn.autoComplete = function (textInput)
 {
 	this
-		.filter('select:not([multiple])')
 		.each
 		(
 			function()
 			{
-				var comboBox = new Selectioner.Display.ComboBox(textInput);
-				comboBox.initialize($(this));
-				comboBox.addDialog(new Selectioner.Dialog.AutoComplete());
+				new Selectioner
+					(
+						this, 
+						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Dialog.AutoComplete()
+					);
 			}
 		);
 		

@@ -2,6 +2,14 @@ var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
 
 ComboSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
+ComboSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
+
 // Render an the equivilant control that represents an 
 // <option /> element for the underlying <select /> element. 
 ComboSelect.prototype.renderOption = function(option)

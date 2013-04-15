@@ -1,12 +1,20 @@
 var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
 
-SingleSelect.prototype = new Selectioner.Base.Dialog();
+SingleSelect.prototype = new Selectioner.Core.Dialog();
+
+SingleSelect.prototype.validateTarget = function()
+{
+	if (!this.selectioner.target.is('select:not([multiple])'))
+	{
+		throw new Error('SingleSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+	}
+};
 
 SingleSelect.prototype.render = function()
 {
 	this.element = $('<ul />');
 
-	var children = this.select.children();
+	var children = this.selectioner.target.children();
 	
 	for (var i = 0, length = children.length; i < length; i++)
 	{
@@ -27,13 +35,13 @@ SingleSelect.prototype.render = function()
 SingleSelect.prototype.renderOption = function(option)
 {
 	var dialog = this;
-	var select = this.select;
+	var target = this.selectioner.target;
 
 	var selectOption = function(event)
 	{
 		option[0].selected = true;
 		dialog.popup.hide();
-		select.trigger('change');
+		target.trigger('change');
 	};
 	
 	var text = option.text();
