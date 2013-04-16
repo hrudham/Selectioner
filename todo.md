@@ -1,24 +1,24 @@
 # Selectioner To-Do List
 
-## Required Fixes
-
-- Build a required CSS file with just the basics that will get the control to work.
-	- Add an additional CSS file for cosmetic purposes.
-
-## Required Functionality
+## Required Tasks
 
 - Keyboard navigation.
 - Disabled element support.
 - Test and implement with AJAX.
 - Expose hide and show functions on the root Selectioner object.
+- Overridable options / settings.
+- Manual refresh call via JS.
+- Build a required CSS file with just the basics that will get the control to work.
+	- Add an additional CSS file for cosmetic purposes.
+- Build LESS files with Jake.
+- Split out extensions such that they are separate to the core library.
 
 ## Nice To Have
 
 - Consider implementing responsive support for mobile.
 - jQuery validation support.
 - dir="rtl" support.
-- Manual refresh call via JS.
-- Overridable options / settings.
+- Search and highlight input text for SingleSelect dialog..
 
 ## Stuff to Remember / Think about
 
