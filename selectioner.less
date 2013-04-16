@@ -1,0 +1,295 @@
+.select-popup
+{
+	border: 1px solid #AAA;
+	background-color: #FFF;
+	line-height: 20px;
+	z-index: 1073741823; 
+	text-align: left;
+	margin-top: -1px;
+	max-height: 188px;
+	overflow: auto;
+	top: 0px; /* Stop page from overflowing when the control is created. */
+	
+	-moz-box-sizing: content-box;
+	-o-box-sizing: content-box;
+	-webkit-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	box-sizing: content-box;
+	
+	&.above
+	{
+		box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
+	}
+	
+	&.below
+	{
+		box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+	}
+
+	&.over
+	{
+		box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+	}
+	
+	ul
+	{
+		margin: 0px;
+		padding: 0px;
+		
+		li
+		{
+			list-style: none;
+			overflow: auto;
+			
+			label
+			{
+				display: block;
+				font-weight: normal;
+				
+				&:hover
+				{
+					background-color: #F5F5F5;
+				}
+			}
+			
+			span
+			{
+				cursor: default;
+			}
+			
+			input[type="checkbox"]
+			{
+				vertical-align: middle;
+				margin: 0px 6px 0px 3px;
+				outline: none;
+			}
+		}
+	}
+	
+	> ul
+	{
+		padding: 4px 0px;
+		
+		> li
+		{
+			padding: 0px 4px;
+		}
+	}
+	
+	a
+	{
+		display: block;
+		text-decoration: none;
+		color: #333;
+		outline: none;
+		
+		&:hover
+		{
+			background-color: #F5F5F5;
+		}
+	}
+	
+	.select-group-title
+	{
+		font-weight: bold;
+	}
+}
+
+.select-display
+{
+	display: inline-block;
+	outline: none;
+	position: relative;
+	border: 1px solid #AAA;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+	
+	&:focus
+	{
+		border-color: #5CA9E4;
+	}
+	
+	> .select-text
+	{
+		border: none;
+		line-height: 16px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
+		min-height: 16px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
+		display: inline-block;
+		min-width: 126px;
+		text-align: left;
+		padding: 1px 24px 1px 2px;
+		margin: 0px;
+		vertical-align: middle;
+		outline: none;
+		background-color: transparent;	/* for text inputs, which usually have a white background. */
+		
+		-moz-box-shadow: none;
+		-o-box-shadow: none;
+		-webkit-box-shadow: none;
+		box-shadow: none;
+		
+		&:focus
+		{
+			outline: none;
+			
+			-moz-box-shadow: none;
+			-o-box-shadow: none;
+			-webkit-box-shadow: none;
+			box-shadow: none;
+		}
+	}
+	
+	> span.select-text
+	{
+		cursor: pointer;
+	}
+	
+	.select-button
+	{
+		position: absolute;
+		cursor: pointer;
+		right: 4px;
+		top: 50%;
+		margin-top: -8px;
+		display: inline-block;
+		height: 16px;
+		width: 16px;
+		z-index: 50000; /* Fixes a Chrome issue when elements float to the right of this element. */
+		background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+		
+		-moz-transition: all 0.15s linear;
+		-webkit-transition: all 0.15s linear;
+		-ms-transition: all 0.15s linear;
+		-o-transition: all 0.15s linear;
+		transition: all 0.15s linear;
+	}
+	
+	&.select-visible .select-button:not(ie8)
+	{
+		-moz-transform: rotate(-180deg);
+		-webkit-transform: rotate(-180deg);
+		-o-transform: rotate(-180deg);
+		-ms-transform: rotate(-180deg);
+		transform: rotate(-180deg);
+		background-position: 0px 0px;
+	}
+	
+	&.select-visible .select-button
+	{
+		background-position: 0px -16px;
+	}
+}
+
+.select-popup ul li.none a,
+.select-display .none
+{
+	color: #999;
+}
+
+.select-date
+{ 
+	> div
+	{
+		text-align: center;
+		margin: 2px;
+		font-weight: bold;
+		cursor: default;
+	}
+	
+	table
+	{
+		width: 100%;
+	}
+	
+	td,
+	th
+	{
+		line-height: 18px;
+		padding: 0;
+	}
+	
+	td
+	{
+		width: 14.2857%;
+		cursor: pointer;
+		
+		&.prev-month,
+		&.next-month
+		{
+			color: #CCC;
+		}
+		
+		&.today
+		{
+			background-color: #999;
+			color: #FFF;
+			
+			&:hover
+			{
+				background-color: #CCC;
+			}
+		}
+		
+		&.selected
+		{
+			background-color: #3377FF;
+			color: #FFF;
+			
+			&:hover
+			{
+				background-color: #5599FF;
+			}
+		}
+	}
+	
+	td,
+	th,
+	> div a
+	{
+		-moz-border-radius: rotate(-180deg);
+		-webkit-border-radius: rotate(-180deg);
+		border-radius: 4px;
+		text-align: center;
+		
+		-moz-user-select: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+	}
+	
+	td.selected
+	> div a:hover,
+	td:hover
+	{
+		background-color: #EEE;
+	}
+	
+	> div a
+	{
+		font-size: 16px;
+		display: inline-block;
+		width: 20px;
+		height: 20px;
+		line-height: 20px;
+		text-align: center;
+		
+		&.prev
+		{
+			float: left;
+		}
+
+		&.next
+		{
+			float: right;
+		}
+	}
+}
+
+
+
+
+
+
+
+

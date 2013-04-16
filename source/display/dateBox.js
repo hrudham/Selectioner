@@ -30,7 +30,8 @@ DateBox.prototype.update = function()
 
 	if (dateValue !== '')
 	{
-		var date = new Date(dateValue);
+		var datePart = dateValue.match(/(\d+)/g);
+		date = new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
 		
 		var day = date.getDate().toString();
 		var month = (date.getMonth() + 1).toString();

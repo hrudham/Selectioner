@@ -246,7 +246,8 @@ DateSelect.prototype.getDate = function()
 
 	if (dateValue !== '')
 	{
-		return new Date(dateValue);
+		var datePart = dateValue.match(/(\d+)/g);
+		return new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
 	}
 	
 	return this.getToday();
