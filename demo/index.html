@@ -257,42 +257,48 @@
 		<div class="box">
 			<h2>Custom</h2>
 			<p>
-				<label for="CustomAutoCompleteText">Custom: </label>
-				<select id="CustomAutoCompleteSelect">
+				<label for="CustomText">Custom: </label>
+				<select id="CustomSelect">
 					<option></option>
 					<option>Red</option>
 					<option>Green</option>
 					<option>Blue</option>
 				</select>
-				<div id="CustomAutoCompleteButtons" style="border-top: 1px dotted #CCC; text-align: right;">
+				<span id="CustomButtons" style="border-top: 1px dotted #CCC; text-align: right; display: block;">
 					<a href="javascript:;" class="button">Close</a>
-				</div>
+				</span>
 				<script>
 					$(function(){
+						var staticDialogCss = 'font-style: italic; color: #999; text-align: center; margin-top: 4px; border-bottom: 1px dotted #CCC;'
+						var staticDialogHtml = '<div style="' + staticDialogCss + '">Base Colour</div>';
+					
 						// Build the custom selectioner.
 						var customSelectioner = new Selectioner
 							(
-								$('#CustomAutoCompleteSelect'), 
-								new Selectioner.Display.ListBox(),
+								// This is the obect that the Selectioner will target as it's 
+								// underlying element. This is usually an input, select or textarea.
+								$('#CustomSelect'), 	
+								
+								// This is what displays what is currently selected to the user. 
+								// You can make your own by inheriting from Selectioner.Core.Display.
+								new Selectioner.Display.ListBox(),	
+								
+								// This is either a single Dialog, or an array of them. Dialogs are what
+								// appear in the popup. You can either create static dialogs that are
+								// unaware of the rest of the Selectioner, or add objects that inherit from
+								// Selectioner.Core.Dialog that will update whenever the selected value 
+								// changes. In this example, only the SingleSelect() dialog does this.
 								[
-									'<div style="font-style: italic; color: #999; text-align: center; margin-top: 4px; border-bottom: 1px dotted #CCC;">Base Colour</div>',
+									staticDialogHtml,
 									new Selectioner.Dialog.SingleSelect(),
-									'#CustomAutoCompleteButtons'
+									'#CustomButtons'
 								]
 							);
 						
 						// Hook up an event handler to the button's click event.
 						// To clarify, events that are set up before the selectioner 
-						// is created will continue to work as well.
-						$('#CustomAutoCompleteButtons .button')
-							.on
-								(
-									'click', 
-									function() 
-									{ 
-										customSelectioner.display.popup.hide();
-									}
-								);
+						// is created will continue to work in cases like this as well.
+						$('#CustomButtons .button').on('click', function() { customSelectioner.display.popup.hide(); });
 					});
 				</script>
 			</p>

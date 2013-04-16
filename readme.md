@@ -4,18 +4,9 @@ A light-weight jQuery replacement for HTML select boxes.
 
 ## Introduction
 
-### What it is
-
-- Single-select
-- Multi-select
-- Combo-box
-- Auto-complete
-
 ### What it works in
 
 Tested in Google Chrome 26, Firefox 19, Safari 5, Opera 12, Internet Explorer 8, 9 and 10.
-
-It's actually functional in Internet Explorer 6 and 7, although there are numerous cosmetic bugs. These could be corrected if you are willing to write your own CSS, but they are not going to be officially supported by this project. 
 
 ### How to use it
 
@@ -27,6 +18,11 @@ Make sure that you've included the following in your project:
 	- You'll probably want to edit this to suit your website's look and feel.
 
 See the [demo](demo/index.html) page for a more in-depth examples.
+
+### What features it has
+
+- The pop-up always attempts to make sure it appears on the screen; it will try (but not guarantee) not to cause any overflow.
+- It stays in sync with it's underlying element and preserves element IDs, so the correct information is sent when a POST occurs.
 
 ### Single-select
 
@@ -73,7 +69,7 @@ This will create a control that will allow to select an item, or enter your own.
 
 It assumes that you have a `select` element followed by an `input type="text"` element.
 
-Please note that this does not support `optgroup` elements. 
+Please note that this does not support `optgroup` elements in the underlying `select` element. 
 
 ```html
 <select id="MyAutoCompleteSelect">
@@ -90,6 +86,8 @@ Please note that this does not support `optgroup` elements.
 
 This is a very basic date select control, and was created purely to illustrate the versatility of the Selectioner. Most modern browsers have solved this problem already.
 
+Notice that it targets an `input type="date"` instead of a `select` element this time.
+
 ```html
 <input type="date" id="DateInput" placeholder="Choose a date"/>
 <script>
@@ -101,17 +99,20 @@ This is a very basic date select control, and was created purely to illustrate t
 
 ### Build your own!
 
-You can write custom Selectioner controls quite easily, and even chop-and-change what parts are shown. For example:
+You can write custom Selectioner controls quite easily, and even chop-and-change what parts are shown. You are not limited to targetting just `select` elements either, as the Date-select illustrates. For example:
 
 ```html
 <select id="CustomSelect">
 	...
 </select>
-<div id="CustomButtons" style="border-top: 1px dotted #CCC; text-align: right;">
+<span id="CustomButtons" style="border-top: 1px dotted #CCC; text-align: right; display: block;">
 	<a href="javascript:;" class="button">Close</a>
-</div>
+</span>
 <script>
 	$(function(){
+		var staticDialogCss = 'font-style: italic; color: #999; text-align: center; margin-top: 4px; border-bottom: 1px dotted #CCC;'
+		var staticDialogHtml = '<div style="' + staticDialogCss + '">Base Colour</div>';
+	
 		// Build the custom selectioner.
 		var customSelectioner = new Selectioner
 			(
@@ -129,19 +130,19 @@ You can write custom Selectioner controls quite easily, and even chop-and-change
 				// Selectioner.Core.Dialog that will update whenever the selected value 
 				// changes. In this example, only the SingleSelect() dialog does this.
 				[
-					'<div style="font-style: italic; color: #999; text-align: center; margin-top: 4px; border-bottom: 1px dotted #CCC;">Base Colour</div>',
+					staticDialogHtml,
 					new Selectioner.Dialog.SingleSelect(),
 					'#CustomButtons'
 				]
 			);
+		
+		// Hook up an event handler to the button's click event.
+		// To clarify, events that are set up before the selectioner 
+		// is created will continue to work in cases like this as well.
+		$('#CustomButtons .button').on('click', function() { customSelectioner.display.popup.hide(); });
 	});
 </script>
 ```
-
-### What features it has
-
-- The pop-up always attempts to make sure it appears on the screen; it will try not to cause any overflow.
-- It stays in sync with it's underlying element and preserves element IDs, so the correct information is sent when a POST occurs.
 
 ## Development
 
