@@ -13,6 +13,11 @@ SingleSelect.prototype.validateTarget = function()
 SingleSelect.prototype.render = function()
 {
 	this.element = $('<ul />');
+};
+
+SingleSelect.prototype.update = function()
+{
+	this.element.empty();
 
 	var children = this.selectioner.target.children();
 	

@@ -21,6 +21,7 @@ MultiSelect.prototype.renderOption = function(option)
 	var element = $('<li />');
 	var checkboxId = 'MultiSelectCheckbox' + MultiSelect._inputIdIndex++;
 	var checkbox = $('<input type="checkbox" />')
+		.data('option', option)
 		.attr('id', checkboxId);
 					
 	if (option[0].selected)

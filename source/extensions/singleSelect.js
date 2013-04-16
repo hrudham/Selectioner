@@ -1,7 +1,6 @@
 $.fn.singleSelect = function ()
 {
 	this
-		//.filter('select:not([multiple])')
 		.each
 		(
 			function()

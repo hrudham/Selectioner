@@ -16,14 +16,17 @@ var getSourceFiles = function ()
 			sourcePath + 'Core/dialog.js',
 			sourcePath + 'display/listBox.js',
 			sourcePath + 'display/comboBox.js',
+			sourcePath + 'display/dateBox.js',
 			sourcePath + 'dialog/singleSelect.js',
 			sourcePath + 'dialog/multiSelect.js',
 			sourcePath + 'dialog/comboSelect.js',
 			sourcePath + 'dialog/autoComplete.js',
+			sourcePath + 'dialog/dateSelect.js',
             sourcePath + 'extensions/singleSelect.js',
             sourcePath + 'extensions/multiSelect.js',
 			sourcePath + 'extensions/comboSelect.js',
 			sourcePath + 'extensions/autoComplete.js',
+			sourcePath + 'extensions/dateSelect.js',
             sourcePath + 'footer.js',
         ];
     return paths;

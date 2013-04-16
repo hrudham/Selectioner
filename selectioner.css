@@ -6,7 +6,7 @@
 	z-index: 1073741823; /* (Size of int32) / 2 */
 	text-align: left;
 	margin-top: -1px;
-	max-height: 168px;
+	max-height: 188px;
 	overflow: auto;
 	top: 0px; /* Stop page from overflowing when the control is created. */
 	
@@ -186,6 +186,101 @@
 .select-display.select-visible .select-button
 {
 	background-position: 0px -16px;
+}
+
+.select-date > div
+{
+	text-align: center;
+	margin: 2px;
+	font-weight: bold;
+	cursor: default;
+}
+
+.select-date table
+{
+	width: 100%;
+}
+
+.select-date td,
+.select-date th
+{
+	line-height: 18px;
+	padding: 0;
+}
+
+.select-date td
+{
+	width: 14.2857%;
+	cursor: pointer;
+}
+
+.select-date td.prev-month,
+.select-date td.next-month
+{
+	color: #CCC;
+}
+
+.select-date td,
+.select-date th,
+.select-date > div a
+{
+	-moz-border-radius: rotate(-180deg);
+    -webkit-border-radius: rotate(-180deg);
+	border-radius: 4px;
+	text-align: center;
+	
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-ms-user-select: none;
+}
+
+.select-date td.today
+{
+	background-color: #999;
+	color: #FFF;
+}
+
+.select-date td.today:hover
+{
+	background-color: #CCC;
+}
+
+
+.select-date td.selected
+{
+	background-color: #3377FF;
+	color: #FFF;
+}
+
+.select-date td.selected:hover
+{
+	background-color: #5599FF;
+}
+
+.select-date > div a:hover,
+.select-date td:hover
+{
+	background-color: #EEE;
+}
+
+.select-date > div a
+{
+	font-size: 16px;
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+}
+
+.select-date > div a.prev
+{
+	float: left;
+}
+
+.select-date > div a.next
+{
+	float: right;
 }
 
 

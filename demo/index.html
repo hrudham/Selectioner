@@ -252,10 +252,22 @@
 					<option>Yamazaki</option>
 					<option>Yoichi</option>
 				</select>
-				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
+				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option"/>
 				<script>
 					$(function(){
 						$('#BasicAutoCompleteSelect').autoComplete();
+					});
+				</script>
+			</p>
+		</div>
+		<div class="box">
+			<h2>Date</h2>
+			<p>
+				<label for="DateInput">Date: </label>
+				<input type="date" id="DateInput" placeholder="Choose a date" value="2013-04-15" />
+				<script>
+					$(function(){
+						$('#DateInput').dateSelect();
 					});
 				</script>
 			</p>
@@ -275,8 +287,6 @@
 				</div>
 				<script>
 					$(function(){
-						// Hook up an event handler to the button's click event
-						
 						// Build the custom selectioner.
 						var customSelectioner = new Selectioner
 							(
@@ -288,7 +298,10 @@
 									'#CustomAutoCompleteButtons'
 								]
 							);
-							
+						
+						// Hook up an event handler to the button's click event.
+						// To clarify, events that are set up before the selectioner 
+						// is created will continue to work as well.
 						$('#CustomAutoCompleteButtons .button')
 							.on
 								(
