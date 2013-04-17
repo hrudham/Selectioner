@@ -1,26 +1,246 @@
-.select-popup{border:1px solid #AAA;background-color:#FFF;line-height:20px;z-index:1073741823;text-align:left;margin-top:-1px;max-height:188px;overflow:auto;top:0px;-moz-box-sizing:content-box;-o-box-sizing:content-box;-webkit-box-sizing:content-box;-ms-box-sizing:content-box;box-sizing:content-box;}.select-popup.above{box-shadow:0px -1px 4px rgba(0, 0, 0, 0.25);}
-.select-popup.below{box-shadow:0px 1px 4px rgba(0, 0, 0, 0.25);}
-.select-popup.over{box-shadow:0px 0px 4px rgba(0, 0, 0, 0.25);}
-.select-popup ul{margin:0px;padding:0px;}.select-popup ul li{list-style:none;overflow:auto;}.select-popup ul li label{display:block;font-weight:normal;}.select-popup ul li label:hover{background-color:#F5F5F5;}
-.select-popup ul li span{cursor:default;}
-.select-popup ul li input[type="checkbox"]{vertical-align:middle;margin:0px 6px 0px 3px;outline:none;}
-.select-popup>ul{padding:4px 0px;}.select-popup>ul>li{padding:0px 4px;}
-.select-popup a{display:block;text-decoration:none;color:#333;outline:none;}.select-popup a:hover{background-color:#F5F5F5;}
-.select-popup .select-group-title{font-weight:bold;}
-.select-display{display:inline-block;outline:none;position:relative;border:1px solid #AAA;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;}.select-display:focus{border-color:#5CA9E4;}
-.select-display>.select-text{border:none;line-height:16px;min-height:16px;display:inline-block;min-width:126px;text-align:left;padding:1px 24px 1px 2px;margin:0px;vertical-align:middle;outline:none;background-color:transparent;-moz-box-shadow:none;-o-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;}.select-display>.select-text:focus{outline:none;-moz-box-shadow:none;-o-box-shadow:none;-webkit-box-shadow:none;box-shadow:none;}
-.select-display>span.select-text{cursor:pointer;}
-.select-display .select-button{position:absolute;cursor:pointer;right:4px;top:50%;margin-top:-8px;display:inline-block;height:16px;width:16px;z-index:50000;background:transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;-moz-transition:all 0.15s linear;-webkit-transition:all 0.15s linear;-ms-transition:all 0.15s linear;-o-transition:all 0.15s linear;transition:all 0.15s linear;}
-.select-display.select-visible .select-button:not(ie8){-moz-transform:rotate(-180deg);-webkit-transform:rotate(-180deg);-o-transform:rotate(-180deg);-ms-transform:rotate(-180deg);transform:rotate(-180deg);background-position:0px 0px;}
-.select-display.select-visible .select-button{background-position:0px -16px;}
-.select-popup ul li.none a,.select-display .none{color:#999;}
-.select-date>div{text-align:center;margin:2px;font-weight:bold;cursor:default;}
-.select-date table{width:100%;}
-.select-date td,.select-date th{line-height:18px;padding:0;}
-.select-date td{width:14.2857%;cursor:pointer;}.select-date td.prev-month,.select-date td.next-month{color:#CCC;}
-.select-date td.today{background-color:#999;color:#FFF;}.select-date td.today:hover{background-color:#CCC;}
-.select-date td.selected{background-color:#3377FF;color:#FFF;}.select-date td.selected:hover{background-color:#5599FF;}
-.select-date td,.select-date th,.select-date>div a{-moz-border-radius:rotate(-180deg);-webkit-border-radius:rotate(-180deg);border-radius:4px;text-align:center;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none;}
-.select-date td.selected>div a:hover,.select-date td:hover{background-color:#EEE;}
-.select-date>div a{font-size:16px;display:inline-block;width:20px;height:20px;line-height:20px;text-align:center;}.select-date>div a.prev{float:left;}
-.select-date>div a.next{float:right;}
+﻿/*
+	This file is designed to only contain .LESS mix-ins. 
+	No other CSS should make it into this file; if it's not 
+	a .LESS function, it doesn't belong here.
+*/
+/* 
+	Overload for applying multiple shadows to an element.
+	E.g.: .box-shadow(1px 1px #FFF, inset -1px -1px #FFF);
+*/
+.select-popup {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  -ms-box-sizing: content-box;
+  box-sizing: content-box;
+  border: 1px solid #AAA;
+  background-color: #FFF;
+  line-height: 20px;
+  z-index: 1073741823;
+  text-align: left;
+  margin-top: -1px;
+  overflow: auto;
+  top: 0px;
+  /* Stop page from overflowing when the control is created. */
+
+}
+.select-popup.above {
+  -webkit-box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px -1px 4px rgba(0, 0, 0, 0.25);
+}
+.select-popup.below {
+  -webkit-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.25);
+}
+.select-popup.over {
+  -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+}
+.select-popup > ul {
+  padding: 4px 0px;
+  max-height: 118px;
+}
+.select-popup > ul > li {
+  padding: 0px 4px;
+}
+.select-popup > ul a {
+  display: block;
+  text-decoration: none;
+  color: #333;
+  outline: none;
+}
+.select-popup > ul a:hover {
+  background-color: #F5F5F5;
+}
+.select-popup ul {
+  margin: 0px;
+  padding: 0px;
+}
+.select-popup ul li {
+  list-style: none;
+  overflow: auto;
+}
+.select-popup ul li label {
+  display: block;
+  font-weight: normal;
+}
+.select-popup ul li label:hover {
+  background-color: #F5F5F5;
+}
+.select-popup ul li span {
+  cursor: default;
+}
+.select-popup ul li input[type="checkbox"] {
+  vertical-align: middle;
+  margin: 0px 6px 0px 3px;
+  outline: none;
+}
+.select-popup .select-group-title {
+  font-weight: bold;
+}
+.select-display {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: inline-block;
+  outline: none;
+  position: relative;
+  border: 1px solid #AAA;
+}
+.select-display:focus {
+  border-color: #5CA9E4;
+}
+.select-display > .select-text {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  border: none;
+  line-height: 16px;
+  min-height: 16px;
+  /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
+
+  display: inline-block;
+  min-width: 126px;
+  text-align: left;
+  padding: 1px 24px 1px 2px;
+  margin: 0px;
+  vertical-align: middle;
+  outline: none;
+  background-color: transparent;
+  /* for text inputs, which usually have a white background. */
+
+}
+.select-display > .select-text:focus {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  outline: none;
+}
+.select-display > span.select-text {
+  cursor: pointer;
+}
+.select-display .select-button {
+  -moz-transition: all 0.15s linear;
+  -o-transition: all 0.15s linear;
+  -webkit-transition: all 0.15s linear;
+  transition: all 0.15s linear;
+  position: absolute;
+  cursor: pointer;
+  right: 4px;
+  top: 50%;
+  margin-top: -8px;
+  display: inline-block;
+  height: 16px;
+  width: 16px;
+  z-index: 50000;
+  /* Fixes a Chrome issue when elements float to the right of this element. */
+
+  background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+}
+.select-display.select-visible .select-button:not(ie8) {
+  -moz-transform: rotate(-180deg);
+  -ms-transform: rotate(-180deg);
+  -o-transform: rotate(-180deg);
+  -webkit-transform: rotate(-180deg);
+  transform: rotate(-180deg);
+  background-position: 0px 0px;
+}
+.select-display.select-visible .select-button {
+  background-position: 0px -16px;
+}
+.select-popup ul li.none a,
+.select-display .none {
+  color: #999;
+}
+.select-date > div {
+  text-align: center;
+  margin: 2px;
+  font-weight: bold;
+  cursor: default;
+}
+.select-date table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.select-date thead {
+  color: #FFF;
+  background-color: #333;
+}
+.select-date td,
+.select-date th {
+  line-height: 18px;
+  padding: 0;
+}
+.select-date td {
+  width: 14.2857%;
+  cursor: pointer;
+}
+.select-date td.weekend {
+  color: #333;
+  background-color: #F5F5FF;
+}
+.select-date td.prev-month,
+.select-date td.next-month {
+  color: #999;
+  background-color: #EEE;
+}
+.select-date td.today {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #449900;
+  color: #FFF;
+}
+.select-date td.selected {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #3377FF;
+  color: #FFF;
+}
+.select-date td:hover {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #5599FF;
+  color: #FFF;
+}
+.select-date td,
+.select-date th,
+.select-date > div a {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  text-align: center;
+}
+.select-date > div a {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  font-size: 16px;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  text-align: center;
+  color: #333;
+  text-decoration: none;
+}
+.select-date > div a.prev {
+  float: left;
+}
+.select-date > div a.next {
+  float: right;
+}
+.select-date > div a:hover {
+  background-color: #5599FF;
+  color: #FFF;
+}
