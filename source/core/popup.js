@@ -114,9 +114,21 @@ Popup.prototype.show = function()
 	{
 		this._isVisible = true;
 		this.render();
+		
+		var popUpHeight = this.element.height();
+		
 		this.reposition();
 
 		this.element.css({ visibility: 'visible', zIndex: '' });
+		
+		if (popUpHeight != this.element.height())
+		{
+			// Height can often only be calculated by jQuery after the 
+			// element is visible on the page. If our CSS happens to change
+			// the height of the pop-up because of this, reposition it again.
+			this.reposition();
+		}
+		
 		this.selectioner.trigger('show.selectioner');
 	}
 };

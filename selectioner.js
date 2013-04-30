@@ -310,9 +310,21 @@ Popup.prototype.show = function()
 	{
 		this._isVisible = true;
 		this.render();
+		
+		var popUpHeight = this.element.height();
+		
 		this.reposition();
 
 		this.element.css({ visibility: 'visible', zIndex: '' });
+		
+		if (popUpHeight != this.element.height())
+		{
+			// Height can often only be calculated by jQuery after the 
+			// element is visible on the page. If our CSS happens to change
+			// the height of the pop-up because of this, reposition it again.
+			this.reposition();
+		}
+		
 		this.selectioner.trigger('show.selectioner');
 	}
 };
@@ -823,20 +835,12 @@ SingleSelect.prototype.update = function()
 SingleSelect.prototype.renderOption = function(option)
 {
 	var dialog = this;
-	var target = this.selectioner.target;
 
-	var selectOption = function(event)
-	{
-		option[0].selected = true;
-		dialog.popup.hide();
-		target.trigger('change');
-	};
-	
 	var text = option.text();
 
 	var selectAnchor = $('<a />')
 		.attr('href', 'javascript:;')
-		.on('click', selectOption)
+		.on('click', function(){ dialog.selectOption(option); })
 		.text(text || Selectioner.Settings.emptyOptionText);
 	
 	var listItem = $('<li />');
@@ -847,6 +851,15 @@ SingleSelect.prototype.renderOption = function(option)
 	}
 
 	return listItem.append(selectAnchor);
+};
+
+// This will select the option specified, hide the pop-up,
+// and trigger the "change" event on the underlying element.
+SingleSelect.prototype.selectOption = function(option)
+{
+	option[0].selected = true;
+	this.popup.hide();
+	this.selectioner.target.trigger('change');
 };
 
 // Render an the equivilant control that represents an 
