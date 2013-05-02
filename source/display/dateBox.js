@@ -32,24 +32,11 @@ DateBox.prototype.update = function()
 	{
 		var datePart = dateValue.match(/(\d+)/g);
 		var date = new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
-		
-		var day = date.getDate().toString();
-		var month = (date.getMonth() + 1).toString();
-		var year = date.getFullYear().toString();
-		
-		if (day.length == 1)
-		{
-			day = '0' + day;
-		}
-		
-		if (month.length == 1)
-		{
-			month = '0' + month;
-		}
+		var dateText = this.getDateText(date);
 		
 		this.textElement
 			.removeClass('none')
-			.text(year + '-' + month + '-' + day);
+			.text(dateText);
 	}
 	else
 	{
@@ -57,4 +44,24 @@ DateBox.prototype.update = function()
 			.addClass('none')
 			.text(this.selectioner.target.attr('placeholder') || 'Select a date');
 	}
+};
+
+// Obtains the the string representation of the date provided.
+DateBox.prototype.getDateText = function(date)
+{
+	var day = date.getDate().toString();
+	var month = (date.getMonth() + 1).toString();
+	var year = date.getFullYear().toString();
+	
+	if (day.length == 1)
+	{
+		day = '0' + day;
+	}
+	
+	if (month.length == 1)
+	{
+		month = '0' + month;
+	}
+	
+	return year + '-' + month + '-' + day;
 };
