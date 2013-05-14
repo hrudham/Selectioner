@@ -210,7 +210,29 @@ Popup.prototype.initialize = function(selectioner)
 			zIndex: '-1'
 		});
 
-	this.render();
+	this.update();
+	
+	var popup = this;
+	
+	// If the contents of the pop-up changes while the 
+	// pop-up is actually displayed, then make sure it 
+	// updates as expected. This is useful when loading
+	// up information via AJAX, for example.
+	this.selectioner
+		.target
+		.on
+		(
+			'change',
+			function()
+			{
+				if (popup.isShown())
+				{
+					popup.update();
+					popup.reposition();
+				}
+			}
+		);
+	
 
 	$('body').append(this.element);
 };
@@ -247,8 +269,8 @@ Popup.prototype.addDialog = function(dialog)
 	this.dialogs.push(dialog);
 };
 
-// Render all the dialogs that appear on this popup.
-Popup.prototype.render = function()
+// Update all the dialogs that appear on this popup.
+Popup.prototype.update = function()
 {
 	for (var i = 0, length = this.dialogs.length; i < length; i++)
 	{
@@ -309,7 +331,7 @@ Popup.prototype.show = function()
 	if (!this.isShown())
 	{
 		this._isVisible = true;
-		this.render();
+		this.update();
 		
 		var popUpHeight = this.element.height();
 		
