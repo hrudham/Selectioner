@@ -391,8 +391,21 @@ Display.prototype.createDisplay = function()
 		.addClass(Selectioner.Settings.cssPrefix + 'display')
 		.prop('tabindex', this.selectioner.target.prop('tabindex'));
 
+	// Make sure the display updates any time
+	// it's underlying target element changes.
+	this.selectioner
+		.target
+		.on
+			(
+				'change.selectioner',
+				function()
+				{
+					display.update();
+				}
+			);
+		
 	// Find any labels associated with this underlying target
-	//  element, and make them focus on this display instead.
+	// element, and make them focus on this display instead.
 	var targetId = this.selectioner.target.attr('id');
 	if (targetId !== undefined)
 	{
@@ -404,19 +417,6 @@ Display.prototype.createDisplay = function()
 					function (event)
 					{
 						display.element.focus();
-					}
-				);
-
-		// Make sure the display updates any time
-		// it's underlying target element changes.
-		this.selectioner
-			.target
-			.on
-				(
-					'change.selectioner',
-					function()
-					{
-						display.update();
 					}
 				);
 	}

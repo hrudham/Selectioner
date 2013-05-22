@@ -11,6 +11,23 @@
 	<body>
 		<h1>Selectioner</h1>
 		<div class="box">
+			<h2>Single-select (no ID)</h2>
+			<p>
+				<label>Basic (no ID): </label>
+				<select class="basic">
+					<option></option><!-- empty option -->
+					<option>Option 1</option>
+					<option>Option 2</option>
+					<option>Option 3</option>
+					<option>Option 4</option>
+					<option>Option 5</option>
+				</select>
+				<script>
+					$(function(){
+						$('.basic').singleSelect();
+					});
+				</script>
+			</p>
 			<h2>Single-select</h2>
 			<p>
 				<label for="BasicSingle">Basic: </label>
