@@ -132,6 +132,18 @@ Popup.prototype.reposition = function()
 // Shows the pop-up.
 Popup.prototype.show = function()
 {
+	// Hide the popup any time the window resizes.
+	var popup = this;
+	$(window)
+		.one
+		(
+			'resize.selectioner',
+			function()
+			{
+				popup.hide();
+			}
+		);
+
 	if (!this.isShown())
 	{
 		this._isVisible = true;
@@ -158,6 +170,8 @@ Popup.prototype.show = function()
 // Simply hides the pop-up.
 Popup.prototype.hide = function()
 {
+	$(window).off('resize.selectioner');
+
 	if (this.isShown())
 	{
 		this._isVisible = false;

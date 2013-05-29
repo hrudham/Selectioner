@@ -110,17 +110,6 @@ Display.prototype.createPopup = function()
 			}
 		);
 
-	// Hide the popup any time the window resizes.
-	$(window)
-		.on
-		(
-			'resize.selectioner',
-			function()
-			{
-				popup.hide();
-			}
-		);
-
 	var cssClass = Selectioner.Settings.cssPrefix + 'visible';
 
 	this.selectioner
