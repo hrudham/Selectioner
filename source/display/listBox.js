@@ -31,7 +31,7 @@ ListBox.prototype.update = function()
 	
 	if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
 	{
-		var text = Selectioner.Settings.noSelectionText;
+		var text = this.getNoSelectionText();
 		
 		if (!text)
 		{

@@ -19,11 +19,13 @@ ComboBox.prototype.render = function()
 		throw new Error('ComboBox expects the element to follow it\'s target <select /> to be an <input type="text" />');
 	}
 	
-	if (!this.textElement.is('[placeholder]'))
-	{
-		this.textElement.attr('placeholder', Selectioner.Settings.noSelectionText);
-	}
+	var noSelectionText = this.getNoSelectionText();
 	
+	if (noSelectionText !== null)
+	{
+		this.textElement.attr('placeholder', this.getNoSelectionText());
+	}
+		
 	// Turn off auto-completion on the text box.
 	this.textElement.attr('autocomplete', 'off');
 
@@ -103,4 +105,23 @@ ComboBox.prototype.remove = function()
 		.after(this.textElement);
 		
 	Selectioner.Core.Display.prototype.remove.call(this);
+};
+
+Display.prototype.getNoSelectionText = function()
+{
+	var text = this.selectioner
+		.target
+		.data('placeholder');
+		
+	if (!text)
+	{
+		text = this.textElement.attr('placeholder');
+	}
+
+	if (!text)
+	{
+		text = Selectioner.Settings.noSelectionText;
+	}
+	
+	return text;	
 };

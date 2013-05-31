@@ -14,7 +14,7 @@
 			<h2>Single-select (no ID)</h2>
 			<p>
 				<label>Basic (no ID): </label>
-				<select class="basic">
+				<select class="basic" data-placeholder="Pick an option">
 					<option></option><!-- empty option -->
 					<option>Option 1</option>
 					<option>Option 2</option>
@@ -28,6 +28,8 @@
 					});
 				</script>
 			</p>
+		</div>
+		<div class="box">
 			<h2>Single-select</h2>
 			<p>
 				<label for="BasicSingle">Basic: </label>
@@ -48,6 +50,7 @@
 			<p>
 				<label for="OptGroupSingle">OptGroup: </label>
 				<select id="OptGroupSingle">
+					<option></option>
 					<optgroup label="Group 1">
 						<option selected="selected">Option 1.1</option>
 						<option>Option 1.2</option>
@@ -116,7 +119,7 @@
 			<h2>Combo-select</h2>
 			<p>
 				<label for="BasicComboText">Basic: </label>
-				<select id="BasicComboSelect">
+				<select id="BasicComboSelect" data-placeholder="Pick an option">
 					<option></option>
 					<option>Cape Town</option>
 					<option>Durban</option>
@@ -124,7 +127,7 @@
 					<option>Bloemfontein</option>
 					<option>Pietermaritzburg</option>
 				</select>
-				<input type="text" id="BasicComboText" placeholder="Choose an option" value="Custom entry" />
+				<input type="text" id="BasicComboText" value="Custom entry" />
 				<script>
 					$(function(){
 						$('#BasicComboSelect').comboSelect();
@@ -251,7 +254,7 @@
 					<option>Yamazaki</option>
 					<option>Yoichi</option>
 				</select>
-				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option"/>
+				<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
 				<script>
 					$(function(){
 						$('#BasicAutoCompleteSelect').autoComplete();

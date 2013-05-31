@@ -144,6 +144,28 @@ You can write custom Selectioner controls quite easily, and even chop-and-change
 </script>
 ```
 
+## General Settings
+
+The following global settings will affect all Selectioners on your page. These are their defaults:
+
+```javascript
+Selectioner.Settings =
+{
+	cssPrefix: 'select-',
+	noSelectionText: 'Select an option',
+	emptyOptionText: 'None',
+	maxAutoCompleteItems: 5
+};
+```
+
+Some of these are editable per-control with the following overrides:
+
+### Selectioner.Settings.noSelectionText
+
+Add a `data-placeholder` attribute to the underlying `select` element. 
+
+Alternatively, in the case of Combo-selects and other controls that support it, you can set the `placeholder` attribute on that control instead. This can be overridden by a `data-placeholder` attribute however.
+
 ## Development
 
 ### How it's built

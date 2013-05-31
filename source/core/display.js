@@ -164,3 +164,17 @@ Display.prototype.remove = function()
 
 	this.element.add(this.popup.element).remove();
 };
+
+Display.prototype.getNoSelectionText = function()
+{
+	var text = this.selectioner
+		.target
+		.data('placeholder');
+
+	if (!text)
+	{
+		text = Selectioner.Settings.noSelectionText;
+	}
+	
+	return text;	
+};
