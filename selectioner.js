@@ -912,7 +912,8 @@ SingleSelect.prototype.renderOption = function(option)
 	
 	var listItem = $('<li />');
 	
-	if (!text)
+	var value = option.val();
+	if (value === null || value === '')
 	{
 		listItem.addClass('none');
 	}
