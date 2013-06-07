@@ -404,6 +404,19 @@ Display.prototype.createDisplay = function()
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display')
 		.prop('tabindex', this.selectioner.target.prop('tabindex'));
+	
+	// Make sure we update when parent forms are reset.
+	this.selectioner
+		.target
+		.closest('form')
+		.on
+			(
+				'reset', 
+				function() 
+				{
+					setTimeout(function() { display.update(); }, 1);
+				}
+			);
 
 	// Make sure the display updates any time
 	// it's underlying target element changes.
