@@ -414,6 +414,9 @@ Display.prototype.createDisplay = function()
 				'reset', 
 				function() 
 				{
+					// Strangely, this small timeout allows for the 
+					// reset to be performed, and only then perform
+					// the update required.
 					setTimeout(function() { display.update(); }, 1);
 				}
 			);
@@ -917,11 +920,22 @@ SingleSelect.prototype.renderOption = function(option)
 	var dialog = this;
 
 	var text = option.text();
-
-	var selectAnchor = $('<a />')
-		.attr('href', 'javascript:;')
-		.on('click', function(){ dialog.selectOption(option); })
-		.text(text || Selectioner.Settings.emptyOptionText);
+	
+	var selectElement;
+	
+	if (option.is(':disabled'))
+	{
+		selectElement = $('<span />')
+			.addClass('disabled')
+			.text(text || Selectioner.Settings.emptyOptionText);
+	}
+	else
+	{
+		selectElement = $('<a />')
+			.attr('href', 'javascript:;')
+			.on('click', function(){ dialog.selectOption(option); })
+			.text(text || Selectioner.Settings.emptyOptionText);
+	}
 	
 	var listItem = $('<li />');
 	
@@ -931,7 +945,7 @@ SingleSelect.prototype.renderOption = function(option)
 		listItem.addClass('none');
 	}
 
-	return listItem.append(selectAnchor);
+	return listItem.append(selectElement);
 };
 
 // This will select the option specified, hide the pop-up,
@@ -998,7 +1012,7 @@ MultiSelect.prototype.renderOption = function(option)
 	{
 		checkbox.attr('checked', 'checked');
 	}
-		
+	
 	var label = $('<label />')
 		.append(checkbox)
 		.append($('<span />').text(option.text()))
@@ -1016,6 +1030,12 @@ MultiSelect.prototype.renderOption = function(option)
 			}
 		);
 		
+	if (option.is(':disabled'))
+	{
+		label.addClass('disabled');
+		checkbox.prop('disabled', true);
+	}
+		
 	element.append(label);
 
 	return element;
@@ -1027,20 +1047,23 @@ MultiSelect.prototype.renderOption = function(option)
 MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;
+	
 	var toggleGroupSelect = function(event)
 	{
-		var checkboxes = $(this).closest('ul').find('input:checkbox');
+		var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
 		var checkedCount = checkboxes.filter(':checked').length;
-		if (checkedCount > 0 && checkboxes.length === checkedCount)
-		{
-			checkboxes.prop('checked', false);
-		}
-		else
-		{
-			checkboxes.prop('checked', true);
-		}
 		
-		checkboxes.trigger('change.selectioner');
+		checkboxes
+			.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
+			.each
+				(
+					function()
+					{
+						$(this).data('option')[0].selected = this.checked;
+					}
+				);
+		
+		dialog.selectioner.target.trigger('change');
 	};
 	
 	var groupTitle = $('<a />')

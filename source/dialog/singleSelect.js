@@ -42,11 +42,22 @@ SingleSelect.prototype.renderOption = function(option)
 	var dialog = this;
 
 	var text = option.text();
-
-	var selectAnchor = $('<a />')
-		.attr('href', 'javascript:;')
-		.on('click', function(){ dialog.selectOption(option); })
-		.text(text || Selectioner.Settings.emptyOptionText);
+	
+	var selectElement;
+	
+	if (option.is(':disabled'))
+	{
+		selectElement = $('<span />')
+			.addClass('disabled')
+			.text(text || Selectioner.Settings.emptyOptionText);
+	}
+	else
+	{
+		selectElement = $('<a />')
+			.attr('href', 'javascript:;')
+			.on('click', function(){ dialog.selectOption(option); })
+			.text(text || Selectioner.Settings.emptyOptionText);
+	}
 	
 	var listItem = $('<li />');
 	
@@ -56,7 +67,7 @@ SingleSelect.prototype.renderOption = function(option)
 		listItem.addClass('none');
 	}
 
-	return listItem.append(selectAnchor);
+	return listItem.append(selectElement);
 };
 
 // This will select the option specified, hide the pop-up,

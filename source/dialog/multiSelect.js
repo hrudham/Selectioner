@@ -28,7 +28,7 @@ MultiSelect.prototype.renderOption = function(option)
 	{
 		checkbox.attr('checked', 'checked');
 	}
-		
+	
 	var label = $('<label />')
 		.append(checkbox)
 		.append($('<span />').text(option.text()))
@@ -46,6 +46,12 @@ MultiSelect.prototype.renderOption = function(option)
 			}
 		);
 		
+	if (option.is(':disabled'))
+	{
+		label.addClass('disabled');
+		checkbox.prop('disabled', true);
+	}
+		
 	element.append(label);
 
 	return element;
@@ -57,20 +63,23 @@ MultiSelect.prototype.renderOption = function(option)
 MultiSelect.prototype.renderGroup = function(group)
 {
 	var dialog = this;
+	
 	var toggleGroupSelect = function(event)
 	{
-		var checkboxes = $(this).closest('ul').find('input:checkbox');
+		var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
 		var checkedCount = checkboxes.filter(':checked').length;
-		if (checkedCount > 0 && checkboxes.length === checkedCount)
-		{
-			checkboxes.prop('checked', false);
-		}
-		else
-		{
-			checkboxes.prop('checked', true);
-		}
 		
-		checkboxes.trigger('change.selectioner');
+		checkboxes
+			.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
+			.each
+				(
+					function()
+					{
+						$(this).data('option')[0].selected = this.checked;
+					}
+				);
+		
+		dialog.selectioner.target.trigger('change');
 	};
 	
 	var groupTitle = $('<a />')

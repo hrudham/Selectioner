@@ -30,11 +30,17 @@
     > ul
     {
         padding: 4px 0px;
-        max-height: 118px;
+        max-height: 120px;
 
         > li
         {
             padding: 0px 4px;
+        }
+
+        input[disabled] + span,
+        .disabled
+        {
+            color: #999;
         }
 
         a
@@ -66,13 +72,18 @@
                 display: block;
                 font-weight: normal;
 
-                &:hover
+                &:not(.disabled)
                 {
-                    background-color: #F5F5F5;
+                    cursor: pointer;
+
+                    &:hover
+                    {
+                        background-color: #F5F5F5;
+                    }
                 }
             }
 
-            span
+            > span
             {
                 cursor: default;
             }
@@ -84,7 +95,7 @@
                 outline: none;
             }
         }
-    }    
+    }
 
     .select-group-title
     {

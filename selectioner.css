@@ -40,10 +40,14 @@
 }
 .select-popup > ul {
   padding: 4px 0px;
-  max-height: 118px;
+  max-height: 120px;
 }
 .select-popup > ul > li {
   padding: 0px 4px;
+}
+.select-popup > ul input[disabled] + span,
+.select-popup > ul .disabled {
+  color: #999;
 }
 .select-popup > ul a {
   display: block;
@@ -66,10 +70,13 @@
   display: block;
   font-weight: normal;
 }
-.select-popup ul li label:hover {
+.select-popup ul li label:not(.disabled) {
+  cursor: pointer;
+}
+.select-popup ul li label:not(.disabled):hover {
   background-color: #F5F5F5;
 }
-.select-popup ul li span {
+.select-popup ul li > span {
   cursor: default;
 }
 .select-popup ul li input[type="checkbox"] {
