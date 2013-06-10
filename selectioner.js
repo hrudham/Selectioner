@@ -1362,6 +1362,8 @@ DateSelect.prototype.renderBody = function(date, nextMonthDate, prevMonthDate)
 							.val(dateToString(dayDate))
 							.trigger('change.selectioner');
 							
+						dateSelect.popup.hide();
+							
 						dateSelect.renderDays(dateSelect.getDate());
 					}
 				);
