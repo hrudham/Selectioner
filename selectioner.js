@@ -731,6 +731,22 @@ ComboBox.prototype.render = function()
 	
 	var button = $('<span />')
 		.addClass(Selectioner.Settings.cssPrefix + 'button');
+		
+	this.selectioner.on
+		(
+			'show.selectioner',
+			function()
+			{
+				comboBox.element.one
+					(
+						'focusin.selectioner', 
+						function()
+						{
+							comboBox.textElement.select();
+						}
+					);
+			}
+		);
 	
 	this.element
 		.append(button)
