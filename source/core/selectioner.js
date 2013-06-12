@@ -46,14 +46,6 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 
 Selectioner.prototype = new Eventable();
 
-Selectioner.Settings =
-{
-	cssPrefix: 'select-',
-	noSelectionText: 'Select an option',
-	emptyOptionText: 'None',
-	maxAutoCompleteItems: 5
-};
-
 Selectioner.Core = {};
 
 Selectioner.Dialog = {};
@@ -63,3 +55,11 @@ Selectioner.Display = {};
 Selectioner.Extensions = {};
 
 Selectioner.Popup = {};
+
+Selectioner.Settings =
+{
+	cssPrefix: 'select-',
+	noSelectionText: 'Select an option',
+	emptyOptionText: 'None',
+	maxAutoCompleteItems: 5
+};

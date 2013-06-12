@@ -177,14 +177,6 @@ Eventable.prototype.trigger = function (name, data)
 
 Selectioner.prototype = new Eventable();
 
-Selectioner.Settings =
-{
-	cssPrefix: 'select-',
-	noSelectionText: 'Select an option',
-	emptyOptionText: 'None',
-	maxAutoCompleteItems: 5
-};
-
 Selectioner.Core = {};
 
 Selectioner.Dialog = {};
@@ -194,25 +186,79 @@ Selectioner.Display = {};
 Selectioner.Extensions = {};
 
 Selectioner.Popup = {};
+
+Selectioner.Settings =
+{
+	cssPrefix: 'select-',
+	noSelectionText: 'Select an option',
+	emptyOptionText: 'None',
+	maxAutoCompleteItems: 5
+};
+// this provides some basic keyboard integration. Since non-input 
+// elements without a tab-index attribute do not trigger key-related
+// events, we catch them on the document level and then feed them
+// down to any currently visible or focused selectioners.
+var keyboardReceiver = Selectioner.Core.KeyboardReceiver = function() { };
+
+keyboardReceiver.prototype.onKeyDown = function(key, event)
+{
+	// This method should typically be overridden by 
+	// the prototypes that inherit from this prototype.
+};
+
+keyboardReceiver.prototype.getKeyboardFocus = function()
+{
+	keyboardReceiver._currentReceiver = this;
+};
+
+keyboardReceiver.prototype.removeKeyboardFocus = function()
+{
+	if (keyboardReceiver._currentReceiver === this)
+	{
+		keyboardReceiver._currentReceiver = null;
+	}
+};
+
+$(document)
+	.off('keydown.selectioner')
+	.on
+	(
+		'keydown.selectioner',
+		function(event)
+		{
+			if (keyboardReceiver._currentReceiver)
+			{
+				keyboardReceiver._currentReceiver.onKeyDown
+					(
+						event.which || event.keyCode,
+						event
+					);
+			}
+		}
+	);
+
+
 var Popup = function() {};
+
+Popup.prototype = new Selectioner.Core.KeyboardReceiver();
 
 Popup.prototype.initialize = function(selectioner)
 {
+	var popup = this;
+
 	this.selectioner = selectioner;
 	this.dialogs = [];
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
 		.css
-		({
-			visibility: 'hidden',
-			position: 'absolute',
-			zIndex: '-1'
-		});
+			({
+				visibility: 'hidden',
+				position: 'absolute',
+				zIndex: '-1'
+			});
 
 	this.update();
-	
-	var popup = this;
 	
 	// If the contents of the pop-up changes while the 
 	// pop-up is actually displayed, then make sure it 
@@ -233,7 +279,6 @@ Popup.prototype.initialize = function(selectioner)
 			}
 		);
 	
-
 	$('body').append(this.element);
 };
 
@@ -381,7 +426,30 @@ Popup.prototype.isShown = function()
 {
 	return this._isVisible;
 };
+
+keyboardReceiver.prototype.onKeyDown = function(key, event)
+{
+	// Keyboard integration
+	switch(event.which || event.keyCode)
+	{
+		case 27: // escape
+			this.hide();
+			this.selectioner.display.getKeyboardFocus();
+			break;
+		case 38: // up arrow
+			event.preventDefault();
+			this.hide();
+			break;
+		case 40: // down arrow
+			event.preventDefault();
+			this.show();
+			this.getKeyboardFocus();
+			break;
+	}
+};
 var Display = Selectioner.Core.Display = function() {};
+
+Display.prototype = new Selectioner.Core.KeyboardReceiver();
 
 Display.prototype.initialize = function(selectioner)
 {
@@ -456,39 +524,52 @@ Display.prototype.createDisplay = function()
 Display.prototype.createPopup = function()
 {
 	// Bind this display to a popup.
+	var dialog = this;
 	var popup = this.popup = new Popup();
 	popup.initialize(this.selectioner);
 
-	var displayElement = this.selectioner.display.element;
+	
+	var displayElement = this.selectioner
+		.display
+		.element;
 
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
 		.on
-		(
-			'focusin.selectioner',
-			function()
-			{
-				popup.show();
-			}
-		)
+			(
+				'focusin.selectioner',
+				function()
+				{
+					popup.show();
+					dialog.getKeyboardFocus();
+				}
+			)
 		.children()
 		.andSelf()
 		.on
-		(
-			'mousedown.selectioner',
-			function(event)
-			{
-				event.stopPropagation();
-				if (popup.isShown())
+			(
+				'mousedown.selectioner',
+				function(event)
 				{
-					popup.hide();
+					event.stopPropagation();
+					if (popup.isShown())
+					{
+						popup.hide();
+					}
+					else
+					{
+						popup.show();
+					}
 				}
-				else
+			)
+		.on
+			(
+				'focusout',
+				function()
 				{
-					popup.show();
+					dialog.removeKeyboardFocus();
 				}
-			}
-		);
+			);
 
 	// Hide the pop-up whenever it loses focus to an
 	// element that is not part of the pop-up or display.
@@ -505,6 +586,7 @@ Display.prototype.createPopup = function()
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
+					popup.removeKeyboardFocus();
 				}
 			}
 		);
@@ -576,6 +658,26 @@ Display.prototype.getNoSelectionText = function()
 	}
 	
 	return text;	
+};
+
+Display.prototype.onKeyDown = function(key, event)
+{
+	// Keyboard integration
+	switch(event.which || event.keyCode)
+	{
+		case 27: // escape
+			this.popup.hide();
+			break;
+		case 38: // up arrow
+			event.preventDefault();
+			this.popup.hide();
+			break;
+		case 40: // down arrow
+			event.preventDefault();
+			this.popup.show();
+			this.popup.getKeyboardFocus();
+			break;
+	}
 };
 var Dialog = Selectioner.Core.Dialog = function() {};
 
@@ -1157,6 +1259,7 @@ AutoComplete.prototype.render = function()
 
 	this.element = $('<ul />');
 	this.update();
+	this._textValue = this.textElement.val();
 	
 	var dialog = this;
 	
@@ -1165,14 +1268,19 @@ AutoComplete.prototype.render = function()
 			'keyup', 
 			function(event)
 			{
-				dialog.update();
-				if (!dialog.popup.isShown())
+				if (dialog._textValue !== dialog.textElement.val())
 				{
-					dialog.popup.show();
-				}
-				else
-				{
-					dialog.popup.reposition();
+					dialog.update();
+					if (!dialog.popup.isShown())
+					{
+						dialog.popup.show();
+					}
+					else
+					{
+						dialog.popup.reposition();
+					}
+					
+					dialog._textValue = dialog.textElement.val();
 				}
 			}
 		);

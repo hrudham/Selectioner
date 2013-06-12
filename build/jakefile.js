@@ -11,6 +11,7 @@ var getSourceFiles = function ()
             sourcePath + 'header.js',
 			sourcePath + 'Core/eventable.js',
 			sourcePath + 'Core/selectioner.js',
+			sourcePath + 'Core/keyboard.js',
 			sourcePath + 'Core/popup.js',
 			sourcePath + 'Core/display.js',
 			sourcePath + 'Core/dialog.js',

@@ -1,5 +1,7 @@
 var Display = Selectioner.Core.Display = function() {};
 
+Display.prototype = new Selectioner.Core.KeyboardReceiver();
+
 Display.prototype.initialize = function(selectioner)
 {
 	this.selectioner = selectioner;
@@ -73,39 +75,52 @@ Display.prototype.createDisplay = function()
 Display.prototype.createPopup = function()
 {
 	// Bind this display to a popup.
+	var dialog = this;
 	var popup = this.popup = new Popup();
 	popup.initialize(this.selectioner);
 
-	var displayElement = this.selectioner.display.element;
+	
+	var displayElement = this.selectioner
+		.display
+		.element;
 
 	// Hide or show the pop-up on mouse-down or focus-in.
 	this.element
 		.on
-		(
-			'focusin.selectioner',
-			function()
-			{
-				popup.show();
-			}
-		)
+			(
+				'focusin.selectioner',
+				function()
+				{
+					popup.show();
+					dialog.getKeyboardFocus();
+				}
+			)
 		.children()
 		.andSelf()
 		.on
-		(
-			'mousedown.selectioner',
-			function(event)
-			{
-				event.stopPropagation();
-				if (popup.isShown())
+			(
+				'mousedown.selectioner',
+				function(event)
 				{
-					popup.hide();
+					event.stopPropagation();
+					if (popup.isShown())
+					{
+						popup.hide();
+					}
+					else
+					{
+						popup.show();
+					}
 				}
-				else
+			)
+		.on
+			(
+				'focusout',
+				function()
 				{
-					popup.show();
+					dialog.removeKeyboardFocus();
 				}
-			}
-		);
+			);
 
 	// Hide the pop-up whenever it loses focus to an
 	// element that is not part of the pop-up or display.
@@ -122,6 +137,7 @@ Display.prototype.createPopup = function()
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
+					popup.removeKeyboardFocus();
 				}
 			}
 		);
@@ -193,4 +209,24 @@ Display.prototype.getNoSelectionText = function()
 	}
 	
 	return text;	
+};
+
+Display.prototype.onKeyDown = function(key, event)
+{
+	// Keyboard integration
+	switch(event.which || event.keyCode)
+	{
+		case 27: // escape
+			this.popup.hide();
+			break;
+		case 38: // up arrow
+			event.preventDefault();
+			this.popup.hide();
+			break;
+		case 40: // down arrow
+			event.preventDefault();
+			this.popup.show();
+			this.popup.getKeyboardFocus();
+			break;
+	}
 };

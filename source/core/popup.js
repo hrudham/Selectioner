@@ -1,22 +1,24 @@
 var Popup = function() {};
 
+Popup.prototype = new Selectioner.Core.KeyboardReceiver();
+
 Popup.prototype.initialize = function(selectioner)
 {
+	var popup = this;
+
 	this.selectioner = selectioner;
 	this.dialogs = [];
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
 		.css
-		({
-			visibility: 'hidden',
-			position: 'absolute',
-			zIndex: '-1'
-		});
+			({
+				visibility: 'hidden',
+				position: 'absolute',
+				zIndex: '-1'
+			});
 
 	this.update();
-	
-	var popup = this;
 	
 	// If the contents of the pop-up changes while the 
 	// pop-up is actually displayed, then make sure it 
@@ -37,7 +39,6 @@ Popup.prototype.initialize = function(selectioner)
 			}
 		);
 	
-
 	$('body').append(this.element);
 };
 
@@ -184,4 +185,25 @@ Popup.prototype.hide = function()
 Popup.prototype.isShown = function()
 {
 	return this._isVisible;
+};
+
+keyboardReceiver.prototype.onKeyDown = function(key, event)
+{
+	// Keyboard integration
+	switch(event.which || event.keyCode)
+	{
+		case 27: // escape
+			this.hide();
+			this.selectioner.display.getKeyboardFocus();
+			break;
+		case 38: // up arrow
+			event.preventDefault();
+			this.hide();
+			break;
+		case 40: // down arrow
+			event.preventDefault();
+			this.show();
+			this.getKeyboardFocus();
+			break;
+	}
 };

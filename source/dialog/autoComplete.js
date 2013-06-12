@@ -27,22 +27,28 @@ AutoComplete.prototype.render = function()
 
 	this.element = $('<ul />');
 	this.update();
+	this._textValue = this.textElement.val();
 	
 	var dialog = this;
 	
 	this.textElement.on
 		(
-			'keyup', 
+			'keyup change', 
 			function(event)
 			{
-				dialog.update();
-				if (!dialog.popup.isShown())
+				if (dialog._textValue !== dialog.textElement.val())
 				{
-					dialog.popup.show();
-				}
-				else
-				{
-					dialog.popup.reposition();
+					dialog.update();
+					if (!dialog.popup.isShown())
+					{
+						dialog.popup.show();
+					}
+					else
+					{
+						dialog.popup.reposition();
+					}
+					
+					dialog._textValue = dialog.textElement.val();
 				}
 			}
 		);
