@@ -12,13 +12,15 @@ ListBox.prototype.validateTarget = function()
 
 ListBox.prototype.render = function()
 {
+	var display = this;
+	
 	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
 		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
-	
+			
 	this.element
 		.append(button)
 		.append(this.textElement);

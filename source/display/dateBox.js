@@ -10,6 +10,11 @@ DateBox.prototype.validateTarget = function()
 	}
 };
 
+DateBox.prototype.isReadOnly = function()
+{
+	return this.selectioner.target.is('[readonly]');
+};
+
 DateBox.prototype.render = function()
 {
 	this.element = $('<span />');

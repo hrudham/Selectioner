@@ -87,32 +87,39 @@
 .select-popup .select-group-title {
   font-weight: bold;
 }
+input[disabled] + .select-display,
+select[disabled] + .select-display,
+textarea[disabled] + .select-display {
+  border-color: #CCC;
+}
+input[disabled] + .select-display .select-button,
+select[disabled] + .select-display .select-button,
+textarea[disabled] + .select-display .select-button {
+  opacity: 0.5;
+  cursor: default;
+}
+input[disabled] + .select-display > .select-text,
+select[disabled] + .select-display > .select-text,
+textarea[disabled] + .select-display > .select-text {
+  color: #AAA;
+  cursor: default;
+}
+input[readonly] + .select-display .select-button,
+select[readonly] + .select-display .select-button,
+textarea[readonly] + .select-display .select-button {
+  display: none;
+  cursor: auto;
+}
+input[readonly] + .select-display > .select-text,
+select[readonly] + .select-display > .select-text,
+textarea[readonly] + .select-display > .select-text {
+  cursor: auto;
+}
 .select-display {
   display: inline-block;
   outline: none;
   position: relative;
   border: 1px solid #AAA;
-}
-.select-display.disabled,
-.select-display.disabled .none {
-  color: #AAA;
-  border-color: #CCC;
-}
-.select-display.disabled .select-button,
-.select-display.disabled .none .select-button {
-  opacity: 0.5;
-  cursor: default;
-}
-.select-display.disabled > span.select-text,
-.select-display.disabled .none > span.select-text {
-  cursor: default;
-}
-.select-display.readonly .select-button {
-  display: none;
-  cursor: auto;
-}
-.select-display.readonly > span.select-text {
-  cursor: auto;
 }
 .select-display:focus {
   border-color: #5CA9E4;
@@ -136,9 +143,6 @@
   background-color: transparent;
   /* for text inputs, which usually have a white background. */
 
-}
-.select-display > .select-text[disabled] {
-  color: #AAA;
 }
 .select-display > .select-text:focus {
   -webkit-box-shadow: none;

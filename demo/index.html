@@ -7,14 +7,92 @@
 		<link href="../selectioner.css" rel="stylesheet" />
 		<script src="../dependencies/jquery-1.9.1.js"></script>
 		<script src="../selectioner.js"></script>
+		<script>
+			$(
+				function()
+				{
+					var resetForm = function()
+					{
+						$('form')[0].reset();
+					};
+					
+					var toggleDisable = function()
+					{
+						var button = $(this);
+						var isDisabled = !button.data('disabled');
+						button.data('disabled', isDisabled);
+					
+						// Select elements don't get moved, 
+						// but input[type="text"] elements
+						// often do, hence no label sibling
+						// search for them.
+						$('form label + select, form input')
+							.prop('disabled', isDisabled);
+						
+						if (!isDisabled)
+						{
+							$(this).text('Disable');
+						}						
+						else
+						{
+							$(this).text('Enable');
+						}
+					};
+					
+					var toggleReadOnly = function()
+					{
+						var button = $(this);
+						var isReadOnly = !button.data('readonly');
+						button.data('readonly', isReadOnly);
+					
+						// Select elements don't get moved, 
+						// but input[type="text"] elements
+						// often do, hence no label sibling
+						// search for them.
+						$('form input')
+							.prop('readonly', isReadOnly);
+						
+						if (!isReadOnly)
+						{
+							$(this).text('Read Only');
+						}						
+						else
+						{
+							$(this).text('Editable');
+						}
+					};
+				
+					$('#ResetButton').click(resetForm);
+					$('#ToggleDisableButton').click(toggleDisable);
+					$('#ToggleReadonlyButton').click(toggleReadOnly);
+				}
+			);
+		</script>
 	</head>
 	<body>
 		<h1>Selectioner</h1>
+		<h2>Page State Controls</h2>
+		<p>
+			<a id="ResetButton" href="javascript:;" class="button">Reset Form</a>
+			<a id="ToggleDisableButton" href="javascript:;" class="button">Disable</a>
+			<a id="ToggleReadonlyButton" href="javascript:;" class="button">Read Only</a>
+		</p>
+		<div class="box">
+			<p>
+				<strong>Note:</strong> The "Read Only" toggle will only affect elements with 
+				text <code>&lt;input /&gt;</code> elements. If there is an underlying 
+				<code>&lt;select /&gt;</code> element, this will remain editable, since 
+				these elements do not support the <code>readonly</code> property in HTML5. 
+				Thus only the combo-selects, auto-completes and date-select will be affected,
+				and only the date-select will have it's drop-down disabled.
+			<p>
+		</div>
+		<h2>Examples</h2>
 		<form>
 			<div class="box">
-				<h2>Single-select (no ID)</h2>
+				<h3>Single-select</h3>
 				<p>
-					<label>Basic (no ID): </label>
+					<label>Basic with no ID attribute: </label>
 					<select class="basic" data-placeholder="Pick an option">
 						<option></option><!-- empty option -->
 						<option>Option 1</option>
@@ -29,11 +107,8 @@
 						});
 					</script>
 				</p>
-			</div>
-			<div class="box">
-				<h2>Single-select</h2>
 				<p>
-					<label for="BasicSingle">Basic: </label>
+					<label for="BasicSingle">Basic with ID attribute: </label>
 					<select id="BasicSingle">
 						<option></option><!-- empty option -->
 						<option>Option 1</option>
@@ -75,7 +150,7 @@
 				</p>
 			</div>
 			<div class="box">
-				<h2>Multi-select</h2>
+				<h3>Multi-select</h3>
 				<p>
 					<label for="BasicMultiple">Basic Multiple: </label>
 					<select id="BasicMultiple" multiple="multiple">
@@ -119,7 +194,7 @@
 				</p>
 			</div>
 			<div class="box">
-				<h2>Combo-select</h2>
+				<h3>Combo-select</h3>
 				<p>
 					<label for="BasicComboText">Basic: </label>
 					<select id="BasicComboSelect" data-placeholder="Pick an option">
@@ -166,7 +241,7 @@
 				</p>
 			</div>
 			<div class="box">
-				<h2>Auto-complete</h2>
+				<h3>Auto-complete</h3>
 				<p>
 					<label for="BasicAutoCompleteText">Basic: </label>
 					<select id="BasicAutoCompleteSelect">
@@ -267,7 +342,7 @@
 				</p>
 			</div>
 			<div class="box">
-				<h2>Date</h2>
+				<h3>Date</h3>
 				<p>
 					<label for="DateInput">Date: </label>
 					<!-- set a value for this control the following attribute: value="2013-04-15" -->
@@ -280,9 +355,9 @@
 				</p>
 			</div>
 			<div class="box">
-				<h2>Custom</h2>
+				<h3>Custom</h3>
 				<p>
-					<label for="CustomText">Custom: </label>
+					<label for="CustomSelect">Custom: </label>
 					<select id="CustomSelect">
 						<option></option>
 						<option>Red</option>
@@ -335,9 +410,6 @@
 						});
 					</script>
 				</p>
-			</div>
-			<div class="box">
-				<a href="javascript:;" onclick="$('form')[0].reset()">Reset Form<a>
 			</div>
 		</form>
 	</body>

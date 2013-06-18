@@ -103,6 +103,42 @@
     }
 }
 
+input,
+select,
+textarea
+{
+    &[disabled] + .select-display
+    {
+        border-color: #CCC;
+
+        .select-button
+        {
+            opacity: 0.5;
+            cursor: default;
+        }
+
+        > .select-text
+        {
+            color: #AAA;
+            cursor: default;
+        }
+    }
+
+    &[readonly] + .select-display
+    {
+        .select-button
+		{
+            display: none;
+            cursor: auto;
+        }
+
+        > .select-text
+	    {
+		    cursor: auto;
+	    }
+    }
+}
+
 .select-display
 {
 	display: inline-block;
@@ -110,38 +146,6 @@
 	position: relative;
 	border: 1px solid #AAA;
 	
-	&.disabled,
-    &.disabled .none
-	{
-        color: #AAA;
-        border-color: #CCC;
-
-		.select-button
-		{
-			opacity: 0.5;
-            cursor: default;
-		}
-
-	    > span.select-text
-	    {
-		    cursor: default;
-	    }
-	}
-
-    &.readonly
-	{
-		.select-button
-		{
-            display: none;
-            cursor: auto;
-        }
-
-        > span.select-text
-	    {
-		    cursor: auto;
-	    }
-    }
-
 	&:focus
 	{
 		border-color: #5CA9E4;
@@ -162,12 +166,7 @@
 		vertical-align: middle;
 		outline: none;
 		background-color: transparent;	/* for text inputs, which usually have a white background. */
-
-        &[disabled]
-        {
-            color: #AAA;
-        }
-				
+        				
 		&:focus
 		{
             .box-shadow(none);

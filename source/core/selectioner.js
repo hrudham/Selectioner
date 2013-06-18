@@ -10,8 +10,6 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 	this.target = target = $(target);
 	this.display = display;
 	this.dialogs = dialogs;
-	this.isDisabled = target.is('[disabled]');
-	this.isReadOnly = target.is('[readonly]');
 
 	if (target.data('selectioner'))
 	{

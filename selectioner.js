@@ -141,8 +141,6 @@ Eventable.prototype.trigger = function (name, data)
 	this.target = target = $(target);
 	this.display = display;
 	this.dialogs = dialogs;
-	this.isDisabled = target.is('[disabled]');
-	this.isReadOnly = target.is('[readonly]');
 
 	if (target.data('selectioner'))
 	{
@@ -375,7 +373,7 @@ Popup.prototype.reposition = function()
 // Shows the pop-up.
 Popup.prototype.show = function()
 {
-	if (!this.selectioner.isDisabled && !this.selectioner.isReadOnly)
+	if (!this.selectioner.display.isDisabled() && !this.selectioner.display.isReadOnly())
 	{
 		// Hide the popup any time the window resizes.
 		var popup = this;
@@ -467,20 +465,36 @@ Display.prototype.initialize = function(selectioner)
 	this.createPopup();
 };
 
-Display.prototype.refreshInteractive = function()
+Display.prototype.updateInteractivity = function()
 {
-	if (this.selectioner.isDisabled)
+	var isDisabled = this.isDisabled();
+
+	if (isDisabled)
 	{
 		this.element.removeAttr('tabindex');		
 	}
 	else
 	{
 		this.element
-			.prop('tabindex', this.selectioner.target.prop('tabindex'));
+			.prop
+				(
+					'tabindex', 
+					this.selectioner.target.prop('tabindex')
+				);
 	}
 	
-	this.element.toggleClass('disabled', this.selectioner.isDisabled);
-	this.element.toggleClass('readonly', this.selectioner.isReadOnly);
+	this.element.toggleClass('disabled', isDisabled);
+	this.element.toggleClass('readonly', this.isReadOnly());
+};
+
+Display.prototype.isReadOnly = function()
+{
+	return false;
+};
+
+Display.prototype.isDisabled = function()
+{
+	return this.selectioner.target.is('[disabled]');
 };
 
 Display.prototype.createDisplay = function()
@@ -493,8 +507,8 @@ Display.prototype.createDisplay = function()
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display');
 	
-	this.refreshInteractive();
-		
+	this.updateInteractivity();
+			
 	// Make sure we update when parent forms are reset.
 	this.selectioner
 		.target
@@ -752,13 +766,15 @@ ListBox.prototype.validateTarget = function()
 
 ListBox.prototype.render = function()
 {
+	var display = this;
+	
 	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
 		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
-	
+			
 	this.element
 		.append(button)
 		.append(this.textElement);
@@ -882,13 +898,6 @@ ComboBox.prototype.render = function()
 		.append(this.textElement);
 };
 
-ComboBox.prototype.refreshInteractive = function()
-{
-	this.selectioner.isReadOnly = this.textElement.is('[readonly]');
-	Selectioner.Core.Display.prototype.refreshInteractive.call(this);
-	this.textElement.prop('disabled', this.selectioner.isDisabled);
-};
-
 ComboBox.prototype.textChanged = function()
 {
 	// Find out if the text matches an item in 
@@ -971,6 +980,11 @@ DateBox.prototype.validateTarget = function()
 	{
 		throw new Error('DateBox expects it\'s underlying target element to to be a <input type="date" /> element');
 	}
+};
+
+DateBox.prototype.isReadOnly = function()
+{
+	return this.selectioner.target.is('[readonly]');
 };
 
 DateBox.prototype.render = function()

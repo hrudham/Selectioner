@@ -25,39 +25,59 @@ h1, h2, h3, h4
 
 h1
 {
-	font-size: 15px;
+	font-size: 18px;
 	color: #FFF;
 	background-color: #4F81BD;
 }
 
 h2
 {
-	font-size: 15px;
-	color: #333;
-	background-color: #DBE5F1;
+	font-size: 16px;
+	color: #FFF;
+	background-color: #6FA1DD;
 }
 
 h3, h4
 {
-	font-size: 15px;
+	font-size: 14px;
 	color: #243F60;
-	border-top: solid 1px #4F81BD;
-	border-left: solid 1px #4F81BD;
-}
-
-.box
-{
-	box-sizing: border-box;
-	padding-right: 16px;
-	padding: 4px;
-	border: solid 1px #CCC;
-	margin: 16px 0px;
-	border-radius: 4px;
+    background-color: #EBF5FF;
+	border: solid 1px #6FA1DD;
+    margin: 0px 0px 12px 0px;
 }
 
 p
 {
-	margin-left: 8px;
+	margin: 16px 0px;
+}
+
+.box
+{
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding-right: 16px;
+    padding: 0px;
+    border: solid 1px #CCC;
+    margin: 16px 0px;
+    border-radius: 4px;
+
+    > h1, h2, h3, h4
+    {
+        &:first-child
+        {
+            border-radius: 4px 4px 0px 0px;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            border-bottom-color: #CCC;
+        }
+    }
+
+    p
+    {
+	    margin: 8px;
+    }
 }
 
 .box > p > label
@@ -65,22 +85,29 @@ p
 	cursor: pointer;
 	font-weight: bold;
 	display: inline-block;
-	min-width: 120px;
+	min-width: 160px;
 	margin: 0px 0px 4px 0px;
 }
 
-.select-popup a.button
+.button
 {
-	background-color: #3377FF;
-	display: inline-block;
-	border-radius: 4px;
-	padding: 1px 8px;
-	color: #FFF;
-	text-decoration: none;
-	margin: 4px;
-}
+    background-color: #EEE;
+    display: inline-block;
+    border-radius: 4px;
+    padding: 1px 8px;
+    color: #333;
+    text-decoration: none;
+    margin: 4px;
+    border: 1px solid #999;
+    line-height: 20px;
 
-.select-popup a.button:hover
-{
-	background-color: #4488FF;
+    &:hover
+    {
+        background-color: #CCC;
+    }
+
+    &:active
+    {
+        background-color: #999;
+    }
 }
