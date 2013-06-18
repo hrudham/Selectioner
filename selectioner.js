@@ -467,6 +467,22 @@ Display.prototype.initialize = function(selectioner)
 	this.createPopup();
 };
 
+Display.prototype.refreshInteractive = function()
+{
+	if (this.selectioner.isDisabled)
+	{
+		this.element.removeAttr('tabindex');		
+	}
+	else
+	{
+		this.element
+			.prop('tabindex', this.selectioner.target.prop('tabindex'));
+	}
+	
+	this.element.toggleClass('disabled', this.selectioner.isDisabled);
+	this.element.toggleClass('readonly', this.selectioner.isReadOnly);
+};
+
 Display.prototype.createDisplay = function()
 {
 	var display = this;
@@ -477,11 +493,8 @@ Display.prototype.createDisplay = function()
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display');
 	
-	if (!this.selectioner.isDisabled)
-	{
-		this.element.prop('tabindex', this.selectioner.target.prop('tabindex'));
-	}
-	
+	this.refreshInteractive();
+		
 	// Make sure we update when parent forms are reset.
 	this.selectioner
 		.target
@@ -746,16 +759,6 @@ ListBox.prototype.render = function()
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
 	
-	if (this.selectioner.isDisabled)
-	{
-		this.element.addClass('disabled');
-	}
-	
-	if (this.selectioner.isReadOnly)
-	{
-		this.element.addClass('readonly');
-	}
-	
 	this.element
 		.append(button)
 		.append(this.textElement);
@@ -879,6 +882,13 @@ ComboBox.prototype.render = function()
 		.append(this.textElement);
 };
 
+ComboBox.prototype.refreshInteractive = function()
+{
+	this.selectioner.isReadOnly = this.textElement.is('[readonly]');
+	Selectioner.Core.Display.prototype.refreshInteractive.call(this);
+	this.textElement.prop('disabled', this.selectioner.isDisabled);
+};
+
 ComboBox.prototype.textChanged = function()
 {
 	// Find out if the text matches an item in 
@@ -971,16 +981,6 @@ DateBox.prototype.render = function()
 		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
-	
-	if (this.selectioner.isDisabled)
-	{
-		this.element.addClass('disabled');
-	}
-	
-	if (this.selectioner.isReadOnly)
-	{
-		this.element.addClass('readonly');
-	}
 	
 	this.element
 		.append(button)

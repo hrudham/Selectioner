@@ -13,6 +13,22 @@ Display.prototype.initialize = function(selectioner)
 	this.createPopup();
 };
 
+Display.prototype.refreshInteractive = function()
+{
+	if (this.selectioner.isDisabled)
+	{
+		this.element.removeAttr('tabindex');		
+	}
+	else
+	{
+		this.element
+			.prop('tabindex', this.selectioner.target.prop('tabindex'));
+	}
+	
+	this.element.toggleClass('disabled', this.selectioner.isDisabled);
+	this.element.toggleClass('readonly', this.selectioner.isReadOnly);
+};
+
 Display.prototype.createDisplay = function()
 {
 	var display = this;
@@ -23,11 +39,8 @@ Display.prototype.createDisplay = function()
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display');
 	
-	if (!this.selectioner.isDisabled)
-	{
-		this.element.prop('tabindex', this.selectioner.target.prop('tabindex'));
-	}
-	
+	this.refreshInteractive();
+		
 	// Make sure we update when parent forms are reset.
 	this.selectioner
 		.target

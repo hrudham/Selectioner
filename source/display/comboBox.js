@@ -75,6 +75,13 @@ ComboBox.prototype.render = function()
 		.append(this.textElement);
 };
 
+ComboBox.prototype.refreshInteractive = function()
+{
+	this.selectioner.isReadOnly = this.textElement.is('[readonly]');
+	Selectioner.Core.Display.prototype.refreshInteractive.call(this);
+	this.textElement.prop('disabled', this.selectioner.isDisabled);
+};
+
 ComboBox.prototype.textChanged = function()
 {
 	// Find out if the text matches an item in 
