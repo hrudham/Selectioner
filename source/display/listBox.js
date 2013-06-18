@@ -19,6 +19,16 @@ ListBox.prototype.render = function()
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
 	
+	if (this.selectioner.isDisabled)
+	{
+		this.element.addClass('disabled');
+	}
+	
+	if (this.selectioner.isReadOnly)
+	{
+		this.element.addClass('readonly');
+	}
+	
 	this.element
 		.append(button)
 		.append(this.textElement);

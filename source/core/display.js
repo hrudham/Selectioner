@@ -21,8 +21,12 @@ Display.prototype.createDisplay = function()
 	this.update();
 
 	this.element
-		.addClass(Selectioner.Settings.cssPrefix + 'display')
-		.prop('tabindex', this.selectioner.target.prop('tabindex'));
+		.addClass(Selectioner.Settings.cssPrefix + 'display');
+	
+	if (!this.selectioner.isDisabled)
+	{
+		this.element.prop('tabindex', this.selectioner.target.prop('tabindex'));
+	}
 	
 	// Make sure we update when parent forms are reset.
 	this.selectioner
@@ -79,7 +83,6 @@ Display.prototype.createPopup = function()
 	var popup = this.popup = new Popup();
 	popup.initialize(this.selectioner);
 
-	
 	var displayElement = this.selectioner
 		.display
 		.element;

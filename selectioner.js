@@ -141,6 +141,8 @@ Eventable.prototype.trigger = function (name, data)
 	this.target = target = $(target);
 	this.display = display;
 	this.dialogs = dialogs;
+	this.isDisabled = target.is('[disabled]');
+	this.isReadOnly = target.is('[readonly]');
 
 	if (target.data('selectioner'))
 	{
@@ -373,38 +375,41 @@ Popup.prototype.reposition = function()
 // Shows the pop-up.
 Popup.prototype.show = function()
 {
-	// Hide the popup any time the window resizes.
-	var popup = this;
-	$(window)
-		.one
-		(
-			'resize.selectioner',
-			function()
-			{
-				popup.hide();
-			}
-		);
-
-	if (!this.isShown())
+	if (!this.selectioner.isDisabled && !this.selectioner.isReadOnly)
 	{
-		this._isVisible = true;
-		this.update();
-		
-		var popUpHeight = this.element.height();
-		
-		this.reposition();
+		// Hide the popup any time the window resizes.
+		var popup = this;
+		$(window)
+			.one
+			(
+				'resize.selectioner',
+				function()
+				{
+					popup.hide();
+				}
+			);
 
-		this.element.css({ visibility: 'visible', zIndex: '' });
-		
-		if (popUpHeight != this.element.height())
+		if (!this.isShown())
 		{
-			// Height can often only be calculated by jQuery after the 
-			// element is visible on the page. If our CSS happens to change
-			// the height of the pop-up because of this, reposition it again.
+			this._isVisible = true;
+			this.update();
+			
+			var popUpHeight = this.element.height();
+			
 			this.reposition();
+
+			this.element.css({ visibility: 'visible', zIndex: '' });
+			
+			if (popUpHeight != this.element.height())
+			{
+				// Height can often only be calculated by jQuery after the 
+				// element is visible on the page. If our CSS happens to change
+				// the height of the pop-up because of this, reposition it again.
+				this.reposition();
+			}
+			
+			this.selectioner.trigger('show.selectioner');
 		}
-		
-		this.selectioner.trigger('show.selectioner');
 	}
 };
 
@@ -470,8 +475,12 @@ Display.prototype.createDisplay = function()
 	this.update();
 
 	this.element
-		.addClass(Selectioner.Settings.cssPrefix + 'display')
-		.prop('tabindex', this.selectioner.target.prop('tabindex'));
+		.addClass(Selectioner.Settings.cssPrefix + 'display');
+	
+	if (!this.selectioner.isDisabled)
+	{
+		this.element.prop('tabindex', this.selectioner.target.prop('tabindex'));
+	}
 	
 	// Make sure we update when parent forms are reset.
 	this.selectioner
@@ -528,7 +537,6 @@ Display.prototype.createPopup = function()
 	var popup = this.popup = new Popup();
 	popup.initialize(this.selectioner);
 
-	
 	var displayElement = this.selectioner
 		.display
 		.element;
@@ -738,6 +746,16 @@ ListBox.prototype.render = function()
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
 	
+	if (this.selectioner.isDisabled)
+	{
+		this.element.addClass('disabled');
+	}
+	
+	if (this.selectioner.isReadOnly)
+	{
+		this.element.addClass('readonly');
+	}
+	
 	this.element
 		.append(button)
 		.append(this.textElement);
@@ -849,6 +867,12 @@ ComboBox.prototype.render = function()
 					);
 			}
 		);
+		
+	if (this.selectioner.isDisabled)
+	{
+		this.element.addClass('disabled');
+		this.textElement.prop('disabled', true);
+	}
 	
 	this.element
 		.append(button)
@@ -947,6 +971,16 @@ DateBox.prototype.render = function()
 		.addClass(Selectioner.Settings.cssPrefix + 'text');
 	
 	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
+	
+	if (this.selectioner.isDisabled)
+	{
+		this.element.addClass('disabled');
+	}
+	
+	if (this.selectioner.isReadOnly)
+	{
+		this.element.addClass('readonly');
+	}
 	
 	this.element
 		.append(button)
@@ -1265,7 +1299,7 @@ AutoComplete.prototype.render = function()
 	
 	this.textElement.on
 		(
-			'keyup', 
+			'keyup change', 
 			function(event)
 			{
 				if (dialog._textValue !== dialog.textElement.val())

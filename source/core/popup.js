@@ -133,38 +133,41 @@ Popup.prototype.reposition = function()
 // Shows the pop-up.
 Popup.prototype.show = function()
 {
-	// Hide the popup any time the window resizes.
-	var popup = this;
-	$(window)
-		.one
-		(
-			'resize.selectioner',
-			function()
-			{
-				popup.hide();
-			}
-		);
-
-	if (!this.isShown())
+	if (!this.selectioner.isDisabled && !this.selectioner.isReadOnly)
 	{
-		this._isVisible = true;
-		this.update();
-		
-		var popUpHeight = this.element.height();
-		
-		this.reposition();
+		// Hide the popup any time the window resizes.
+		var popup = this;
+		$(window)
+			.one
+			(
+				'resize.selectioner',
+				function()
+				{
+					popup.hide();
+				}
+			);
 
-		this.element.css({ visibility: 'visible', zIndex: '' });
-		
-		if (popUpHeight != this.element.height())
+		if (!this.isShown())
 		{
-			// Height can often only be calculated by jQuery after the 
-			// element is visible on the page. If our CSS happens to change
-			// the height of the pop-up because of this, reposition it again.
+			this._isVisible = true;
+			this.update();
+			
+			var popUpHeight = this.element.height();
+			
 			this.reposition();
+
+			this.element.css({ visibility: 'visible', zIndex: '' });
+			
+			if (popUpHeight != this.element.height())
+			{
+				// Height can often only be calculated by jQuery after the 
+				// element is visible on the page. If our CSS happens to change
+				// the height of the pop-up because of this, reposition it again.
+				this.reposition();
+			}
+			
+			this.selectioner.trigger('show.selectioner');
 		}
-		
-		this.selectioner.trigger('show.selectioner');
 	}
 };
 

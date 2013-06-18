@@ -105,12 +105,42 @@
 
 .select-display
 {
-    .user-select(none);
-
 	display: inline-block;
 	outline: none;
 	position: relative;
 	border: 1px solid #AAA;
+	
+	&.disabled,
+    &.disabled .none
+	{
+        color: #AAA;
+        border-color: #CCC;
+
+		.select-button
+		{
+			opacity: 0.5;
+            cursor: default;
+		}
+
+	    > span.select-text
+	    {
+		    cursor: default;
+	    }
+	}
+
+    &.readonly
+	{
+		.select-button
+		{
+            display: none;
+            cursor: auto;
+        }
+
+        > span.select-text
+	    {
+		    cursor: auto;
+	    }
+    }
 
 	&:focus
 	{
@@ -132,6 +162,11 @@
 		vertical-align: middle;
 		outline: none;
 		background-color: transparent;	/* for text inputs, which usually have a white background. */
+
+        &[disabled]
+        {
+            color: #AAA;
+        }
 				
 		&:focus
 		{

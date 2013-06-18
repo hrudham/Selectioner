@@ -88,16 +88,31 @@
   font-weight: bold;
 }
 .select-display {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
   display: inline-block;
   outline: none;
   position: relative;
   border: 1px solid #AAA;
+}
+.select-display.disabled,
+.select-display.disabled .none {
+  color: #AAA;
+  border-color: #CCC;
+}
+.select-display.disabled .select-button,
+.select-display.disabled .none .select-button {
+  opacity: 0.5;
+  cursor: default;
+}
+.select-display.disabled > span.select-text,
+.select-display.disabled .none > span.select-text {
+  cursor: default;
+}
+.select-display.readonly .select-button {
+  display: none;
+  cursor: auto;
+}
+.select-display.readonly > span.select-text {
+  cursor: auto;
 }
 .select-display:focus {
   border-color: #5CA9E4;
@@ -122,6 +137,9 @@
   /* for text inputs, which usually have a white background. */
 
 }
+.select-display > .select-text[disabled] {
+  color: #AAA;
+}
 .select-display > .select-text:focus {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
@@ -144,7 +162,7 @@
   display: inline-block;
   height: 16px;
   width: 16px;
-  z-index: 50000;
+  z-index: 5000;
   /* Fixes a Chrome issue when elements float to the right of this element. */
 
   background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
