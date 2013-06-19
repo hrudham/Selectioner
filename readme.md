@@ -1,6 +1,8 @@
 #Selectioner
 
-A light-weight jQuery replacement for HTML select boxes.
+A light-weight jQuery replacement for HTML select boxes. 
+
+You can view the live demo here: [http://hrudham.github.io/](http://hrudham.github.io/)
 
 ## Introduction
 
