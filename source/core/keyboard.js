@@ -26,18 +26,18 @@ keyboardReceiver.prototype.removeKeyboardFocus = function()
 $(document)
 	.off('keydown.selectioner')
 	.on
-	(
-		'keydown.selectioner',
-		function(event)
-		{
-			if (keyboardReceiver._currentReceiver)
+		(
+			'keydown.selectioner',
+			function(event)
 			{
-				keyboardReceiver._currentReceiver.onKeyDown
-					(
-						event.which || event.keyCode,
-						event
-					);
+				if (keyboardReceiver._currentReceiver)
+				{
+					keyboardReceiver._currentReceiver.onKeyDown
+						(
+							event.which || event.keyCode,
+							event
+						);
+				}
 			}
-		}
-	);
+		);
 

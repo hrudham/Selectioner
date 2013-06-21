@@ -222,20 +222,20 @@ keyboardReceiver.prototype.removeKeyboardFocus = function()
 $(document)
 	.off('keydown.selectioner')
 	.on
-	(
-		'keydown.selectioner',
-		function(event)
-		{
-			if (keyboardReceiver._currentReceiver)
+		(
+			'keydown.selectioner',
+			function(event)
 			{
-				keyboardReceiver._currentReceiver.onKeyDown
-					(
-						event.which || event.keyCode,
-						event
-					);
+				if (keyboardReceiver._currentReceiver)
+				{
+					keyboardReceiver._currentReceiver.onKeyDown
+						(
+							event.which || event.keyCode,
+							event
+						);
+				}
 			}
-		}
-	);
+		);
 
 
 var Popup = function() {};
@@ -430,8 +430,58 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-keyboardReceiver.prototype.onKeyDown = function(key, event)
+/*
+Popup.prototype.getSiblingDialog = function(dialog, isNext)
+{	
+	var index = 0;
+	if (dialog)
+	{
+		index = this.dialogs.indexOf(dialog) + (isNext ? 1 : -1);
+	}
+
+	if (index > 0 && index === this.dialogs.length)
+	{
+		index = 0;
+	}
+	else if (index < 0)
+	{
+		index = this.dialogs.length - 1;
+	}
+	
+	return this.dialogs[index];
+}
+
+Popup.prototype.getKeyboardFocus = function()
 {
+	keyboardReceiver.prototype.getKeyboardFocus.call(this);
+	
+	if (this.element.hasClass('above'))
+	{
+		this.dialogs[this.dialogs.length - 1].getKeyboardFocus();
+	}
+	else
+	{
+		this.dialogs[0].getKeyboardFocus();
+	}
+};
+*/
+
+Popup.prototype.onKeyDown = function(key, event)
+{
+	var popup = this;
+	
+	var togglePopupVisibility = function(isUpArrow)
+	{
+		if (popup.isShown())
+		{
+			if (popup.element.hasClass('above') ^ isUpArrow)
+			{
+				popup.hide();
+				popup.selectioner.display.getKeyboardFocus();
+			}
+		}
+	};
+
 	// Keyboard integration
 	switch(event.which || event.keyCode)
 	{
@@ -441,12 +491,11 @@ keyboardReceiver.prototype.onKeyDown = function(key, event)
 			break;
 		case 38: // up arrow
 			event.preventDefault();
-			this.hide();
+			togglePopupVisibility(true);
 			break;
 		case 40: // down arrow
 			event.preventDefault();
-			this.show();
-			this.getKeyboardFocus();
+			togglePopupVisibility(false);
 			break;
 	}
 };
@@ -697,24 +746,44 @@ Display.prototype.getNoSelectionText = function()
 
 Display.prototype.onKeyDown = function(key, event)
 {
+	var popup = this.popup;
+
+	var togglePopupVisibility = function(isUpArrow)
+	{
+		if (popup.isShown())
+		{
+			if (popup.element.hasClass('above') ^ isUpArrow)
+			{
+				popup.hide();
+				popup.selectioner.display.getKeyboardFocus();
+			}
+		}
+		else
+		{
+			popup.show();
+			popup.getKeyboardFocus();
+		}
+	};
+
 	// Keyboard integration
 	switch(event.which || event.keyCode)
 	{
 		case 27: // escape
-			this.popup.hide();
+			popup.hide();
 			break;
 		case 38: // up arrow
 			event.preventDefault();
-			this.popup.hide();
+			togglePopupVisibility(true);
 			break;
 		case 40: // down arrow
 			event.preventDefault();
-			this.popup.show();
-			this.popup.getKeyboardFocus();
+			togglePopupVisibility(false);
 			break;
 	}
 };
 var Dialog = Selectioner.Core.Dialog = function() {};
+
+Dialog.prototype = new Selectioner.Core.KeyboardReceiver();
 
 Dialog.prototype.initialize = function(selectioner)
 {	
@@ -752,6 +821,17 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
+/*
+Dialog.prototype.discardKeyboardfocus = function()
+{
+	this.popup.discardDialogKeyboardFocus(this, null);
+}
+*/
+
+Dialog.prototype.onKeyDown = function(key, event)
+{
+	console.log(key);
+};
 var ListBox = Selectioner.Display.ListBox = function() {};
 
 ListBox.prototype = new Selectioner.Core.Display();

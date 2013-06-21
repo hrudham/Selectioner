@@ -1,5 +1,7 @@
 var Dialog = Selectioner.Core.Dialog = function() {};
 
+Dialog.prototype = new Selectioner.Core.KeyboardReceiver();
+
 Dialog.prototype.initialize = function(selectioner)
 {	
 	this.selectioner = selectioner;
@@ -34,4 +36,16 @@ Dialog.prototype.validateTarget = function()
 	// This method should be overwritten to validate the expected target of a dialog.
 	// If an invalid target element is found, descriptive errors should be thrown.
 	// This may be ignored if no validation is required.
+};
+
+/*
+Dialog.prototype.discardKeyboardfocus = function()
+{
+	this.popup.discardDialogKeyboardFocus(this, null);
+}
+*/
+
+Dialog.prototype.onKeyDown = function(key, event)
+{
+	console.log(key);
 };

@@ -245,20 +245,38 @@ Display.prototype.getNoSelectionText = function()
 
 Display.prototype.onKeyDown = function(key, event)
 {
+	var popup = this.popup;
+
+	var togglePopupVisibility = function(isUpArrow)
+	{
+		if (popup.isShown())
+		{
+			if (popup.element.hasClass('above') ^ isUpArrow)
+			{
+				popup.hide();
+				popup.selectioner.display.getKeyboardFocus();
+			}
+		}
+		else
+		{
+			popup.show();
+			popup.getKeyboardFocus();
+		}
+	};
+
 	// Keyboard integration
 	switch(event.which || event.keyCode)
 	{
 		case 27: // escape
-			this.popup.hide();
+			popup.hide();
 			break;
 		case 38: // up arrow
 			event.preventDefault();
-			this.popup.hide();
+			togglePopupVisibility(true);
 			break;
 		case 40: // down arrow
 			event.preventDefault();
-			this.popup.show();
-			this.popup.getKeyboardFocus();
+			togglePopupVisibility(false);
 			break;
 	}
 };
