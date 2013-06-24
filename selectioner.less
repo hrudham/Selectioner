@@ -11,7 +11,6 @@
     margin-top: -1px;
     overflow: auto;
     top: 0px; /* Stop page from overflowing when the control is created. */
-
     &.above
     {
         .box-shadow(0px -1px 4px rgba(0, 0, 0, 0.25));
@@ -37,6 +36,14 @@
             padding: 0px 4px;
         }
 
+        li.current
+        {
+            a, label
+            {
+                background-color: #F5F5F5;
+            }
+        }
+
         input[disabled] + span,
         .disabled
         {
@@ -49,11 +56,6 @@
             text-decoration: none;
             color: #333;
             outline: none;
-
-            &:hover
-            {
-                background-color: #F5F5F5;
-            }
         }
     }
 
@@ -75,11 +77,6 @@
                 &:not(.disabled)
                 {
                     cursor: pointer;
-
-                    &:hover
-                    {
-                        background-color: #F5F5F5;
-                    }
                 }
             }
 

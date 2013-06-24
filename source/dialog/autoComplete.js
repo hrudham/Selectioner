@@ -1,6 +1,6 @@
 var AutoComplete = Selectioner.Dialog.AutoComplete = function() {};
 
-AutoComplete.prototype = new Selectioner.Core.Dialog();
+AutoComplete.prototype = new Selectioner.Dialog.SingleSelect();
 
 AutoComplete.prototype.validateTarget = function()
 {

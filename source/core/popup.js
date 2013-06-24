@@ -1,7 +1,5 @@
 var Popup = function() {};
 
-Popup.prototype = new Selectioner.Core.KeyboardReceiver();
-
 Popup.prototype.initialize = function(selectioner)
 {
 	var popup = this;
@@ -29,12 +27,15 @@ Popup.prototype.initialize = function(selectioner)
 		.on
 		(
 			'change',
-			function()
+			function(event, data)
 			{
-				if (popup.isShown())
+				if (!data || data.source !== 'selectioner')
 				{
-					popup.update();
-					popup.reposition();
+					if (popup.isShown())
+					{
+						popup.update();
+						popup.reposition();
+					}
 				}
 			}
 		);
@@ -121,7 +122,7 @@ Popup.prototype.reposition = function()
 	{
 		this.element.addClass('below');
 	}
-
+	
 	this.element.css
 	({
 		width: width + 'px',
@@ -133,7 +134,9 @@ Popup.prototype.reposition = function()
 // Shows the pop-up.
 Popup.prototype.show = function()
 {
-	if (!this.selectioner.display.isDisabled() && !this.selectioner.display.isReadOnly())
+	if (!this.selectioner.display.isDisabled() && 
+		!this.selectioner.display.isReadOnly() && 
+		!this.isShown())
 	{
 		// Hide the popup any time the window resizes.
 		var popup = this;
@@ -155,7 +158,7 @@ Popup.prototype.show = function()
 			var popUpHeight = this.element.height();
 			
 			this.reposition();
-
+			
 			this.element.css({ visibility: 'visible', zIndex: '' });
 			
 			if (popUpHeight != this.element.height())
@@ -166,6 +169,15 @@ Popup.prototype.show = function()
 				this.reposition();
 			}
 			
+			if (this.element.hasClass('above'))
+			{
+				this.previous();
+			}
+			else
+			{
+				this.next();
+			}
+						
 			this.selectioner.trigger('show.selectioner');
 		}
 	}
@@ -190,72 +202,105 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-/*
-Popup.prototype.getSiblingDialog = function(dialog, isNext)
-{	
-	var index = 0;
-	if (dialog)
-	{
-		index = this.dialogs.indexOf(dialog) + (isNext ? 1 : -1);
-	}
-
-	if (index > 0 && index === this.dialogs.length)
-	{
-		index = 0;
-	}
-	else if (index < 0)
-	{
-		index = this.dialogs.length - 1;
-	}
-	
-	return this.dialogs[index];
-}
-
-Popup.prototype.getKeyboardFocus = function()
+Popup.prototype.next = function()
 {
-	keyboardReceiver.prototype.getKeyboardFocus.call(this);
+	var canMove = false;
 	
-	if (this.element.hasClass('above'))
+	if (!this.currentDialogIndex)
 	{
-		this.dialogs[this.dialogs.length - 1].getKeyboardFocus();
+		this.currentDialogIndex = 0;
 	}
-	else
+		
+	while (!canMove)
 	{
-		this.dialogs[0].getKeyboardFocus();
+		canMove = this.dialogs[this.currentDialogIndex].next();
+		
+		if (!canMove)
+		{
+			if (this.currentDialogIndex < this.dialogs.length - 1)
+			{
+				this.currentDialogIndex++;
+			}
+			else
+			{				
+				return false;
+			}
+		}
 	}
+	
+	return true;
 };
-*/
+
+Popup.prototype.previous = function()
+{
+	var canMove = false;
+	
+	if (!this.currentDialogIndex)
+	{
+		this.currentDialogIndex = this.dialogs.length - 1;
+	}
+		
+	while (!canMove)
+	{
+		canMove = this.dialogs[this.currentDialogIndex].previous();
+		
+		if (!canMove)
+		{
+			if (this.currentDialogIndex > 0)
+			{
+				this.currentDialogIndex--;
+			}
+			else
+			{				
+				return false;
+			}
+		}
+	}
+	
+	return true;
+};
+
+Popup.prototype.select = function()
+{
+	if (!this.currentDialogIndex)
+	{
+		this.currentDialogIndex = this.dialogs.length - 1;
+	}
+	
+	this.dialogs[this.currentDialogIndex].select();
+};
 
 Popup.prototype.onKeyDown = function(key, event)
 {
-	var popup = this;
-	
-	var togglePopupVisibility = function(isUpArrow)
-	{
-		if (popup.isShown())
-		{
-			if (popup.element.hasClass('above') ^ isUpArrow)
-			{
-				popup.hide();
-				popup.selectioner.display.getKeyboardFocus();
-			}
-		}
-	};
-
 	// Keyboard integration
-	switch(event.which || event.keyCode)
+	if (this.isShown() && event.target === this.selectioner.display.element[0])
 	{
-		case 27: // escape
-			this.hide();
-			this.selectioner.display.getKeyboardFocus();
-			break;
-		case 38: // up arrow
-			event.preventDefault();
-			togglePopupVisibility(true);
-			break;
-		case 40: // down arrow
-			event.preventDefault();
-			togglePopupVisibility(false);
-			break;
+		switch(key)
+		{
+			// Escape
+			case 27:
+				this.hide();
+				break;
+				
+			// Up arrow
+			case 38: 
+				event.preventDefault();
+				this.previous();
+				break;
+				
+			// Down arrow
+			case 40: 
+				event.preventDefault();
+				this.next();			
+				break;
+				
+			// Space
+			case 32:
+			// Enter / Return
+			case 13:
+				event.preventDefault();
+				this.select();
+				break;
+		}
 	}
 };

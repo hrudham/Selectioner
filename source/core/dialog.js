@@ -1,7 +1,5 @@
 var Dialog = Selectioner.Core.Dialog = function() {};
 
-Dialog.prototype = new Selectioner.Core.KeyboardReceiver();
-
 Dialog.prototype.initialize = function(selectioner)
 {	
 	this.selectioner = selectioner;
@@ -38,14 +36,23 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
-/*
-Dialog.prototype.discardKeyboardfocus = function()
+// In the case where a dialog displays a collection of child items,
+// override this method in order to move to the next item. Return
+// true if moving to the item was successful, and false if not.
+Dialog.prototype.next = function()
 {
-	this.popup.discardDialogKeyboardFocus(this, null);
-}
-*/
+	return false;
+};
 
-Dialog.prototype.onKeyDown = function(key, event)
+// In the case where a dialog displays a collection of child items,
+// override this method in order to move to the previous item. Return
+// true if moving to the item was successful, and false if not.
+Dialog.prototype.previous = function()
 {
-	console.log(key);
+	return false;
+};
+
+// Override this to select the currently highlighted option.
+Dialog.prototype.select = function()
+{
 };

@@ -42,7 +42,7 @@ MultiSelect.prototype.renderOption = function(option)
 			function() 
 			{
 				option[0].selected = this.checked;
-				selectioner.target.trigger('change');
+				selectioner.target.trigger('change', { source: 'selectioner' });
 			}
 		);
 		
@@ -79,7 +79,7 @@ MultiSelect.prototype.renderGroup = function(group)
 					}
 				);
 		
-		dialog.selectioner.target.trigger('change');
+		dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 	};
 	
 	var groupTitle = $('<a />')

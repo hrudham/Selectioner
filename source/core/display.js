@@ -1,7 +1,5 @@
 var Display = Selectioner.Core.Display = function() {};
 
-Display.prototype = new Selectioner.Core.KeyboardReceiver();
-
 Display.prototype.initialize = function(selectioner)
 {
 	this.selectioner = selectioner;
@@ -102,6 +100,20 @@ Display.prototype.createDisplay = function()
 					}
 				);
 	}
+	
+	// Watch for keydown events.
+	this.element.on
+		(
+			'keydown.selectioner',
+			function(event)
+			{
+				display.onKeyDown
+					(
+						event.which || event.keyCode,
+						event
+					);
+			}
+		);
 };
 
 // Create a new dialog for the underlying target element.
@@ -124,7 +136,6 @@ Display.prototype.createPopup = function()
 				function()
 				{
 					popup.show();
-					dialog.getKeyboardFocus();
 				}
 			)
 		.children()
@@ -144,14 +155,6 @@ Display.prototype.createPopup = function()
 						popup.show();
 					}
 				}
-			)
-		.on
-			(
-				'focusout',
-				function()
-				{
-					dialog.removeKeyboardFocus();
-				}
 			);
 
 	// Hide the pop-up whenever it loses focus to an
@@ -169,7 +172,6 @@ Display.prototype.createPopup = function()
 					!$.contains(popup.element[0], event.target))
 				{
 					popup.hide();
-					popup.removeKeyboardFocus();
 				}
 			}
 		);
@@ -245,38 +247,29 @@ Display.prototype.getNoSelectionText = function()
 
 Display.prototype.onKeyDown = function(key, event)
 {
-	var popup = this.popup;
-
-	var togglePopupVisibility = function(isUpArrow)
+	// Only perform keyboard-related actions if they are directly 
+	// related to the display, and not a child element thereof.
+	if (event.target == this.element[0])
 	{
-		if (popup.isShown())
+		if (this.popup.isShown())
 		{
-			if (popup.element.hasClass('above') ^ isUpArrow)
-			{
-				popup.hide();
-				popup.selectioner.display.getKeyboardFocus();
-			}
+			this.popup.onKeyDown(key, event);
 		}
 		else
 		{
-			popup.show();
-			popup.getKeyboardFocus();
+			switch(key)
+			{
+				case 38: // Up arrow
+				case 40: // Down arrow
+				case 13: // Return / Enter
+					this.popup.show();
+					break;
+			}
 		}
-	};
-
-	// Keyboard integration
-	switch(event.which || event.keyCode)
+	}
+	else if (key === 27) 
 	{
-		case 27: // escape
-			popup.hide();
-			break;
-		case 38: // up arrow
-			event.preventDefault();
-			togglePopupVisibility(true);
-			break;
-		case 40: // down arrow
-			event.preventDefault();
-			togglePopupVisibility(false);
-			break;
+		// Escape key was pressed.
+		this.element.focus();
 	}
 };
