@@ -1139,7 +1139,7 @@ SingleSelect.prototype.render = function()
 {
 	this.element = $('<ul />');
 	
-	var popup = this;
+	var dialog = this;
 	
 	var element = this.element
 		.on
@@ -1148,8 +1148,8 @@ SingleSelect.prototype.render = function()
 				'li',
 				function(event)
 				{
-					var target = popup.getSelectableOptions().filter(this);
-					
+					var target = dialog.getSelectableOptions().filter(this);
+					console.log(this);
 					if (target.length > 0)
 					{
 						element.find('li').removeClass('current');
@@ -1494,6 +1494,8 @@ AutoComplete.prototype.validateTarget = function()
 // <option /> element for the underlying <select /> element. 
 AutoComplete.prototype.render = function()
 {
+	SingleSelect.prototype.render.apply(this, arguments);
+
 	this.textElement = this
 		.selectioner
 		.display
@@ -1504,8 +1506,7 @@ AutoComplete.prototype.render = function()
 	{
 		throw new Error('AutoComplete expects the Display to contain an <input type="text" /> element');
 	}
-
-	this.element = $('<ul />');
+	
 	this.update();
 	this._textValue = this.textElement.val();
 	

@@ -14,6 +14,8 @@ AutoComplete.prototype.validateTarget = function()
 // <option /> element for the underlying <select /> element. 
 AutoComplete.prototype.render = function()
 {
+	SingleSelect.prototype.render.apply(this, arguments);
+
 	this.textElement = this
 		.selectioner
 		.display
@@ -24,8 +26,7 @@ AutoComplete.prototype.render = function()
 	{
 		throw new Error('AutoComplete expects the Display to contain an <input type="text" /> element');
 	}
-
-	this.element = $('<ul />');
+	
 	this.update();
 	this._textValue = this.textElement.val();
 	
