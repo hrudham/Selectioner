@@ -216,8 +216,14 @@ textarea
 .select-date
 {
     @button-border: 1px solid #CCC;
+    @spacing: 2px;
 
     background-color: #FFF;
+
+    a
+    {
+        outline: none;
+    }
 
     .months,
     .days,
@@ -229,7 +235,7 @@ textarea
         margin: 0px;
         white-space: nowrap;
 
-        > a
+        a
         {
             display: block;
             text-align: center;
@@ -315,14 +321,14 @@ textarea
             &.next,
             &.selected
             {
-                > span
+                span
                 {
                     display: block;
-                    margin: 0px 2px;
-                    padding: 4px 0px;
+                    padding: 2px 0px;
+                    margin: 0px @spacing;
                 }
 
-                &.current > span
+                &.current span
                 {
                     background-color: #F5F9FF;
                 }
@@ -333,9 +339,15 @@ textarea
             {
                 color: #999;
 
+                span
+                {
+                    display: block;
+                    padding: 2px 0px;
+                }
+
                 &:hover
                 {
-                    > span
+                    span
                     {
                         color: #3377DD;
                         background-color: #EEE;
@@ -345,7 +357,7 @@ textarea
 
             &.selected
             {
-                > span
+                span
                 {
                     border-top: solid 1px #5599FF;
                     border-bottom: solid 1px #5599FF;
@@ -366,6 +378,32 @@ textarea
     .months
     {
         width: 34%;
+    }
+
+    .days
+    {
+        a.previous,
+        a.next,
+        a.selected
+        {
+            span
+            {
+                margin-left: @spacing * 2;
+            }
+        }
+    }
+
+    .years
+    {
+        a.previous,
+        a.next,
+        a.selected
+        {
+            span
+            {
+                margin-right: @spacing * 2;
+            }
+        }
     }
 
     .today,

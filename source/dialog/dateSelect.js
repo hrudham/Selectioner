@@ -70,9 +70,63 @@ DateSelect.prototype.validateTarget = function()
 DateSelect.prototype.render = function()
 {
 	var dateSelect = this;
+	
+	var handleWheelChange = function(event)
+	{
+		event.preventDefault();
+		
+		var delta = 0;
+		if (event.originalEvent.wheelDelta)
+		{
+			delta = event.originalEvent.wheelDelta;
+		}
+		else
+		{
+			delta = -1 * event.originalEvent.deltaY;
+		}
+		
+		return delta < 0 ? 1 : -1;
+	};
 
 	this.element = $('<div />')
+		.on
+			(
+				'mousewheel wheel', 
+				function(event) 
+				{ 
+					// Stop the mousewheel being picked up outside of this 
+					// control, even when it's contents are being re-rendered.
+					event.preventDefault();
+				}
+			)
 		.addClass(Selectioner.Settings.cssPrefix + 'date')
+		.on
+			(
+				'mousewheel wheel',
+				'.days',
+				function(event, delta)
+				{
+					dateSelect.addDays(handleWheelChange(event));
+				}
+			)
+		.on
+			(
+				'mousewheel wheel',
+				'.months',
+				function(event, delta)
+				{
+					dateSelect.addMonths(handleWheelChange(event));
+				}
+			)
+		.on
+			(
+				'mousewheel wheel',
+				'.years',
+				function(event, delta)
+				{
+					dateSelect.addYears(handleWheelChange(event));
+				}
+			)
 		.on
 			(
 				'click',
@@ -143,6 +197,7 @@ DateSelect.prototype.render = function()
 				function()
 				{
 					dateSelect.setCurrentDate(new Date());
+					dateSelect.popup.hide();
 				}
 			)
 		.on
@@ -213,23 +268,35 @@ DateSelect.prototype.update = function()
 
 DateSelect.prototype.addDays = function(day)
 {
-	var date = this.getCurrentDate();
-	date.setDate(date.getDate() + day);
-	this.setCurrentDate(date);	
+	// zero is falsy, so do nothing for zero.
+	if (day)
+	{
+		var date = this.getCurrentDate();
+		date.setDate(date.getDate() + day);
+		this.setCurrentDate(date);	
+	}
 };
 
 DateSelect.prototype.addMonths = function(months)
 {
-	var date = this.getCurrentDate();
-	date.setMonth(date.getMonth() + months);
-	this.setCurrentDate(date);	
+	// zero is falsy, so do nothing for zero.
+	if (months)
+	{
+		var date = this.getCurrentDate();
+		date.setMonth(date.getMonth() + months);
+		this.setCurrentDate(date);	
+	}
 };
 
 DateSelect.prototype.addYears = function(years)
 {
-	var date = this.getCurrentDate();
-	date.setYear(date.getFullYear() + years);
-	this.setCurrentDate(date);	
+	// zero is falsy, so do nothing for zero.
+	if (years)
+	{
+		var date = this.getCurrentDate();
+		date.setYear(date.getFullYear() + years);
+		this.setCurrentDate(date);	
+	}
 };
 
 // Get the currently selected date, or today's date if no date is selected.
