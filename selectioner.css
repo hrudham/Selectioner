@@ -335,12 +335,12 @@ textarea[readonly] + .select-display > .select-text {
 .select-date .years > a.next {
   color: #999;
 }
-.select-date .months > a.previous:hover span,
-.select-date .days > a.previous:hover span,
-.select-date .years > a.previous:hover span,
-.select-date .months > a.next:hover span,
-.select-date .days > a.next:hover span,
-.select-date .years > a.next:hover span {
+.select-date .months > a.previous:hover > span,
+.select-date .days > a.previous:hover > span,
+.select-date .years > a.previous:hover > span,
+.select-date .months > a.next:hover > span,
+.select-date .days > a.next:hover > span,
+.select-date .years > a.next:hover > span {
   color: #3377DD;
   background-color: #EEE;
 }
@@ -349,6 +349,12 @@ textarea[readonly] + .select-display > .select-text {
 .select-date .years > a.selected > span {
   border-top: solid 1px #5599FF;
   border-bottom: solid 1px #5599FF;
+}
+.select-date .months > a.selected:hover span,
+.select-date .days > a.selected:hover span,
+.select-date .years > a.selected:hover span {
+  color: #3377DD;
+  background-color: #F9F9F9;
 }
 .select-date .months {
   width: 34%;

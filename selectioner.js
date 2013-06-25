@@ -1792,8 +1792,14 @@ DateSelect.prototype.update = function()
 		
 	var today = new Date();
 	
-	var todayButton = $('<a />').attr('href', 'javascript:;').addClass('today').text('Today');
-	var clearButton = $('<a />').attr('href', 'javascript:;').addClass('clear').text('Clear');
+	var todayButton = $('<a />').attr('href', 'javascript:;')
+		.addClass('today')
+		.append($('<span />').text('Today'));
+		
+	var clearButton = $('<a />')
+		.attr('href', 'javascript:;')
+		.addClass('clear')
+		.append($('<span />').text('Clear'));
 	
 	// Build the control
 	this.element
