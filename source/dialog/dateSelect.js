@@ -20,6 +20,11 @@ DateSelect.Utility =
 	},
 	dateToString: function(date)
 	{
+		if (!date)
+		{
+			return null;
+		}
+	
 		var day = date.getDate().toString();
 		var month = (date.getMonth() + 1).toString();
 		var year = date.getFullYear().toString();
@@ -29,19 +34,26 @@ DateSelect.Utility =
 		
 		return year + '-' + month + '-' + day;
 	},
-	buildScroller: function(collection)
+	buildScroller: function(collection, currentValue)
 	{	
 		var buildItem = function(i)
 		{
-			return $('<a />')
+			var item = $('<a />')
 				.attr('href', 'javascript:;')
 				.append($('<span />').text(collection[i]));
+				
+			if (currentValue === collection[i])
+			{
+				item.addClass('current');
+			}
+				
+			return item;
 		};
 		
-		return $('<div />')
+		return $('<span />')
 			.append($('<a />').attr('href', 'javascript:;').addClass('up'))
 			.append(buildItem(0).addClass('previous'))
-			.append(buildItem(1).addClass('current'))
+			.append(buildItem(1).addClass('selected'))
 			.append(buildItem(2).addClass('next'))
 			.append($('<a />').attr('href', 'javascript:;').addClass('down'));
 	}
@@ -63,7 +75,7 @@ DateSelect.prototype.render = function()
 		.addClass(Selectioner.Settings.cssPrefix + 'date')
 		.on
 			(
-				'mousedown',
+				'click',
 				'.days .previous, .days .up',
 				function()
 				{
@@ -118,9 +130,28 @@ DateSelect.prototype.render = function()
 		.on
 			(
 				'click',
-				'.current',
+				'.selected',
 				function()
 				{
+					dateSelect.popup.hide();
+				}
+			)
+		.on
+			(
+				'click',
+				'.today',
+				function()
+				{
+					dateSelect.setCurrentDate(new Date());
+				}
+			)
+		.on
+			(
+				'click',
+				'.clear',
+				function()
+				{
+					dateSelect.setCurrentDate(null);
 					dateSelect.popup.hide();
 				}
 			);
@@ -136,14 +167,15 @@ DateSelect.prototype.update = function()
 	var currentYear = currentDate.getFullYear();
 	
 	// Months
+	var monthNames = DateSelect.Settings.monthNames;
 	var currentMonth = currentDate.getMonth();
 	var previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
 	var nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
 	var months = 
 		[
-			DateSelect.Settings.monthNames[previousMonth],
-			DateSelect.Settings.monthNames[currentMonth],
-			DateSelect.Settings.monthNames[nextMonth]
+			monthNames[previousMonth],
+			monthNames[currentMonth],
+			monthNames[nextMonth]
 		];
 	
 	// Days
@@ -156,14 +188,21 @@ DateSelect.prototype.update = function()
 			(currentDay === 1 ? previousDate.getDate() : currentDay - 1),
 			currentDay,
 			(currentDay === DateSelect.Utility.daysInMonth(currentYear, currentMonth)) ? 1 : currentDay + 1
-		];	
+		];
+		
+	var today = new Date();
+	
+	var todayButton = $('<a />').attr('href', 'javascript:;').addClass('today').text('Today');
+	var clearButton = $('<a />').attr('href', 'javascript:;').addClass('clear').text('Clear');
 	
 	// Build the control
 	this.element
 		.empty()
-		.append(DateSelect.Utility.buildScroller(days).addClass('days'))
-		.append(DateSelect.Utility.buildScroller(months).addClass('months'))
-		.append(DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1]).addClass('years'));
+		.append(todayButton)
+		.append(DateSelect.Utility.buildScroller(days, today.getDate()).addClass('days'))
+		.append(DateSelect.Utility.buildScroller(months, monthNames[today.getMonth()]).addClass('months'))
+		.append(DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1], today.getFullYear()).addClass('years'))
+		.append(clearButton);
 };
 
 DateSelect.prototype.addDays = function(day)
@@ -198,7 +237,7 @@ DateSelect.prototype.getCurrentDate = function()
 		return new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
 	}
 	
-	return this.getToday();
+	return new Date();
 };
 
 DateSelect.prototype.setCurrentDate = function(date)
@@ -209,17 +248,3 @@ DateSelect.prototype.setCurrentDate = function(date)
 		.trigger('change.selectioner');
 	this.update();
 };
-
-// Get today's date.
-DateSelect.prototype.getToday = function()
-{
-	var today = new Date();
-	
-	today.setHours(0);
-	today.setMinutes(0);
-	today.setSeconds(0);
-	today.setMilliseconds(0);
-	
-	return today;
-};
-

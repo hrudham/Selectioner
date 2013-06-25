@@ -11,6 +11,7 @@
     margin-top: -1px;
     overflow: auto;
     top: 0px; /* Stop page from overflowing when the control is created. */
+
     &.above
     {
         .box-shadow(0px -1px 4px rgba(0, 0, 0, 0.25));
@@ -214,24 +215,22 @@ textarea
 
 .select-date
 {
-    // #5599FF;
-    > div
+    @button-border: 1px solid #CCC;
+
+    background-color: #FFF;
+
+    .months,
+    .days,
+    .years
     {
         .box-sizing();
         width: 33%;
-        float: left;
+        display: inline-block;
         margin: 0px;
         white-space: nowrap;
 
-        &.months
-        {
-            width: 34%;
-        }
-
         > a
         {
-            @button-border: 1px solid #CCC;
-
             display: block;
             text-align: center;
             text-decoration: none;
@@ -260,6 +259,7 @@ textarea
 
             &.up
             {
+                border-top: @button-border;
                 border-bottom: @button-border;
 
                 &:after
@@ -287,6 +287,7 @@ textarea
             &.down
             {
                 border-top: @button-border;
+                border-bottom: @button-border;
 
                 &:after
                 {
@@ -312,13 +313,18 @@ textarea
 
             &.previous,
             &.next,
-            &.current
+            &.selected
             {
                 > span
                 {
                     display: block;
-                    margin: 0px 4px;
+                    margin: 0px 2px;
                     padding: 4px 0px;
+                }
+
+                &.current > span
+                {
+                    background-color: #F5F9FF;
                 }
             }
 
@@ -329,11 +335,15 @@ textarea
 
                 &:hover
                 {
-                    color: #333;
+                    span
+                    {
+                        color: #3377DD;
+                        background-color: #EEE;
+                    }
                 }
             }
 
-            &.current
+            &.selected
             {
                 > span
                 {
@@ -341,6 +351,34 @@ textarea
                     border-bottom: solid 1px #5599FF;
                 }
             }
+        }
+    }
+
+    .months
+    {
+        width: 34%;
+    }
+
+    .today,
+    .clear
+    {
+        .clear();
+        display: block;
+        text-decoration: none;
+        text-align: center;
+        padding: 2px 0px;
+        color: #333;
+        background-color: #F9F9F9;
+
+        &:hover
+        {
+            color: #3377DD;
+            background-color: #EEE;
+        }
+
+        &:active
+        {
+            background-color: #DDD;
         }
     }
 }
