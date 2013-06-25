@@ -174,3 +174,45 @@
     -webkit-transform-origin: @xOffset @yOffset;
     transform-origin: @xOffset @yOffset;
 }
+
+.arrow-base()
+{
+    .box-sizing(border-box);
+    display: inline-block;
+    height: 0px;
+    width: 0px;
+    min-width: 0px;
+    line-height: 0px;
+}
+
+.right-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-left-color: @color;
+    border-right-width: 0px;
+}
+
+.left-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-right-color: @color;
+    border-left-width: 0px;
+}
+
+.top-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-bottom-color: @color;
+    border-top-width: 0px;
+}
+
+.bottom-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-top-color: @color;
+    border-bottom-width: 0px;
+}

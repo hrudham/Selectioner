@@ -1,0 +1,9 @@
+﻿/*
+	This file is designed to only contain .LESS mix-ins. 
+	No other CSS should make it into this file; if it's not 
+	a .LESS function, it doesn't belong here.
+*/
+/* 
+	Overload for applying multiple shadows to an element.
+	E.g.: .box-shadow(1px 1px #FFF, inset -1px -1px #FFF);
+*/

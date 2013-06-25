@@ -14,7 +14,21 @@ Popup.prototype.initialize = function(selectioner)
 				visibility: 'hidden',
 				position: 'absolute',
 				zIndex: '-1'
-			});
+			})
+		.on
+			(
+				'mousedown focusin',
+				function(event)
+				{
+					// The selectioner watches for mouse-down / focusin events outside of 
+					// itself in order to know when to close. Sometimes, however, these
+					// event will occur insides the popup and cause a re-render,
+					// and thus the element that caused the event no longer exists.
+					// This means we cannot determine if it exists inside or outside
+					// the popup. Thus, we stop propagation of these events here.
+					event.stopPropagation();
+				}
+			);
 
 	this.update();
 	
@@ -39,7 +53,7 @@ Popup.prototype.initialize = function(selectioner)
 				}
 			}
 		);
-	
+			
 	$('body').append(this.element);
 };
 

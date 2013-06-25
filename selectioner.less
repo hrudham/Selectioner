@@ -214,115 +214,133 @@ textarea
 
 .select-date
 {
+    // #5599FF;
     > div
     {
-        text-align: center;
-        margin: 2px;
-        font-weight: bold;
-        cursor: default;
-    }
+        .box-sizing();
+        width: 33%;
+        float: left;
+        margin: 0px;
+        white-space: nowrap;
 
-    table
-    {
-        width: 100%;
-        border-collapse: collapse;
-    }
-
-    thead
-    {
-        color: #FFF;
-        background-color: #333;
-    }
-
-    td,
-    th
-    {
-        line-height: 18px;
-        padding: 0;
-    }
-
-    td
-    {
-        width: 14.2857%;
-        cursor: pointer;
-
-        &.weekend
+        &.months
         {
+            width: 34%;
+        }
+
+        > a
+        {
+            @button-border: 1px solid #CCC;
+
+            display: block;
+            text-align: center;
+            text-decoration: none;
             color: #333;
-            background-color: #F5F5FF;
-        }
 
-        &.prev-month,
-        &.next-month
-        {
-            color: #999;
-            background-color: #EEE;
-        }
+            &.up,
+            &.down
+            {
+                background-color: #F9F9F9;
 
-        &.today
-        {
-            .border-radius(4px);
-            background-color: #449900;
-            color: #FFF;
-        }
+                &:after
+                {
+                    content: '';
+                }
 
-        &.selected
-        {
-            .border-radius(4px);
-            background-color: #3377FF;
-            color: #FFF;
-        }
+                &:hover
+                {
+                    background-color: #EEE;
+                }
 
-        &:hover
-        {
-            .border-radius(4px);
-            background-color: #5599FF;
-            color: #FFF;
-        }
-    }
+                &:active
+                {
+                    background-color: #DDD;
+                }
+            }
 
-    td,
-    th,
-    > div a
-    {
-        .user-select(none);
-        text-align: center;
-    }
+            &.up
+            {
+                border-bottom: @button-border;
 
-    > div a
-    {
-        .border-radius(4px);
-        font-size: 16px;
-        display: inline-block;
-        width: 20px;
-        height: 20px;
-        line-height: 20px;
-        text-align: center;
-        color: #333;
-        text-decoration: none;
+                &:after
+                {
+                    .top-arrow();
+                }
 
-        &.prev
-        {
-            float: left;
-        }
+                &:hover
+                {
+                    &:after
+                    {
+                        border-bottom-color: #5599FF;
+                    }
+                }
 
-        &.next
-        {
-            float: right;
-        }
+                &:active
+                {
+                    &:after
+                    {
+                        border-bottom-color: #3377DD;
+                    }
+                }
+            }
 
-        &:hover
-        {
-            background-color: #5599FF;
-            color: #FFF;
+            &.down
+            {
+                border-top: @button-border;
+
+                &:after
+                {
+                    .bottom-arrow();
+                }
+
+                &:hover
+                {
+                    &:after
+                    {
+                        border-top-color: #5599FF;
+                    }
+                }
+
+                &:active
+                {
+                    &:after
+                    {
+                        border-top-color: #3377DD;
+                    }
+                }
+            }
+
+            &.previous,
+            &.next,
+            &.current
+            {
+                > span
+                {
+                    display: block;
+                    margin: 0px 4px;
+                    padding: 4px 0px;
+                }
+            }
+
+            &.previous,
+            &.next
+            {
+                color: #999;
+
+                &:hover
+                {
+                    color: #333;
+                }
+            }
+
+            &.current
+            {
+                > span
+                {
+                    border-top: solid 1px #5599FF;
+                    border-bottom: solid 1px #5599FF;
+                }
+            }
         }
     }
 }
-
-
-
-
-
-
-
-

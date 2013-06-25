@@ -19,13 +19,12 @@ SingleSelect.prototype.render = function()
 	var element = this.element
 		.on
 			(
-				'mouseover',
+				'mouseenter',
 				'li',
 				function(event)
 				{
 					var target = dialog.getSelectableOptions().filter(this);
-					console.log(this);
-					if (target.length > 0)
+					if (target.length > 0 && !target.hasClass('current'))
 					{
 						element.find('li').removeClass('current');
 						target.addClass('current');

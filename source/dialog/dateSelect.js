@@ -1,19 +1,50 @@
-/*
-	Soem of this code was inspired by the DatePicker for Bootstrap plugin,
-	which can be found here: http://www.eyecon.ro/bootstrap-datepicker/
-*/
-
 var DateSelect = Selectioner.Dialog.DateSelect = function() {};
 
 DateSelect.prototype = new Selectioner.Core.Dialog();
 
 DateSelect.Settings = 
 {
-	dayNames: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-	shortDayNames: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
-	monthNames: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-	shortMonthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+	monthNames: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
 	weekStartIndex: 1
+};
+
+DateSelect.Utility = 
+{
+	isLeapYear: function(year)
+	{
+		return ((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0);
+	},
+	daysInMonth: function(year, month)
+	{
+		return [31, (DateSelect.Utility.isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
+	},
+	dateToString: function(date)
+	{
+		var day = date.getDate().toString();
+		var month = (date.getMonth() + 1).toString();
+		var year = date.getFullYear().toString();
+		
+		if (day.length == 1) day = '0' + day;
+		if (month.length == 1) month = '0' + month;
+		
+		return year + '-' + month + '-' + day;
+	},
+	buildScroller: function(collection)
+	{	
+		var buildItem = function(i)
+		{
+			return $('<a />')
+				.attr('href', 'javascript:;')
+				.append($('<span />').text(collection[i]));
+		};
+		
+		return $('<div />')
+			.append($('<a />').attr('href', 'javascript:;').addClass('up'))
+			.append(buildItem(0).addClass('previous'))
+			.append(buildItem(1).addClass('current'))
+			.append(buildItem(2).addClass('next'))
+			.append($('<a />').attr('href', 'javascript:;').addClass('down'));
+	}
 };
 
 DateSelect.prototype.validateTarget = function()
@@ -26,227 +57,138 @@ DateSelect.prototype.validateTarget = function()
 
 DateSelect.prototype.render = function()
 {
+	var dateSelect = this;
+
 	this.element = $('<div />')
-		.addClass(Selectioner.Settings.cssPrefix + 'date');
+		.addClass(Selectioner.Settings.cssPrefix + 'date')
+		.on
+			(
+				'mousedown',
+				'.days .previous, .days .up',
+				function()
+				{
+					dateSelect.addDays(-1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.days .next, .days .down',
+				function()
+				{
+					dateSelect.addDays(1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.months .previous, .months .up',
+				function()
+				{
+					dateSelect.addMonths(-1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.months .next, .months .down',
+				function()
+				{
+					dateSelect.addMonths(1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.years .previous, .years .up',
+				function()
+				{
+					dateSelect.addYears(-1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.years .next, .years .down',
+				function()
+				{
+					dateSelect.addYears(1);
+				}
+			)
+		.on
+			(
+				'click',
+				'.current',
+				function()
+				{
+					dateSelect.popup.hide();
+				}
+			);
 		
-	this.renderDays(this.getDate());
+	this.update();
 };
 
 DateSelect.prototype.update = function()
 {
-	this.renderDays(this.getDate());
-};
-
-DateSelect.prototype.renderDays = function(date)
-{		
-	var isLeapYear = function (year) 
-	{
-		return (((year % 4 === 0) && (year % 100 !== 0)) || (year % 400 === 0));
-	};
+	var currentDate = this.getCurrentDate();
 	
-	var getDaysInMonth = function (year, month) 
-	{
-		return [31, (isLeapYear(year) ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-	};
+	// Years
+	var currentYear = currentDate.getFullYear();
 	
-	var prevMonthDate = new Date(date.getFullYear(), date.getMonth() - 1, 28, 0, 0, 0, 0);
-	var day = getDaysInMonth(prevMonthDate.getFullYear(), prevMonthDate.getMonth());
-	prevMonthDate.setDate(day);
-	prevMonthDate.setDate(day - (prevMonthDate.getDay() - DateSelect.Settings.weekStartIndex + 7) % 7);
+	// Months
+	var currentMonth = currentDate.getMonth();
+	var previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+	var nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
+	var months = 
+		[
+			DateSelect.Settings.monthNames[previousMonth],
+			DateSelect.Settings.monthNames[currentMonth],
+			DateSelect.Settings.monthNames[nextMonth]
+		];
 	
-	var nextMonthDate = new Date(prevMonthDate);
-	nextMonthDate.setDate(nextMonthDate.getDate() + 42);
-	nextMonthDate = nextMonthDate;
-		
+	// Days
+	var currentDay = currentDate.getDate();
+	var previousDate = new Date(currentDate);
+	previousDate.setDate(currentDay - 1);
+	
+	var days = 
+		[
+			(currentDay === 1 ? previousDate.getDate() : currentDay - 1),
+			currentDay,
+			(currentDay === DateSelect.Utility.daysInMonth(currentYear, currentMonth)) ? 1 : currentDay + 1
+		];	
+	
+	// Build the control
 	this.element
 		.empty()
-		.append(this.renderHeader(date, nextMonthDate, prevMonthDate))
-		.append(this.renderBody(date, nextMonthDate, prevMonthDate));
+		.append(DateSelect.Utility.buildScroller(days).addClass('days'))
+		.append(DateSelect.Utility.buildScroller(months).addClass('months'))
+		.append(DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1]).addClass('years'));
 };
 
-DateSelect.prototype.renderBody = function(date, nextMonthDate, prevMonthDate)
+DateSelect.prototype.addDays = function(day)
 {
-	var dateSelect = this;
-
-	var thead = $('<thead />');
-	var headRow = $('<tr />');
-	
-	var dayNames = DateSelect.Settings.shortDayNames;
-	
-	for (var dayNameIndex = 0, dayNamesLength = dayNames.length; dayNameIndex < dayNamesLength; dayNameIndex++)
-	{
-		headRow.append($('<th />').text(dayNames[(dayNameIndex + DateSelect.Settings.weekStartIndex) % 7]));
-	}
-	thead.append(headRow);
-
-	var tbody = $('<tbody />');
-
-	// Find out what days we need to display.
-	var days = [];
-	var recursiveDate = new Date(prevMonthDate.valueOf());
-	var currentMonth = date.getMonth();
-	var today = this.getToday().valueOf();
-	var selectedDate = new Date(this.getDate().valueOf());
-	selectedDate.setHours(0);
-	selectedDate.setMinutes(0);
-	selectedDate.setSeconds(0);
-	selectedDate.setMilliseconds(0);
-	var selectedDateValue = selectedDate.valueOf();
-	
-	while (recursiveDate.valueOf() < nextMonthDate.valueOf()) 
-	{
-		var dateValue = recursiveDate.valueOf();
-		var dateOfMonth = recursiveDate.getDate();
-		var dayOfWeek = recursiveDate.getDay();
-		
-		days.push
-			({
-				name: dateOfMonth,
-				isWeekend: dayOfWeek === 0 || dayOfWeek === 6,
-				isNextMonth: recursiveDate.getMonth() > currentMonth,
-				isPrevMonth: recursiveDate.getMonth() < currentMonth,
-				isToday: today === dateValue,
-				isSelected: selectedDateValue === dateValue,
-				dateValue: dateValue
-			});
-			
-		recursiveDate.setDate(dateOfMonth + 1);
-	}
-	
-	var dateToString = function(date)
-	{
-		var day = date.getDate().toString();
-		var month = (date.getMonth() + 1).toString();
-		var year = date.getFullYear().toString();
-		
-		if (day.length == 1)
-		{
-			day = '0' + day;
-		}
-		
-		if (month.length == 1)
-		{
-			month = '0' + month;
-		}
-		
-		return year + '-' + month + '-' + day;
-	};
-	
-	var buildDateCell = function(day)
-	{
-		var dayDate = new Date(day.dateValue);
-		var cell = $('<td />')
-			.text(day.name)
-			.on 
-				(
-					'click',
-					function()
-					{
-						dateSelect
-							.selectioner
-							.target
-							.val(dateToString(dayDate))
-							.trigger('change.selectioner');
-							
-						dateSelect.popup.hide();
-							
-						dateSelect.renderDays(dateSelect.getDate());
-					}
-				);
-		
-		if (day.isWeekend)
-		{
-			cell.addClass('weekend');
-		}
-		
-		if (day.isNextMonth)
-		{
-			cell.addClass('next-month');
-		}
-		
-		if (day.isPrevMonth)
-		{
-			cell.addClass('prev-month');
-		}
-		
-		if (day.isToday)
-		{
-			cell.addClass('today');
-		}
-		
-		if (day.isSelected)
-		{
-			cell.addClass('selected');
-		}
-		
-		return cell;
-	};
-	
-	// Render out each individual day. We make the assumption here that 
-	// there will be exactly seven items per row, and that the total number 
-	// of days we found is evenly divisible by seven as well.
-	for (var i = 0, length = days.length / 7; i < length; i++)
-	{
-		var weekRow = $('<tr />');
-		for (var j = 0; j < 7; j++)
-		{
-			weekRow.append(buildDateCell(days[i * 7 + j]));
-		}
-		tbody.append(weekRow);
-	}
-	
-	return $('<table />')
-		.append(thead)
-		.append(tbody);
+	var date = this.getCurrentDate();
+	date.setDate(date.getDate() + day);
+	this.setCurrentDate(date);	
 };
 
-DateSelect.prototype.renderHeader = function(date, nextMonthDate, prevMonthDate)
+DateSelect.prototype.addMonths = function(months)
 {
-	var dateSelect = this;
-
-	var currentMonth = $('<span />')
-		.text(this.getHeaderText(date));
-	
-	var nextMonth = $('<a />')
-		.attr('href', 'javascript:;')
-		.addClass('next')
-		.text('›')
-		.on
-			(
-				'click', 
-				function()
-				{
-					dateSelect.renderDays(nextMonthDate);
-				}
-			);
-	
-	var previousMonth = $('<a />')
-		.attr('href', 'javascript:;')
-		.addClass('prev')
-		.text('‹')
-		.on
-			(
-				'click', 
-				function()
-				{
-					dateSelect.renderDays(prevMonthDate);
-				}
-			);
-	
-	return $('<div />')
-		.append(previousMonth)
-		.append(currentMonth)
-		.append(nextMonth);
+	var date = this.getCurrentDate();
+	date.setMonth(date.getMonth() + months);
+	this.setCurrentDate(date);	
 };
 
-// Builds the header text from the date provided.
-DateSelect.prototype.getHeaderText = function(date)
+DateSelect.prototype.addYears = function(years)
 {
-	return DateSelect.Settings.shortMonthNames[date.getMonth()] + ' ' + date.getFullYear();
+	var date = this.getCurrentDate();
+	date.setYear(date.getFullYear() + years);
+	this.setCurrentDate(date);	
 };
 
 // Get the currently selected date, or today's date if no date is selected.
-DateSelect.prototype.getDate = function()
+DateSelect.prototype.getCurrentDate = function()
 {
 	var dateValue = this.selectioner.target.val();
 
@@ -257,6 +199,15 @@ DateSelect.prototype.getDate = function()
 	}
 	
 	return this.getToday();
+};
+
+DateSelect.prototype.setCurrentDate = function(date)
+{
+	this.selectioner
+		.target
+		.val(DateSelect.Utility.dateToString(date))
+		.trigger('change.selectioner');
+	this.update();
 };
 
 // Get today's date.
