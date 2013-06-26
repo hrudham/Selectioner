@@ -42,9 +42,6 @@
   padding: 4px 0px;
   max-height: 120px;
 }
-.select-popup > ul > li {
-  padding: 0px 4px;
-}
 .select-popup > ul li.current a,
 .select-popup > ul li.current label {
   background-color: #F5F5F5;
@@ -67,6 +64,11 @@
   list-style: none;
   overflow: auto;
 }
+.select-popup ul li a,
+.select-popup ul li span,
+.select-popup ul li label {
+  padding: 0px 4px;
+}
 .select-popup ul li label {
   display: block;
   font-weight: normal;
@@ -79,7 +81,7 @@
 }
 .select-popup ul li input[type="checkbox"] {
   vertical-align: middle;
-  margin: 0px 6px 0px 3px;
+  margin: 0px;
   outline: none;
 }
 .select-popup .select-group-title {
@@ -132,7 +134,7 @@ textarea[readonly] + .select-display > .select-text {
   /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
 
   display: inline-block;
-  min-width: 126px;
+  min-width: 133px;
   text-align: left;
   padding: 1px 24px 1px 2px;
   margin: 0px;
@@ -181,6 +183,7 @@ textarea[readonly] + .select-display > .select-text {
   background-position: 0px -16px;
 }
 .select-popup ul li.none a,
+.select-popup ul li.none span,
 .select-display .none {
   color: #999;
 }

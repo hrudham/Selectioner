@@ -92,6 +92,16 @@
 			<div class="box">
 				<h3>Single-select</h3>
 				<p>
+					<label>Empty: </label>
+					<select class="empty" data-placeholder="Pick an option">
+					</select>
+					<script>
+						$(function(){
+							$('.empty').singleSelect();
+						});
+					</script>
+				</p>
+				<p>
 					<label>Basic with no ID attribute: </label>
 					<select class="basic" data-placeholder="Pick an option">
 						<option></option><!-- empty option -->

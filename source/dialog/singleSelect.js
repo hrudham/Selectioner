@@ -38,18 +38,33 @@ SingleSelect.prototype.update = function()
 	this.element.empty();
 
 	var children = this.selectioner.target.children();
-	
-	for (var i = 0, length = children.length; i < length; i++)
+	if (children.length > 0)
 	{
-		var child = $(children[i]);
-		if (children[i].tagName == 'OPTION')
+		for (var i = 0, length = children.length; i < length; i++)
 		{
-			this.element.append(this.renderOption(child));
+			var child = $(children[i]);
+			if (children[i].tagName == 'OPTION')
+			{
+				this.element.append(this.renderOption(child));
+			}
+			else if (children[i].tagName == 'OPTGROUP')
+			{
+				this.element.append(this.renderGroup(child));
+			}
 		}
-		else if (children[i].tagName == 'OPTGROUP')
-		{
-			this.element.append(this.renderGroup(child));
-		}
+	}
+	else
+	{
+		this.element
+			.append
+				(
+					$('<li />')
+						.addClass('none')
+						.append
+							(
+								$('<span />').text(Selectioner.Settings.noOptionText)
+							)
+				);
 	}
 };
 

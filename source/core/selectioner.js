@@ -61,5 +61,6 @@ Selectioner.Settings =
 	cssPrefix: 'select-',
 	noSelectionText: 'Select an option',
 	emptyOptionText: 'None',
+	noOptionText: 'No Options Available',
 	maxAutoCompleteItems: 5
 };

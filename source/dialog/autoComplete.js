@@ -101,6 +101,16 @@ AutoComplete.prototype.update = function()
 		}
 	}
 	
+	if (filteredOptions.length === 0)
+	{
+		filteredOptions = $('<li />')
+			.addClass('none')
+			.append
+				(
+					$('<span />').text(Selectioner.Settings.noOptionText)
+				);
+	}
+	
 	this.element
 		.empty()
 		.append(filteredOptions);
