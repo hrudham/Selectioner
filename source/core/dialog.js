@@ -36,23 +36,24 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
-// In the case where a dialog displays a collection of child items,
-// override this method in order to move to the next item. Return
-// true if moving to the item was successful, and false if not.
-Dialog.prototype.next = function()
+// Override this method to allow for keyboard. The method itself can 
+// be called manually, although this is generally not recommended, 
+// as this is generally handled by the popup. 
+Dialog.prototype.keyDown = function(key)
 {
-	return false;
-};
-
-// In the case where a dialog displays a collection of child items,
-// override this method in order to move to the previous item. Return
-// true if moving to the item was successful, and false if not.
-Dialog.prototype.previous = function()
-{
-	return false;
-};
-
-// Override this to select the currently highlighted option.
-Dialog.prototype.select = function()
-{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+		
+	// Escape || Backspace
+	if (key == 27 || key == 8)
+	{
+		this.popup.hide();
+		result.preventDefault = true;
+		result.handled = true;
+	}
+	
+	return result;
 };

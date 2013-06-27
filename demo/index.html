@@ -367,8 +367,8 @@
 			<div class="box">
 				<h3>Custom</h3>
 				<p>
-					<label for="CustomSelect">Custom: </label>
-					<select id="CustomSelect">
+					<label for="CustomSelect1">Custom 1: </label>
+					<select id="CustomSelect1">
 						<option></option>
 						<option>Red</option>
 						<option>Green</option>
@@ -387,7 +387,7 @@
 								(
 									// This is the obect that the Selectioner will target as it's 
 									// underlying element. This is usually an input, select or textarea.
-									$('#CustomSelect'), 	
+									$('#CustomSelect1'), 	
 									
 									// This is what displays what is currently selected to the user. 
 									// You can make your own by inheriting from Selectioner.Core.Display.
@@ -417,6 +417,31 @@
 											customSelectioner.display.popup.hide(); 
 										}
 									);
+						});
+					</script>
+				</p>
+				<p>
+					<label for="CustomSelect2">Custom 2: </label>
+					<select id="CustomSelect2">
+						<option></option>
+						<option>Duplicate 1</option>
+						<option>Duplicate 2</option>
+						<option>Duplicate 3</option>
+					</select>
+					<script>
+						$(function()
+						{
+							var customSelectioner = new Selectioner
+								(
+									$('#CustomSelect2'), 
+									new Selectioner.Display.ListBox(),	
+									[
+										new Selectioner.Dialog.SingleSelect(),
+										new Selectioner.Dialog.SingleSelect(),
+										new Selectioner.Dialog.SingleSelect(),
+										new Selectioner.Dialog.SingleSelect()
+									]
+								);
 						});
 					</script>
 				</p>

@@ -379,15 +379,6 @@ Popup.prototype.show = function()
 				// the height of the pop-up because of this, reposition it again.
 				this.reposition();
 			}
-			
-			if (this.element.hasClass('above'))
-			{
-				this.previous();
-			}
-			else
-			{
-				this.next();
-			}
 						
 			this.selectioner.trigger('show.selectioner');
 		}
@@ -413,107 +404,61 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-Popup.prototype.next = function()
+Popup.prototype.keyDown = function (key)
 {
-	var canMove = false;
+	var result = { preventDefault: false };
+
+	var coveredDialogs = {};
 	
 	if (!this.currentDialogIndex)
 	{
 		this.currentDialogIndex = 0;
 	}
 		
-	while (!canMove)
+	while (!coveredDialogs[this.currentDialogIndex])
 	{
-		canMove = this.dialogs[this.currentDialogIndex].next();
+		// Keep track of what dialogs we've attempted to hand 
+		// this keystroke down to, so that we do not end up in 
+		// an infinite loop.
+		coveredDialogs[this.currentDialogIndex] = true;
 		
-		if (!canMove)
+		result = this.dialogs[this.currentDialogIndex].keyDown(key);
+		
+		// If the pop-up is still visible, but the dialog indicates that it 
+		// wants to hand off keyboard focus, then move to the next dialog.
+		if (!result.handled)
 		{
-			if (this.currentDialogIndex < this.dialogs.length - 1)
+			var moveUp = 
+				key == 38 ||	// Up arrow
+				key == 37 ||	// Left Arrow
+				key == 8;		// Backspace	
+		
+			if (moveUp)
 			{
-				this.currentDialogIndex++;
+				if (this.currentDialogIndex > 0)
+				{
+					this.currentDialogIndex--;
+				}
+				else
+				{
+					this.currentDialogIndex = this.dialogs.length - 1;
+				}
 			}
 			else
-			{				
-				return false;
-			}
-		}
-	}
-	
-	return true;
-};
-
-Popup.prototype.previous = function()
-{
-	var canMove = false;
-	
-	if (!this.currentDialogIndex)
-	{
-		this.currentDialogIndex = this.dialogs.length - 1;
-	}
-		
-	while (!canMove)
-	{
-		canMove = this.dialogs[this.currentDialogIndex].previous();
-		
-		if (!canMove)
-		{
-			if (this.currentDialogIndex > 0)
 			{
-				this.currentDialogIndex--;
-			}
-			else
-			{				
-				return false;
+				if (this.currentDialogIndex < this.dialogs.length - 1)
+				{
+					this.currentDialogIndex++;
+				}
+				else
+				{
+					this.currentDialogIndex = 0;
+				}
 			}
 		}
 	}
 	
-	return true;
-};
-
-Popup.prototype.select = function()
-{
-	if (!this.currentDialogIndex)
-	{
-		this.currentDialogIndex = this.dialogs.length - 1;
-	}
-	
-	this.dialogs[this.currentDialogIndex].select();
-};
-
-Popup.prototype.onKeyDown = function(key, event)
-{
-	// Keyboard integration
-	if (this.isShown() && event.target === this.selectioner.display.element[0])
-	{
-		switch(key)
-		{
-			// Escape
-			case 27:
-				this.hide();
-				break;
-				
-			// Up arrow
-			case 38: 
-				event.preventDefault();
-				this.previous();
-				break;
-				
-			// Down arrow
-			case 40: 
-				event.preventDefault();
-				this.next();			
-				break;
-				
-			// Space
-			case 32:
-			// Enter / Return
-			case 13:
-				event.preventDefault();
-				this.select();
-				break;
-		}
-	}
+	return result;
 };
 var Display = Selectioner.Core.Display = function() {};
 
@@ -624,7 +569,7 @@ Display.prototype.createDisplay = function()
 			'keydown.selectioner',
 			function(event)
 			{
-				display.onKeyDown
+				display.keyDown
 					(
 						event.which || event.keyCode,
 						event
@@ -762,7 +707,7 @@ Display.prototype.getNoSelectionText = function()
 	return text;	
 };
 
-Display.prototype.onKeyDown = function(key, event)
+Display.prototype.keyDown = function(key, event)
 {
 	// Only perform keyboard-related actions if they are directly 
 	// related to the display, and not a child element thereof.
@@ -770,15 +715,19 @@ Display.prototype.onKeyDown = function(key, event)
 	{
 		if (this.popup.isShown())
 		{
-			this.popup.onKeyDown(key, event);
+			if (this.popup.keyDown(key).preventDefault)
+			{
+				event.preventDefault();
+			}
 		}
 		else
 		{
-			switch(key)
+			switch (key)
 			{
 				case 38: // Up arrow
 				case 40: // Down arrow
 				case 13: // Return / Enter
+					event.preventDefault();
 					this.popup.show();
 					break;
 			}
@@ -828,25 +777,26 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
-// In the case where a dialog displays a collection of child items,
-// override this method in order to move to the next item. Return
-// true if moving to the item was successful, and false if not.
-Dialog.prototype.next = function()
+// Override this method to allow for keyboard. The method itself can 
+// be called manually, although this is generally not recommended, 
+// as this is generally handled by the popup. 
+Dialog.prototype.keyDown = function(key)
 {
-	return false;
-};
-
-// In the case where a dialog displays a collection of child items,
-// override this method in order to move to the previous item. Return
-// true if moving to the item was successful, and false if not.
-Dialog.prototype.previous = function()
-{
-	return false;
-};
-
-// Override this to select the currently highlighted option.
-Dialog.prototype.select = function()
-{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+		
+	// Escape || Backspace
+	if (key == 27 || key == 8)
+	{
+		this.popup.hide();
+		result.preventDefault = true;
+		result.handled = true;
+	}
+	
+	return result;
 };
 var ListBox = Selectioner.Display.ListBox = function() {};
 
@@ -1161,7 +1111,7 @@ SingleSelect.prototype.render = function()
 			(
 				'mouseenter',
 				'li',
-				function(event)
+				function()
 				{
 					var target = dialog.getSelectableOptions().filter(this);
 					if (target.length > 0 && !target.hasClass('current'))
@@ -1169,6 +1119,14 @@ SingleSelect.prototype.render = function()
 						element.find('li').removeClass('current');
 						target.addClass('current');
 					}
+				}
+			)
+		.on
+			(
+				'mouseleave',
+				function()
+				{
+					$(this).find('li').removeClass('current');
 				}
 			);
 };
@@ -1293,13 +1251,14 @@ SingleSelect.prototype.getSelectableOptions = function()
 			);
 };
 
-SingleSelect.prototype.next = function()
+// Hightlight the next or previous item.
+SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 {
 	var items = this.getSelectableOptions();
 	
 	if (items.filter('.current').length === 0)
 	{
-		items.first().addClass('current');
+		(isNext ? items.first() : items.last()).addClass('current');
 		return true;
 	}
 	else
@@ -1308,23 +1267,47 @@ SingleSelect.prototype.next = function()
 		{
 			var item = $(items[i]);
 			
+			var currentItem;
+			
 			if (item.hasClass('current'))
 			{
-				if (i < length - 1)
+				if (isNext)
 				{
-					item.removeClass('current');
-					var currentItem = $(items[i + 1]).addClass('current');
-					
-					var maxScrollTop = currentItem.position().top + currentItem.height();
-					var height = this.popup.element.height();
+					if (i < length - 1)
+					{
+						item.removeClass('current');
+						currentItem = $(items[i + 1]).addClass('current');
+						
+						var maxScrollTop = currentItem.position().top + currentItem.height();
+						var height = this.popup.element.height();
+												
+						if (maxScrollTop > height)
+						{
+							this.popup.element.scrollTop(this.popup.element.scrollTop() + maxScrollTop - height);
+						}
+						
+						return true;
+					}
+				}
+				else
+				{
+					if (i > 0)
+					{
+						item.removeClass('current');
+						currentItem = $(items[i - 1]).addClass('current');
+						
+						var minScrollTop = currentItem.position().top;
 											
-					if (maxScrollTop > height)
-					{
-						this.popup.element.scrollTop(this.popup.element.scrollTop() + maxScrollTop - height);
+						if (minScrollTop < 0)
+						{
+							this.popup.element.scrollTop(this.popup.element.scrollTop() + minScrollTop);
+						}
+						
+						return true;
 					}
-					
-					return true;
 				}
+				
+				items.removeClass('current');
 				
 				return false;
 			}
@@ -1332,50 +1315,47 @@ SingleSelect.prototype.next = function()
 	}
 };
 
-SingleSelect.prototype.previous = function()
+SingleSelect.prototype.keyDown = function (key)
 {
-	var items = this.getSelectableOptions();
-	
-	if (items.filter('.current').length === 0)
+	var result = Dialog.prototype.keyDown.call(this, key);
+
+	if (!result.handled)
 	{
-		items.last().addClass('current');
-		return true;
-	}
-	else
-	{
-		for (var i = 0, length = items.length; i < length; i++)
-		{
-			var item = $(items[i]);
-			
-			if (item.hasClass('current'))
-			{
-				if (i > 0)
+		switch(key)
+		{				
+			// Up arrow
+			case 38: 
+				if (this.highlightAdjacentOption(false))
 				{
-					item.removeClass('current');
-					var currentItem = $(items[i - 1]).addClass('current');
-					
-					var minScrollTop = currentItem.position().top;
-										
-					if (minScrollTop < 0)
-					{
-						this.popup.element.scrollTop(this.popup.element.scrollTop() + minScrollTop);
-					}
-					
-					return true;
+					result.handled = true;
+					result.preventDefault = true;
 				}
+				break;
 				
-				return false;
-			}
+			// Down arrow
+			case 40: 
+				if (this.highlightAdjacentOption(true))
+				{
+					result.handled = true;
+					result.preventDefault = true;
+				}
+				break;
+				
+			// Space
+			case 32:
+			// Enter / Return
+			case 13:
+				this.getSelectableOptions()
+					.filter('.current')
+					.find('a,label')
+					.trigger('click');
+				result.handled = true;
+				result.preventDefault = true;
+				break;
 		}
 	}
-};
-
-SingleSelect.prototype.select = function()
-{
-	var selectedItem = this.getSelectableOptions()
-		.filter('.current')
-		.find('a,label')
-		.trigger('click');
+	
+	return result;
 };
 var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 

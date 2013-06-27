@@ -182,15 +182,6 @@ Popup.prototype.show = function()
 				// the height of the pop-up because of this, reposition it again.
 				this.reposition();
 			}
-			
-			if (this.element.hasClass('above'))
-			{
-				this.previous();
-			}
-			else
-			{
-				this.next();
-			}
 						
 			this.selectioner.trigger('show.selectioner');
 		}
@@ -216,105 +207,59 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-Popup.prototype.next = function()
+Popup.prototype.keyDown = function (key)
 {
-	var canMove = false;
+	var result = { preventDefault: false };
+
+	var coveredDialogs = {};
 	
 	if (!this.currentDialogIndex)
 	{
 		this.currentDialogIndex = 0;
 	}
 		
-	while (!canMove)
+	while (!coveredDialogs[this.currentDialogIndex])
 	{
-		canMove = this.dialogs[this.currentDialogIndex].next();
+		// Keep track of what dialogs we've attempted to hand 
+		// this keystroke down to, so that we do not end up in 
+		// an infinite loop.
+		coveredDialogs[this.currentDialogIndex] = true;
 		
-		if (!canMove)
+		result = this.dialogs[this.currentDialogIndex].keyDown(key);
+		
+		// If the pop-up is still visible, but the dialog indicates that it 
+		// wants to hand off keyboard focus, then move to the next dialog.
+		if (!result.handled)
 		{
-			if (this.currentDialogIndex < this.dialogs.length - 1)
+			var moveUp = 
+				key == 38 ||	// Up arrow
+				key == 37 ||	// Left Arrow
+				key == 8;		// Backspace	
+		
+			if (moveUp)
 			{
-				this.currentDialogIndex++;
+				if (this.currentDialogIndex > 0)
+				{
+					this.currentDialogIndex--;
+				}
+				else
+				{
+					this.currentDialogIndex = this.dialogs.length - 1;
+				}
 			}
 			else
-			{				
-				return false;
-			}
-		}
-	}
-	
-	return true;
-};
-
-Popup.prototype.previous = function()
-{
-	var canMove = false;
-	
-	if (!this.currentDialogIndex)
-	{
-		this.currentDialogIndex = this.dialogs.length - 1;
-	}
-		
-	while (!canMove)
-	{
-		canMove = this.dialogs[this.currentDialogIndex].previous();
-		
-		if (!canMove)
-		{
-			if (this.currentDialogIndex > 0)
 			{
-				this.currentDialogIndex--;
-			}
-			else
-			{				
-				return false;
+				if (this.currentDialogIndex < this.dialogs.length - 1)
+				{
+					this.currentDialogIndex++;
+				}
+				else
+				{
+					this.currentDialogIndex = 0;
+				}
 			}
 		}
 	}
 	
-	return true;
-};
-
-Popup.prototype.select = function()
-{
-	if (!this.currentDialogIndex)
-	{
-		this.currentDialogIndex = this.dialogs.length - 1;
-	}
-	
-	this.dialogs[this.currentDialogIndex].select();
-};
-
-Popup.prototype.onKeyDown = function(key, event)
-{
-	// Keyboard integration
-	if (this.isShown() && event.target === this.selectioner.display.element[0])
-	{
-		switch(key)
-		{
-			// Escape
-			case 27:
-				this.hide();
-				break;
-				
-			// Up arrow
-			case 38: 
-				event.preventDefault();
-				this.previous();
-				break;
-				
-			// Down arrow
-			case 40: 
-				event.preventDefault();
-				this.next();			
-				break;
-				
-			// Space
-			case 32:
-			// Enter / Return
-			case 13:
-				event.preventDefault();
-				this.select();
-				break;
-		}
-	}
+	return result;
 };

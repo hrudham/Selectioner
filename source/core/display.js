@@ -107,7 +107,7 @@ Display.prototype.createDisplay = function()
 			'keydown.selectioner',
 			function(event)
 			{
-				display.onKeyDown
+				display.keyDown
 					(
 						event.which || event.keyCode,
 						event
@@ -245,7 +245,7 @@ Display.prototype.getNoSelectionText = function()
 	return text;	
 };
 
-Display.prototype.onKeyDown = function(key, event)
+Display.prototype.keyDown = function(key, event)
 {
 	// Only perform keyboard-related actions if they are directly 
 	// related to the display, and not a child element thereof.
@@ -253,15 +253,19 @@ Display.prototype.onKeyDown = function(key, event)
 	{
 		if (this.popup.isShown())
 		{
-			this.popup.onKeyDown(key, event);
+			if (this.popup.keyDown(key).preventDefault)
+			{
+				event.preventDefault();
+			}
 		}
 		else
 		{
-			switch(key)
+			switch (key)
 			{
 				case 38: // Up arrow
 				case 40: // Down arrow
 				case 13: // Return / Enter
+					event.preventDefault();
 					this.popup.show();
 					break;
 			}
