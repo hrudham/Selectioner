@@ -11,6 +11,7 @@
     margin-top: -1px;
     overflow: auto;
     top: 0px; /* Stop page from overflowing when the control is created. */
+
     &.above
     {
         .box-shadow(0px -1px 4px rgba(0, 0, 0, 0.25));
@@ -332,6 +333,23 @@ textarea
                 {
                     background-color: #F5F9FF;
                 }
+
+                &:hover
+                {
+                    span
+                    {
+                        color: #3377DD;
+                        background-color: #EEE;
+                    }
+                }
+
+                &:active
+                {
+                    span
+                    {
+                        background-color: #DDD;
+                    }
+                }
             }
 
             &.previous,
@@ -344,15 +362,6 @@ textarea
                     display: block;
                     padding: 2px 0px;
                 }
-
-                &:hover
-                {
-                    span
-                    {
-                        color: #3377DD;
-                        background-color: #EEE;
-                    }
-                }
             }
 
             &.selected
@@ -362,15 +371,6 @@ textarea
                     border-top: solid 1px #5599FF;
                     border-bottom: solid 1px #5599FF;
                 }
-
-                &:hover
-                {
-                    span
-                    {
-                        color: #3377DD;
-                        background-color: #F9F9F9;
-                    }
-                }
             }
         }
     }
@@ -378,6 +378,13 @@ textarea
     .months
     {
         width: 34%;
+
+        .up,
+        .down
+        {
+            border-left: 1px solid #DDD;
+            border-right: 1px solid #DDD;
+        }
     }
 
     .days

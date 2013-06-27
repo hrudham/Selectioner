@@ -333,6 +333,29 @@ textarea[readonly] + .select-display > .select-text {
 .select-date .years a.selected.current span {
   background-color: #F5F9FF;
 }
+.select-date .months a.previous:hover span,
+.select-date .days a.previous:hover span,
+.select-date .years a.previous:hover span,
+.select-date .months a.next:hover span,
+.select-date .days a.next:hover span,
+.select-date .years a.next:hover span,
+.select-date .months a.selected:hover span,
+.select-date .days a.selected:hover span,
+.select-date .years a.selected:hover span {
+  color: #3377DD;
+  background-color: #EEE;
+}
+.select-date .months a.previous:active span,
+.select-date .days a.previous:active span,
+.select-date .years a.previous:active span,
+.select-date .months a.next:active span,
+.select-date .days a.next:active span,
+.select-date .years a.next:active span,
+.select-date .months a.selected:active span,
+.select-date .days a.selected:active span,
+.select-date .years a.selected:active span {
+  background-color: #DDD;
+}
 .select-date .months a.previous,
 .select-date .days a.previous,
 .select-date .years a.previous,
@@ -350,29 +373,19 @@ textarea[readonly] + .select-display > .select-text {
   display: block;
   padding: 2px 0px;
 }
-.select-date .months a.previous:hover span,
-.select-date .days a.previous:hover span,
-.select-date .years a.previous:hover span,
-.select-date .months a.next:hover span,
-.select-date .days a.next:hover span,
-.select-date .years a.next:hover span {
-  color: #3377DD;
-  background-color: #EEE;
-}
 .select-date .months a.selected span,
 .select-date .days a.selected span,
 .select-date .years a.selected span {
   border-top: solid 1px #5599FF;
   border-bottom: solid 1px #5599FF;
 }
-.select-date .months a.selected:hover span,
-.select-date .days a.selected:hover span,
-.select-date .years a.selected:hover span {
-  color: #3377DD;
-  background-color: #F9F9F9;
-}
 .select-date .months {
   width: 34%;
+}
+.select-date .months .up,
+.select-date .months .down {
+  border-left: 1px solid #DDD;
+  border-right: 1px solid #DDD;
 }
 .select-date .days a.previous span,
 .select-date .days a.next span,
