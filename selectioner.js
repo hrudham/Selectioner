@@ -204,7 +204,7 @@ Popup.prototype.initialize = function(selectioner)
 	this.selectioner = selectioner;
 	this.dialogs = [];
 	
-	this.currentDialogIndex = null;
+	this.dialogFocusIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -397,7 +397,36 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
-		this.currentDialogIndex = null;
+		this.dialogFocusIndex = null;
+	}
+};
+
+// Works out which dialog to focus on. This is mostly used
+// in order to work out which dialog to feed keystrokes to.
+Popup.prototype.changeDialogFocus = function(moveUp)
+{
+	if (moveUp)
+	{
+		if (this.dialogFocusIndex > 0)
+		{
+			this.dialogFocusIndex--;
+		}
+		else
+		{
+			this.dialogFocusIndex = this.dialogs.length - 1;
+		}
+	}
+	else
+	{
+		if (this.dialogFocusIndex < this.dialogs.length - 1 &&
+			this.dialogFocusIndex !== null)
+		{
+			this.dialogFocusIndex++;
+		}
+		else
+		{
+			this.dialogFocusIndex = 0;
+		}
 	}
 };
 
@@ -407,68 +436,82 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-Popup.prototype.keyDown = function (key)
+// Handles key down events. This is called via the Display, 
+// and probably should not be called manually else where.
+// It works out which dialog to feed the key to, and 
+// passes it along.
+Popup.prototype.keydown = function (key)
 {
 	var result = { preventDefault: false };
 
-	var coveredDialogs = {};
-	
 	var moveUp = 
 		key == 38 ||	// Up arrow
 		key == 37 ||	// Left Arrow
 		key == 8;		// Backspace
-	
-	if (this.currentDialogIndex === null)
-	{
-		if (moveUp)
-		{
-			this.currentDialogIndex = this.dialogs.length - 1;
-		}
-		else
-		{
-			this.currentDialogIndex = 0;
-		}
-	}
 		
-	while (!coveredDialogs[this.currentDialogIndex])
+	if (this.dialogFocusIndex === null)
+	{
+		this.changeDialogFocus(moveUp);
+	}
+	
+	var index = this.dialogFocusIndex;
+	
+	var coveredDialogs = {};	
+	while (!coveredDialogs[index])
 	{
 		// Keep track of what dialogs we've attempted to hand 
 		// this keystroke down to, so that we do not end up in 
 		// an infinite loop.
-		coveredDialogs[this.currentDialogIndex] = true;
+		coveredDialogs[index] = true;
 		
-		result = this.dialogs[this.currentDialogIndex].keyDown(key);
+		result = this.dialogs[index].keydown(key);
 		
 		// If the pop-up is still visible, but the dialog indicates that it 
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			if (moveUp)
-			{
-				if (this.currentDialogIndex > 0)
-				{
-					this.currentDialogIndex--;
-				}
-				else
-				{
-					this.currentDialogIndex = this.dialogs.length - 1;
-				}
-			}
-			else
-			{
-				if (this.currentDialogIndex < this.dialogs.length - 1)
-				{
-					this.currentDialogIndex++;
-				}
-				else
-				{
-					this.currentDialogIndex = 0;
-				}
-			}
+			this.changeDialogFocus(moveUp);
 		}
 	}
 	
 	return result;
+};
+
+// Handles key press events. This is called via the Display, 
+// and probably should not be called manually else where.
+// It works out which dialog to feed the key to, and 
+// passes it along.
+Popup.prototype.keyPress = function (key)
+{	
+	var result = { preventDefault: false };
+	var moveUp = this.element.hasClass('above');
+
+	if (this.dialogFocusIndex === null)
+	{
+		this.changeDialogFocus(moveUp);
+	}
+	
+	var index = this.dialogFocusIndex;
+	
+	var coveredDialogs = {};	
+	while (!coveredDialogs[index])
+	{
+		// Keep track of what dialogs we've attempted to hand 
+		// this keystroke down to, so that we do not end up in 
+		// an infinite loop.
+		coveredDialogs[index] = true;
+		
+		result = this.dialogs[index].keyPress(key);
+		
+		// If the pop-up is still visible, but the dialog indicates that it 
+		// wants to hand off keyboard focus, then move to the next dialog.
+		if (!result.handled)
+		{
+			this.changeDialogFocus(moveUp);
+		}
+	}
+	
+	return result; 
 };
 var Display = Selectioner.Core.Display = function() {};
 
@@ -573,7 +616,7 @@ Display.prototype.createDisplay = function()
 				);
 	}
 	
-	// Handle the keydown event for things like arrows, escape, backspace, etc.
+	// Handle the key down event for things like arrows, escape, backspace, etc.
 	this.element.on
 		(
 			'keydown.selectioner',
@@ -583,11 +626,11 @@ Display.prototype.createDisplay = function()
 				// related to the display, and not a child element thereof.
 				var key = event.which;
 								
-				if (event.currentTarget == display.element[0])
+				if (event.target == display.element[0])
 				{
 					if (display.popup.isShown())
 					{
-						if (display.popup.keyDown(key).preventDefault)
+						if (display.popup.keydown(key).preventDefault)
 						{
 							event.preventDefault();
 						}
@@ -612,6 +655,23 @@ Display.prototype.createDisplay = function()
 				}
 			}
 		);
+		
+	// Handle key press for things like filtering lists.
+	this.element.on
+		(
+			'keypress.selectioner',
+			function(event)
+			{
+				var key = event.which;
+				
+				if (event.target == display.element[0] && 
+					display.popup.isShown() && 
+					display.popup.keyPress(key).preventDefault)
+				{
+					event.preventDefault();
+				}
+			}
+		);
 };
 
 // Create a new dialog for the underlying target element.
@@ -631,9 +691,19 @@ Display.prototype.createPopup = function()
 		.on
 			(
 				'focusin.selectioner',
-				function()
+				function(event)
 				{
-					popup.show();
+					var target = $(event.target);
+				
+					if (event.target === dialog.element ||
+						target.prop('tabindex') > -1)
+					{
+						popup.show();
+					}
+					else
+					{
+						dialog.element.focus();
+					}					
 				}
 			)
 		.children()
@@ -780,10 +850,11 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
-// Override this method to allow for keyboard. The method itself can 
-// be called manually, although this is generally not recommended, 
-// as this is generally handled by the popup. 
-Dialog.prototype.keyDown = function(key)
+// Override this method to allow for keyboard integration.
+// The method itself can be called manually, although this 
+// is generally not recommended, as this is usually 
+// handled by the popup. 
+Dialog.prototype.keydown = function(key)
 {
 	var result = 
 		{
@@ -799,6 +870,21 @@ Dialog.prototype.keyDown = function(key)
 		result.handled = true;
 	}
 	
+	return result;
+};
+
+// Override this method to allow for keyboard integration.
+// The method itself can be called manually, although this 
+// is generally not recommended, as this is usually 
+// handled by the popup. 
+Dialog.prototype.keyPress = function(key)
+{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+			
 	return result;
 };
 var ListBox = Selectioner.Display.ListBox = function() {};
@@ -1319,11 +1405,20 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Select the currently highlighted option.
+Dialog.prototype.selectHighlightedOption = function()
+{
+	this.getSelectableOptions()
+		.filter('.current')
+		.find('a,label')
+		.trigger('click');
+};
+
 // Handle key-down events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-SingleSelect.prototype.keyDown = function (key)
+SingleSelect.prototype.keydown = function (key)
 {
-	var result = Dialog.prototype.keyDown.call(this, key);
+	var result = Dialog.prototype.keydown.call(this, key);
 
 	if (!result.handled)
 	{
@@ -1349,16 +1444,76 @@ SingleSelect.prototype.keyDown = function (key)
 				
 			// Space
 			case 32:
+				if (!this.keyPressFilter)
+				{
+					this.selectHighlightedOption();
+					result.handled = true;
+					result.preventDefault = true;
+				}
+				break;
+				 
 			// Enter / Return
 			case 13:
-				this.getSelectableOptions()
-					.filter('.current')
-					.find('a,label')
-					.trigger('click');
+				this.selectHighlightedOption();
 				result.handled = true;
 				result.preventDefault = true;
 				break;
 		}
+	}
+	
+	return result;
+};
+
+Dialog.prototype.keyPress = function(key)
+{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+
+	// Do not filter on enter / return or tab.
+	if (key != 13 && key != 9)
+	{
+		var dialog = this;
+		
+		clearTimeout(this.keyPressFilterTimeout);
+	
+		this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(key).toUpperCase();
+						
+		this.keyPressFilterTimeout = setTimeout
+			(
+				function()
+				{  
+					dialog.keyPressFilter = '';
+				},
+				400
+			);
+			
+		// Find the first option that satisfies the filter, 
+		// and highlight and select it.
+		var options = this.getSelectableOptions();
+		var isSet = false;
+		for (var i = 0, length = options.length; i < length; i++)
+		{
+			var option = $(options[i]);
+			if (option.text().toUpperCase().indexOf(this.keyPressFilter) > -1)
+			{
+				options.removeClass('current');
+				option.addClass('current');
+				isSet = true;
+				break;
+			}
+		}
+		
+		if (!isSet)
+		{
+			clearTimeout(this.keyPressFilterTimeout);
+			this.keyPressFilter = '';
+		}
+		
+		result.preventDefault = true;
+		result.handled = true;
 	}
 	
 	return result;

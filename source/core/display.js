@@ -101,7 +101,7 @@ Display.prototype.createDisplay = function()
 				);
 	}
 	
-	// Handle the keydown event for things like arrows, escape, backspace, etc.
+	// Handle the key down event for things like arrows, escape, backspace, etc.
 	this.element.on
 		(
 			'keydown.selectioner',
@@ -111,11 +111,11 @@ Display.prototype.createDisplay = function()
 				// related to the display, and not a child element thereof.
 				var key = event.which;
 								
-				if (event.currentTarget == display.element[0])
+				if (event.target == display.element[0])
 				{
 					if (display.popup.isShown())
 					{
-						if (display.popup.keyDown(key).preventDefault)
+						if (display.popup.keydown(key).preventDefault)
 						{
 							event.preventDefault();
 						}
@@ -140,6 +140,23 @@ Display.prototype.createDisplay = function()
 				}
 			}
 		);
+		
+	// Handle key press for things like filtering lists.
+	this.element.on
+		(
+			'keypress.selectioner',
+			function(event)
+			{
+				var key = event.which;
+				
+				if (event.target == display.element[0] && 
+					display.popup.isShown() && 
+					display.popup.keyPress(key).preventDefault)
+				{
+					event.preventDefault();
+				}
+			}
+		);
 };
 
 // Create a new dialog for the underlying target element.
@@ -159,9 +176,19 @@ Display.prototype.createPopup = function()
 		.on
 			(
 				'focusin.selectioner',
-				function()
+				function(event)
 				{
-					popup.show();
+					var target = $(event.target);
+				
+					if (event.target === dialog.element ||
+						target.prop('tabindex') > -1)
+					{
+						popup.show();
+					}
+					else
+					{
+						dialog.element.focus();
+					}					
 				}
 			)
 		.children()

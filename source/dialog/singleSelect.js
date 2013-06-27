@@ -226,11 +226,20 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Select the currently highlighted option.
+Dialog.prototype.selectHighlightedOption = function()
+{
+	this.getSelectableOptions()
+		.filter('.current')
+		.find('a,label')
+		.trigger('click');
+};
+
 // Handle key-down events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-SingleSelect.prototype.keyDown = function (key)
+SingleSelect.prototype.keydown = function (key)
 {
-	var result = Dialog.prototype.keyDown.call(this, key);
+	var result = Dialog.prototype.keydown.call(this, key);
 
 	if (!result.handled)
 	{
@@ -256,16 +265,76 @@ SingleSelect.prototype.keyDown = function (key)
 				
 			// Space
 			case 32:
+				if (!this.keyPressFilter)
+				{
+					this.selectHighlightedOption();
+					result.handled = true;
+					result.preventDefault = true;
+				}
+				break;
+				 
 			// Enter / Return
 			case 13:
-				this.getSelectableOptions()
-					.filter('.current')
-					.find('a,label')
-					.trigger('click');
+				this.selectHighlightedOption();
 				result.handled = true;
 				result.preventDefault = true;
 				break;
 		}
+	}
+	
+	return result;
+};
+
+Dialog.prototype.keyPress = function(key)
+{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+
+	// Do not filter on enter / return or tab.
+	if (key != 13 && key != 9)
+	{
+		var dialog = this;
+		
+		clearTimeout(this.keyPressFilterTimeout);
+	
+		this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(key).toUpperCase();
+						
+		this.keyPressFilterTimeout = setTimeout
+			(
+				function()
+				{  
+					dialog.keyPressFilter = '';
+				},
+				400
+			);
+			
+		// Find the first option that satisfies the filter, 
+		// and highlight and select it.
+		var options = this.getSelectableOptions();
+		var isSet = false;
+		for (var i = 0, length = options.length; i < length; i++)
+		{
+			var option = $(options[i]);
+			if (option.text().toUpperCase().indexOf(this.keyPressFilter) > -1)
+			{
+				options.removeClass('current');
+				option.addClass('current');
+				isSet = true;
+				break;
+			}
+		}
+		
+		if (!isSet)
+		{
+			clearTimeout(this.keyPressFilterTimeout);
+			this.keyPressFilter = '';
+		}
+		
+		result.preventDefault = true;
+		result.handled = true;
 	}
 	
 	return result;

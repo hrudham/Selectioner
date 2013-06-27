@@ -36,10 +36,11 @@ Dialog.prototype.validateTarget = function()
 	// This may be ignored if no validation is required.
 };
 
-// Override this method to allow for keyboard. The method itself can 
-// be called manually, although this is generally not recommended, 
-// as this is generally handled by the popup. 
-Dialog.prototype.keyDown = function(key)
+// Override this method to allow for keyboard integration.
+// The method itself can be called manually, although this 
+// is generally not recommended, as this is usually 
+// handled by the popup. 
+Dialog.prototype.keydown = function(key)
 {
 	var result = 
 		{
@@ -55,5 +56,20 @@ Dialog.prototype.keyDown = function(key)
 		result.handled = true;
 	}
 	
+	return result;
+};
+
+// Override this method to allow for keyboard integration.
+// The method itself can be called manually, although this 
+// is generally not recommended, as this is usually 
+// handled by the popup. 
+Dialog.prototype.keyPress = function(key)
+{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+			
 	return result;
 };

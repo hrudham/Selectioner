@@ -7,7 +7,7 @@ Popup.prototype.initialize = function(selectioner)
 	this.selectioner = selectioner;
 	this.dialogs = [];
 	
-	this.currentDialogIndex = null;
+	this.dialogFocusIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -200,7 +200,36 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
-		this.currentDialogIndex = null;
+		this.dialogFocusIndex = null;
+	}
+};
+
+// Works out which dialog to focus on. This is mostly used
+// in order to work out which dialog to feed keystrokes to.
+Popup.prototype.changeDialogFocus = function(moveUp)
+{
+	if (moveUp)
+	{
+		if (this.dialogFocusIndex > 0)
+		{
+			this.dialogFocusIndex--;
+		}
+		else
+		{
+			this.dialogFocusIndex = this.dialogs.length - 1;
+		}
+	}
+	else
+	{
+		if (this.dialogFocusIndex < this.dialogs.length - 1 &&
+			this.dialogFocusIndex !== null)
+		{
+			this.dialogFocusIndex++;
+		}
+		else
+		{
+			this.dialogFocusIndex = 0;
+		}
 	}
 };
 
@@ -210,66 +239,80 @@ Popup.prototype.isShown = function()
 	return this._isVisible;
 };
 
-Popup.prototype.keyDown = function (key)
+// Handles key down events. This is called via the Display, 
+// and probably should not be called manually else where.
+// It works out which dialog to feed the key to, and 
+// passes it along.
+Popup.prototype.keydown = function (key)
 {
 	var result = { preventDefault: false };
 
-	var coveredDialogs = {};
-	
 	var moveUp = 
 		key == 38 ||	// Up arrow
 		key == 37 ||	// Left Arrow
 		key == 8;		// Backspace
-	
-	if (this.currentDialogIndex === null)
-	{
-		if (moveUp)
-		{
-			this.currentDialogIndex = this.dialogs.length - 1;
-		}
-		else
-		{
-			this.currentDialogIndex = 0;
-		}
-	}
 		
-	while (!coveredDialogs[this.currentDialogIndex])
+	if (this.dialogFocusIndex === null)
+	{
+		this.changeDialogFocus(moveUp);
+	}
+	
+	var index = this.dialogFocusIndex;
+	
+	var coveredDialogs = {};	
+	while (!coveredDialogs[index])
 	{
 		// Keep track of what dialogs we've attempted to hand 
 		// this keystroke down to, so that we do not end up in 
 		// an infinite loop.
-		coveredDialogs[this.currentDialogIndex] = true;
+		coveredDialogs[index] = true;
 		
-		result = this.dialogs[this.currentDialogIndex].keyDown(key);
+		result = this.dialogs[index].keydown(key);
 		
 		// If the pop-up is still visible, but the dialog indicates that it 
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			if (moveUp)
-			{
-				if (this.currentDialogIndex > 0)
-				{
-					this.currentDialogIndex--;
-				}
-				else
-				{
-					this.currentDialogIndex = this.dialogs.length - 1;
-				}
-			}
-			else
-			{
-				if (this.currentDialogIndex < this.dialogs.length - 1)
-				{
-					this.currentDialogIndex++;
-				}
-				else
-				{
-					this.currentDialogIndex = 0;
-				}
-			}
+			this.changeDialogFocus(moveUp);
 		}
 	}
 	
 	return result;
+};
+
+// Handles key press events. This is called via the Display, 
+// and probably should not be called manually else where.
+// It works out which dialog to feed the key to, and 
+// passes it along.
+Popup.prototype.keyPress = function (key)
+{	
+	var result = { preventDefault: false };
+	var moveUp = this.element.hasClass('above');
+
+	if (this.dialogFocusIndex === null)
+	{
+		this.changeDialogFocus(moveUp);
+	}
+	
+	var index = this.dialogFocusIndex;
+	
+	var coveredDialogs = {};	
+	while (!coveredDialogs[index])
+	{
+		// Keep track of what dialogs we've attempted to hand 
+		// this keystroke down to, so that we do not end up in 
+		// an infinite loop.
+		coveredDialogs[index] = true;
+		
+		result = this.dialogs[index].keyPress(key);
+		
+		// If the pop-up is still visible, but the dialog indicates that it 
+		// wants to hand off keyboard focus, then move to the next dialog.
+		if (!result.handled)
+		{
+			this.changeDialogFocus(moveUp);
+		}
+	}
+	
+	return result; 
 };
