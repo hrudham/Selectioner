@@ -203,6 +203,8 @@ Popup.prototype.initialize = function(selectioner)
 
 	this.selectioner = selectioner;
 	this.dialogs = [];
+	
+	this.currentDialogIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -395,6 +397,7 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
+		this.currentDialogIndex = null;
 	}
 };
 
@@ -410,9 +413,21 @@ Popup.prototype.keyDown = function (key)
 
 	var coveredDialogs = {};
 	
-	if (!this.currentDialogIndex)
+	var moveUp = 
+		key == 38 ||	// Up arrow
+		key == 37 ||	// Left Arrow
+		key == 8;		// Backspace
+	
+	if (this.currentDialogIndex === null)
 	{
-		this.currentDialogIndex = 0;
+		if (moveUp)
+		{
+			this.currentDialogIndex = this.dialogs.length - 1;
+		}
+		else
+		{
+			this.currentDialogIndex = 0;
+		}
 	}
 		
 	while (!coveredDialogs[this.currentDialogIndex])
@@ -428,11 +443,6 @@ Popup.prototype.keyDown = function (key)
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			var moveUp = 
-				key == 38 ||	// Up arrow
-				key == 37 ||	// Left Arrow
-				key == 8;		// Backspace	
-		
 			if (moveUp)
 			{
 				if (this.currentDialogIndex > 0)
@@ -563,17 +573,43 @@ Display.prototype.createDisplay = function()
 				);
 	}
 	
-	// Watch for keydown events.
+	// Handle the keydown event for things like arrows, escape, backspace, etc.
 	this.element.on
 		(
 			'keydown.selectioner',
 			function(event)
 			{
-				display.keyDown
-					(
-						event.which || event.keyCode,
-						event
-					);
+				// Only perform keyboard-related actions if they are directly 
+				// related to the display, and not a child element thereof.
+				var key = event.which;
+								
+				if (event.currentTarget == display.element[0])
+				{
+					if (display.popup.isShown())
+					{
+						if (display.popup.keyDown(key).preventDefault)
+						{
+							event.preventDefault();
+						}
+					}
+					else
+					{
+						switch (key)
+						{
+							case 38: // Up arrow
+							case 40: // Down arrow
+							case 13: // Return / Enter
+								event.preventDefault();
+								display.popup.show();
+								break;
+						}
+					}
+				}
+				else if (key === 27) 
+				{
+					// Escape key was pressed.
+					display.element.focus();
+				}
 			}
 		);
 };
@@ -705,39 +741,6 @@ Display.prototype.getNoSelectionText = function()
 	}
 	
 	return text;	
-};
-
-Display.prototype.keyDown = function(key, event)
-{
-	// Only perform keyboard-related actions if they are directly 
-	// related to the display, and not a child element thereof.
-	if (event.target == this.element[0])
-	{
-		if (this.popup.isShown())
-		{
-			if (this.popup.keyDown(key).preventDefault)
-			{
-				event.preventDefault();
-			}
-		}
-		else
-		{
-			switch (key)
-			{
-				case 38: // Up arrow
-				case 40: // Down arrow
-				case 13: // Return / Enter
-					event.preventDefault();
-					this.popup.show();
-					break;
-			}
-		}
-	}
-	else if (key === 27) 
-	{
-		// Escape key was pressed.
-		this.element.focus();
-	}
 };
 var Dialog = Selectioner.Core.Dialog = function() {};
 
@@ -1236,6 +1239,7 @@ SingleSelect.prototype.renderGroup = function(group)
 	return groupElement;
 };
 
+// Get all options that can potentially be selected.
 SingleSelect.prototype.getSelectableOptions = function()
 {
 	return this.element
@@ -1315,6 +1319,8 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Handle key-down events. This method is called by the pop-up, and
+// thus usually should not be called manually elsewhere.
 SingleSelect.prototype.keyDown = function (key)
 {
 	var result = Dialog.prototype.keyDown.call(this, key);

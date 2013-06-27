@@ -146,6 +146,7 @@ SingleSelect.prototype.renderGroup = function(group)
 	return groupElement;
 };
 
+// Get all options that can potentially be selected.
 SingleSelect.prototype.getSelectableOptions = function()
 {
 	return this.element
@@ -225,6 +226,8 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Handle key-down events. This method is called by the pop-up, and
+// thus usually should not be called manually elsewhere.
 SingleSelect.prototype.keyDown = function (key)
 {
 	var result = Dialog.prototype.keyDown.call(this, key);

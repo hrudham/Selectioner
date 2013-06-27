@@ -101,17 +101,43 @@ Display.prototype.createDisplay = function()
 				);
 	}
 	
-	// Watch for keydown events.
+	// Handle the keydown event for things like arrows, escape, backspace, etc.
 	this.element.on
 		(
 			'keydown.selectioner',
 			function(event)
 			{
-				display.keyDown
-					(
-						event.which || event.keyCode,
-						event
-					);
+				// Only perform keyboard-related actions if they are directly 
+				// related to the display, and not a child element thereof.
+				var key = event.which;
+								
+				if (event.currentTarget == display.element[0])
+				{
+					if (display.popup.isShown())
+					{
+						if (display.popup.keyDown(key).preventDefault)
+						{
+							event.preventDefault();
+						}
+					}
+					else
+					{
+						switch (key)
+						{
+							case 38: // Up arrow
+							case 40: // Down arrow
+							case 13: // Return / Enter
+								event.preventDefault();
+								display.popup.show();
+								break;
+						}
+					}
+				}
+				else if (key === 27) 
+				{
+					// Escape key was pressed.
+					display.element.focus();
+				}
 			}
 		);
 };
@@ -243,37 +269,4 @@ Display.prototype.getNoSelectionText = function()
 	}
 	
 	return text;	
-};
-
-Display.prototype.keyDown = function(key, event)
-{
-	// Only perform keyboard-related actions if they are directly 
-	// related to the display, and not a child element thereof.
-	if (event.target == this.element[0])
-	{
-		if (this.popup.isShown())
-		{
-			if (this.popup.keyDown(key).preventDefault)
-			{
-				event.preventDefault();
-			}
-		}
-		else
-		{
-			switch (key)
-			{
-				case 38: // Up arrow
-				case 40: // Down arrow
-				case 13: // Return / Enter
-					event.preventDefault();
-					this.popup.show();
-					break;
-			}
-		}
-	}
-	else if (key === 27) 
-	{
-		// Escape key was pressed.
-		this.element.focus();
-	}
 };

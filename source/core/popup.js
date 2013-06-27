@@ -6,6 +6,8 @@ Popup.prototype.initialize = function(selectioner)
 
 	this.selectioner = selectioner;
 	this.dialogs = [];
+	
+	this.currentDialogIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -198,6 +200,7 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
+		this.currentDialogIndex = null;
 	}
 };
 
@@ -213,9 +216,21 @@ Popup.prototype.keyDown = function (key)
 
 	var coveredDialogs = {};
 	
-	if (!this.currentDialogIndex)
+	var moveUp = 
+		key == 38 ||	// Up arrow
+		key == 37 ||	// Left Arrow
+		key == 8;		// Backspace
+	
+	if (this.currentDialogIndex === null)
 	{
-		this.currentDialogIndex = 0;
+		if (moveUp)
+		{
+			this.currentDialogIndex = this.dialogs.length - 1;
+		}
+		else
+		{
+			this.currentDialogIndex = 0;
+		}
 	}
 		
 	while (!coveredDialogs[this.currentDialogIndex])
@@ -231,11 +246,6 @@ Popup.prototype.keyDown = function (key)
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			var moveUp = 
-				key == 38 ||	// Up arrow
-				key == 37 ||	// Left Arrow
-				key == 8;		// Backspace	
-		
 			if (moveUp)
 			{
 				if (this.currentDialogIndex > 0)
