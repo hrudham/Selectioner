@@ -321,3 +321,60 @@ DateSelect.prototype.setCurrentDate = function(date)
 		.trigger('change.selectioner');
 	this.update();
 };
+
+// Handle key-down events. This method is called by the pop-up, and
+// thus usually should not be called manually elsewhere.
+DateSelect.prototype.keyDown = function (key)
+{
+	var result = 
+		{
+			preventDefault: false,
+			handled: false
+		};
+		
+	if (!result.handled)
+	{
+		switch(key)
+		{				
+			// Up arrow
+			case 38: 
+				this.addDays(-1);
+				result.handled = true;
+				result.preventDefault = true;
+				break;
+				
+			// Down arrow
+			case 40: 
+				this.addDays(1);
+				result.handled = true;
+				result.preventDefault = true;
+				break;
+			
+			// Backspace			
+			case 8: 
+				this.setCurrentDate(null);
+				this.popup.hide();
+				result.handled = true;
+				result.preventDefault = true;
+				break;
+			
+			// Escape
+			case 27:
+				this.popup.hide();
+				result.preventDefault = true;
+				result.handled = true;
+				break;
+				
+			// Space
+			case 32:
+			// Enter / Return
+			case 13:
+				this.popup.hide();
+				result.handled = true;
+				result.preventDefault = true;
+				break;
+		}
+	}
+		
+	return result;
+};
