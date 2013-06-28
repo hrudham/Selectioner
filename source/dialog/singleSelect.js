@@ -188,15 +188,7 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 					{
 						item.removeClass('current');
 						currentItem = $(items[i + 1]).addClass('current');
-						
-						var maxScrollTop = currentItem.position().top + currentItem.height();
-						var height = this.popup.element.height();
-												
-						if (maxScrollTop > height)
-						{
-							this.popup.element.scrollTop(this.popup.element.scrollTop() + maxScrollTop - height);
-						}
-						
+						this.scrollToHighlightedOption();					
 						return true;
 					}
 				}
@@ -206,14 +198,7 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 					{
 						item.removeClass('current');
 						currentItem = $(items[i - 1]).addClass('current');
-						
-						var minScrollTop = currentItem.position().top;
-											
-						if (minScrollTop < 0)
-						{
-							this.popup.element.scrollTop(this.popup.element.scrollTop() + minScrollTop);
-						}
-						
+						this.scrollToHighlightedOption();
 						return true;
 					}
 				}
@@ -221,6 +206,31 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 				items.removeClass('current');
 				
 				return false;
+			}
+		}
+	}
+};
+
+Dialog.prototype.scrollToHighlightedOption = function()
+{
+	var option = this.getSelectableOptions().filter('.current');
+	
+	if (option.length > 0)
+	{
+		var optionTop = option.position().top;
+			
+		if (optionTop < 0)
+		{
+			this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop);
+		}
+		else
+		{
+			var popupHeight = this.popup.element.height();
+			optionTop += option.height();
+			
+			if (optionTop > popupHeight)
+			{
+				this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop - popupHeight);
 			}
 		}
 	}
@@ -281,6 +291,8 @@ SingleSelect.prototype.keydown = function (key)
 				break;
 		}
 	}
+	
+	this.scrollToHighlightedOption();
 	
 	return result;
 };
