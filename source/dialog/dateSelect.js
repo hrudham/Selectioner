@@ -1,3 +1,6 @@
+// Note that you may optionally include the excellent Globalize library in order 
+// to get culturally formatted dates. See https://github.com/jquery/globalize
+
 var DateSelect = Selectioner.Dialog.DateSelect = function() {};
 
 DateSelect.prototype = new Selectioner.Core.Dialog();
@@ -34,6 +37,17 @@ DateSelect.Utility =
 		
 		return year + '-' + month + '-' + day;
 	},
+	stringToTitleCase: function(input)
+	{
+		return input.replace
+			(
+				/\w\S*/g, 
+				function (txt)
+				{
+					return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+				}
+			);
+	},
 	buildScroller: function(collection, currentValue)
 	{	
 		var buildItem = function(i)
@@ -51,6 +65,7 @@ DateSelect.Utility =
 		};
 		
 		return $('<span />')
+			.addClass('scroller')
 			.append($('<a />').attr('href', 'javascript:;').addClass('up'))
 			.append(buildItem(0).addClass('previous'))
 			.append(buildItem(1).addClass('selected'))
@@ -226,14 +241,20 @@ DateSelect.prototype.update = function()
 	
 	// Months
 	var monthNames = DateSelect.Settings.monthNames;
+	
+	if (window.Globalize)
+	{
+		monthNames = Globalize.culture().calendars.standard.months.namesAbbr;
+	}
+	
 	var currentMonth = currentDate.getMonth();
 	var previousMonth = currentMonth === 0 ? 11 : currentMonth - 1;
 	var nextMonth = currentMonth === 11 ? 0 : currentMonth + 1;
 	var months = 
 		[
-			monthNames[previousMonth],
-			monthNames[currentMonth],
-			monthNames[nextMonth]
+			DateSelect.Utility.stringToTitleCase(monthNames[previousMonth]),
+			DateSelect.Utility.stringToTitleCase(monthNames[currentMonth]),
+			DateSelect.Utility.stringToTitleCase(monthNames[nextMonth])
 		];
 	
 	// Days
@@ -262,11 +283,47 @@ DateSelect.prototype.update = function()
 	// Build the control
 	this.element
 		.empty()
-		.append(todayButton)
-		.append(DateSelect.Utility.buildScroller(days, today.getDate()).addClass('days'))
-		.append(DateSelect.Utility.buildScroller(months, monthNames[today.getMonth()]).addClass('months'))
-		.append(DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1], today.getFullYear()).addClass('years'))
-		.append(clearButton);
+		.append(todayButton);
+		
+	// Attempt to define the order of the scrollers
+	// based upon the user's culture settings.
+	var diviningDate = new Date(1999, 7, 4);
+	var dateString = diviningDate.toLocaleDateString();
+	if (window.Globalize)
+	{
+		dateString = Globalize.format(diviningDate, 'd');
+	}
+	
+	var scrollers = 
+		[  
+			{
+				index: dateString.indexOf('99'),
+				element: DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1], today.getFullYear()).addClass('years')
+			},
+			{
+				index: dateString.indexOf('8'), // Month is zero-based, hence we add one.
+				element: DateSelect.Utility.buildScroller(months, monthNames[today.getMonth()]).addClass('months')
+			},
+			{
+				index: dateString.indexOf('4'),
+				element: DateSelect.Utility.buildScroller(days, today.getDate()).addClass('days')
+			}
+		];
+		
+	scrollers.sort
+			(
+				function(a, b)
+				{
+					return a.index > b.index;
+				}
+			);
+	
+	for (var i = 0; i < 3; i++)
+	{
+		this.element.append(scrollers[i].element);
+	}
+		
+	this.element.append(clearButton);
 };
 
 DateSelect.prototype.addDays = function(day)

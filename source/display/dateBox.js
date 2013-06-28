@@ -54,19 +54,15 @@ DateBox.prototype.update = function()
 // Obtains the the string representation of the date provided.
 DateBox.prototype.getDateText = function(date)
 {
-	var day = date.getDate().toString();
-	var month = (date.getMonth() + 1).toString();
-	var year = date.getFullYear().toString();
-	
-	if (day.length == 1)
+	if (window.Globalize)
 	{
-		day = '0' + day;
+		// Globalize is defined, so use it to output a 
+		// short-date in the culturally correct format.
+		// https://github.com/jquery/globalize
+		return Globalize.format(date, 'd');
 	}
-	
-	if (month.length == 1)
+	else
 	{
-		month = '0' + month;
+		return date.toLocaleDateString();
 	}
-	
-	return year + '-' + month + '-' + day;
 };
