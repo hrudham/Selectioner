@@ -1537,7 +1537,7 @@ SingleSelect.prototype.keyDown = function (key)
 
 // Handle key-press events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-Dialog.prototype.keyPress = function(key)
+SingleSelect.prototype.keyPress = function(key)
 {
 	var result = 
 		{
@@ -1971,7 +1971,7 @@ DateSelect.prototype.render = function()
 			(
 				'mousewheel wheel',
 				'.days',
-				function(event, delta)
+				function(event)
 				{
 					dateSelect.addDays(handleWheelChange(event));
 				}
@@ -1980,7 +1980,7 @@ DateSelect.prototype.render = function()
 			(
 				'mousewheel wheel',
 				'.months',
-				function(event, delta)
+				function(event)
 				{
 					dateSelect.addMonths(handleWheelChange(event));
 				}
@@ -1989,7 +1989,7 @@ DateSelect.prototype.render = function()
 			(
 				'mousewheel wheel',
 				'.years',
-				function(event, delta)
+				function(event)
 				{
 					dateSelect.addYears(handleWheelChange(event));
 				}
@@ -2146,6 +2146,12 @@ DateSelect.prototype.update = function()
 		dateString = Globalize.format(diviningDate, 'd');
 	}
 	
+	var monthIndex = dateString.indexOf('8');
+	if (monthIndex === -1)
+	{
+		monthIndex = dateString.search(/[^\d ]/i);
+	}
+	
 	var scrollers = 
 		[  
 			{
@@ -2153,7 +2159,7 @@ DateSelect.prototype.update = function()
 				element: DateSelect.Utility.buildScroller([currentYear - 1, currentYear, currentYear + 1], today.getFullYear()).addClass('years')
 			},
 			{
-				index: dateString.indexOf('8'), // Month is zero-based, hence we add one.
+				index: monthIndex, // Month is zero-based, hence we add one.
 				element: DateSelect.Utility.buildScroller(months, monthNames[today.getMonth()]).addClass('months')
 			},
 			{

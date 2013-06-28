@@ -311,7 +311,7 @@ SingleSelect.prototype.keyDown = function (key)
 
 // Handle key-press events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-Dialog.prototype.keyPress = function(key)
+SingleSelect.prototype.keyPress = function(key)
 {
 	var result = 
 		{
