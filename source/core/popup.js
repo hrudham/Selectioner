@@ -7,7 +7,7 @@ Popup.prototype.initialize = function(selectioner)
 	this.selectioner = selectioner;
 	this.dialogs = [];
 	
-	this.dialogFocusIndex = null;
+	this._dialogFocusIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -62,10 +62,6 @@ Popup.prototype.initialize = function(selectioner)
 // Add a dialog to this popup.
 Popup.prototype.addDialog = function(dialog)
 {
-	// Initialize the dialog in order to associated
-	// it with the underlying target element.
-	var dialogElement;
-	
 	if (!(dialog instanceof Selectioner.Core.Dialog))
 	{
 		// This is a static dialog in the form of a CSS selector or vanilla HTML.
@@ -80,15 +76,30 @@ Popup.prototype.addDialog = function(dialog)
 		
 		dialog = staticDialog;
 	}
-		
+	
+	// Initialize the dialog in order to associated
+	// it with the underlying target element.
 	dialog.initialize(this.selectioner);
 	dialog.setPopup(this);
 	dialog.render();
-	dialogElement = dialog.element;
-		
-	this.element.append(dialogElement);
+	
+	this.element.append(dialog.element);
 	
 	this.dialogs.push(dialog);
+	
+	var index = this.dialogs.length - 1;
+	
+	var popup = this;
+	
+	dialog.element
+		.on
+			(
+				'mousemove', 
+				function()
+				{
+					popup.dialogFocusIndex(index);
+				}
+			);
 };
 
 // Update all the dialogs that appear on this popup.
@@ -200,7 +211,7 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
-		this.dialogFocusIndex = null;
+		this._dialogFocusIndex = null;
 	}
 };
 
@@ -208,29 +219,50 @@ Popup.prototype.hide = function()
 // in order to work out which dialog to feed keystrokes to.
 Popup.prototype.changeDialogFocus = function(moveUp)
 {
+	var index = null;
+
 	if (moveUp)
 	{
-		if (this.dialogFocusIndex > 0)
+		if (this._dialogFocusIndex > 0)
 		{
-			this.dialogFocusIndex--;
+			index = this.dialogFocusIndex(this._dialogFocusIndex - 1);
 		}
 		else
 		{
-			this.dialogFocusIndex = this.dialogs.length - 1;
+			index = this.dialogFocusIndex(this.dialogs.length - 1);
 		}
 	}
 	else
 	{
-		if (this.dialogFocusIndex < this.dialogs.length - 1 &&
-			this.dialogFocusIndex !== null)
+		if (this._dialogFocusIndex < this.dialogs.length - 1 &&
+			this._dialogFocusIndex !== null)
 		{
-			this.dialogFocusIndex++;
+			index = this.dialogFocusIndex(this._dialogFocusIndex + 1);
 		}
 		else
 		{
-			this.dialogFocusIndex = 0;
+			index = this.dialogFocusIndex(0);
 		}
 	}
+	
+	return index;
+};
+
+Popup.prototype.dialogFocusIndex = function(index)
+{
+	if (index !== undefined && 
+		index !== null && 
+		this._dialogFocusIndex !== index)
+	{
+		if (this._dialogFocusIndex !== null)
+		{
+			this.dialogs[this._dialogFocusIndex].lostFocus();
+		}
+		
+		this._dialogFocusIndex = index;
+	}
+	
+	return this._dialogFocusIndex;
 };
 
 // Simply indicates whether the popup is shown to the user currently.
@@ -243,7 +275,7 @@ Popup.prototype.isShown = function()
 // and probably should not be called manually else where.
 // It works out which dialog to feed the key to, and 
 // passes it along.
-Popup.prototype.keydown = function (key)
+Popup.prototype.keyDown = function (key)
 {
 	var result = { preventDefault: false };
 
@@ -251,13 +283,13 @@ Popup.prototype.keydown = function (key)
 		key == 38 ||	// Up arrow
 		key == 37 ||	// Left Arrow
 		key == 8;		// Backspace
-		
-	if (this.dialogFocusIndex === null)
-	{
-		this.changeDialogFocus(moveUp);
-	}
 	
-	var index = this.dialogFocusIndex;
+	var index = this.dialogFocusIndex();
+	
+	if (index === null)
+	{
+		index = this.changeDialogFocus(moveUp);
+	}
 	
 	var coveredDialogs = {};	
 	while (!coveredDialogs[index])
@@ -267,13 +299,13 @@ Popup.prototype.keydown = function (key)
 		// an infinite loop.
 		coveredDialogs[index] = true;
 		
-		result = this.dialogs[index].keydown(key);
+		result = this.dialogs[index].keyDown(key);
 		
 		// If the pop-up is still visible, but the dialog indicates that it 
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			this.changeDialogFocus(moveUp);
+			index = this.changeDialogFocus(moveUp);
 		}
 	}
 	
@@ -289,12 +321,12 @@ Popup.prototype.keyPress = function (key)
 	var result = { preventDefault: false };
 	var moveUp = this.element.hasClass('above');
 
-	if (this.dialogFocusIndex === null)
-	{
-		this.changeDialogFocus(moveUp);
-	}
+	var index = this.dialogFocusIndex();
 	
-	var index = this.dialogFocusIndex;
+	if (index === null)
+	{
+		index = this.changeDialogFocus(moveUp);
+	}
 	
 	var coveredDialogs = {};	
 	while (!coveredDialogs[index])
@@ -310,7 +342,7 @@ Popup.prototype.keyPress = function (key)
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			this.changeDialogFocus(moveUp);
+			index = this.changeDialogFocus(moveUp);
 		}
 	}
 	

@@ -115,7 +115,7 @@ Display.prototype.createDisplay = function()
 				{
 					if (display.popup.isShown())
 					{
-						if (display.popup.keydown(key).preventDefault)
+						if (display.popup.keyDown(key).preventDefault)
 						{
 							event.preventDefault();
 						}

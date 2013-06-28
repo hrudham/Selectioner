@@ -42,8 +42,8 @@
   padding: 4px 0px;
   max-height: 120px;
 }
-.select-popup > ul li.current a,
-.select-popup > ul li.current label {
+.select-popup > ul li.highlight a,
+.select-popup > ul li.highlight label {
   background-color: #F5F5F5;
 }
 .select-popup > ul input[disabled] + span,

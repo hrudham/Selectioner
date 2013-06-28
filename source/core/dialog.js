@@ -40,7 +40,7 @@ Dialog.prototype.validateTarget = function()
 // The method itself can be called manually, although this 
 // is generally not recommended, as this is usually 
 // handled by the popup. 
-Dialog.prototype.keydown = function(key)
+Dialog.prototype.keyDown = function(key)
 {
 	var result = 
 		{
@@ -72,4 +72,10 @@ Dialog.prototype.keyPress = function(key)
 		};
 			
 	return result;
+};
+
+// This will fire every time the dialog loses mouse or keyboard 
+// focus within the keyboard focus within the popup.
+Dialog.prototype.lostFocus = function()
+{
 };

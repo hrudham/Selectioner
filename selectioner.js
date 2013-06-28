@@ -204,7 +204,7 @@ Popup.prototype.initialize = function(selectioner)
 	this.selectioner = selectioner;
 	this.dialogs = [];
 	
-	this.dialogFocusIndex = null;
+	this._dialogFocusIndex = null;
 
 	this.element = $('<div />')
 		.addClass(Selectioner.Settings.cssPrefix + 'popup')
@@ -259,10 +259,6 @@ Popup.prototype.initialize = function(selectioner)
 // Add a dialog to this popup.
 Popup.prototype.addDialog = function(dialog)
 {
-	// Initialize the dialog in order to associated
-	// it with the underlying target element.
-	var dialogElement;
-	
 	if (!(dialog instanceof Selectioner.Core.Dialog))
 	{
 		// This is a static dialog in the form of a CSS selector or vanilla HTML.
@@ -277,15 +273,30 @@ Popup.prototype.addDialog = function(dialog)
 		
 		dialog = staticDialog;
 	}
-		
+	
+	// Initialize the dialog in order to associated
+	// it with the underlying target element.
 	dialog.initialize(this.selectioner);
 	dialog.setPopup(this);
 	dialog.render();
-	dialogElement = dialog.element;
-		
-	this.element.append(dialogElement);
+	
+	this.element.append(dialog.element);
 	
 	this.dialogs.push(dialog);
+	
+	var index = this.dialogs.length - 1;
+	
+	var popup = this;
+	
+	dialog.element
+		.on
+			(
+				'mousemove', 
+				function()
+				{
+					popup.dialogFocusIndex(index);
+				}
+			);
 };
 
 // Update all the dialogs that appear on this popup.
@@ -397,7 +408,7 @@ Popup.prototype.hide = function()
 		this._isVisible = false;
 		this.element.css({ visibility: 'hidden', zIndex: '-1' });
 		this.selectioner.trigger('hide.selectioner');
-		this.dialogFocusIndex = null;
+		this._dialogFocusIndex = null;
 	}
 };
 
@@ -405,29 +416,50 @@ Popup.prototype.hide = function()
 // in order to work out which dialog to feed keystrokes to.
 Popup.prototype.changeDialogFocus = function(moveUp)
 {
+	var index = null;
+
 	if (moveUp)
 	{
-		if (this.dialogFocusIndex > 0)
+		if (this._dialogFocusIndex > 0)
 		{
-			this.dialogFocusIndex--;
+			index = this.dialogFocusIndex(this._dialogFocusIndex - 1);
 		}
 		else
 		{
-			this.dialogFocusIndex = this.dialogs.length - 1;
+			index = this.dialogFocusIndex(this.dialogs.length - 1);
 		}
 	}
 	else
 	{
-		if (this.dialogFocusIndex < this.dialogs.length - 1 &&
-			this.dialogFocusIndex !== null)
+		if (this._dialogFocusIndex < this.dialogs.length - 1 &&
+			this._dialogFocusIndex !== null)
 		{
-			this.dialogFocusIndex++;
+			index = this.dialogFocusIndex(this._dialogFocusIndex + 1);
 		}
 		else
 		{
-			this.dialogFocusIndex = 0;
+			index = this.dialogFocusIndex(0);
 		}
 	}
+	
+	return index;
+};
+
+Popup.prototype.dialogFocusIndex = function(index)
+{
+	if (index !== undefined && 
+		index !== null && 
+		this._dialogFocusIndex !== index)
+	{
+		if (this._dialogFocusIndex !== null)
+		{
+			this.dialogs[this._dialogFocusIndex].lostFocus();
+		}
+		
+		this._dialogFocusIndex = index;
+	}
+	
+	return this._dialogFocusIndex;
 };
 
 // Simply indicates whether the popup is shown to the user currently.
@@ -440,7 +472,7 @@ Popup.prototype.isShown = function()
 // and probably should not be called manually else where.
 // It works out which dialog to feed the key to, and 
 // passes it along.
-Popup.prototype.keydown = function (key)
+Popup.prototype.keyDown = function (key)
 {
 	var result = { preventDefault: false };
 
@@ -448,13 +480,13 @@ Popup.prototype.keydown = function (key)
 		key == 38 ||	// Up arrow
 		key == 37 ||	// Left Arrow
 		key == 8;		// Backspace
-		
-	if (this.dialogFocusIndex === null)
-	{
-		this.changeDialogFocus(moveUp);
-	}
 	
-	var index = this.dialogFocusIndex;
+	var index = this.dialogFocusIndex();
+	
+	if (index === null)
+	{
+		index = this.changeDialogFocus(moveUp);
+	}
 	
 	var coveredDialogs = {};	
 	while (!coveredDialogs[index])
@@ -464,13 +496,13 @@ Popup.prototype.keydown = function (key)
 		// an infinite loop.
 		coveredDialogs[index] = true;
 		
-		result = this.dialogs[index].keydown(key);
+		result = this.dialogs[index].keyDown(key);
 		
 		// If the pop-up is still visible, but the dialog indicates that it 
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			this.changeDialogFocus(moveUp);
+			index = this.changeDialogFocus(moveUp);
 		}
 	}
 	
@@ -486,12 +518,12 @@ Popup.prototype.keyPress = function (key)
 	var result = { preventDefault: false };
 	var moveUp = this.element.hasClass('above');
 
-	if (this.dialogFocusIndex === null)
-	{
-		this.changeDialogFocus(moveUp);
-	}
+	var index = this.dialogFocusIndex();
 	
-	var index = this.dialogFocusIndex;
+	if (index === null)
+	{
+		index = this.changeDialogFocus(moveUp);
+	}
 	
 	var coveredDialogs = {};	
 	while (!coveredDialogs[index])
@@ -507,7 +539,7 @@ Popup.prototype.keyPress = function (key)
 		// wants to hand off keyboard focus, then move to the next dialog.
 		if (!result.handled)
 		{
-			this.changeDialogFocus(moveUp);
+			index = this.changeDialogFocus(moveUp);
 		}
 	}
 	
@@ -630,7 +662,7 @@ Display.prototype.createDisplay = function()
 				{
 					if (display.popup.isShown())
 					{
-						if (display.popup.keydown(key).preventDefault)
+						if (display.popup.keyDown(key).preventDefault)
 						{
 							event.preventDefault();
 						}
@@ -854,7 +886,7 @@ Dialog.prototype.validateTarget = function()
 // The method itself can be called manually, although this 
 // is generally not recommended, as this is usually 
 // handled by the popup. 
-Dialog.prototype.keydown = function(key)
+Dialog.prototype.keyDown = function(key)
 {
 	var result = 
 		{
@@ -886,6 +918,12 @@ Dialog.prototype.keyPress = function(key)
 		};
 			
 	return result;
+};
+
+// This will fire every time the dialog loses mouse or keyboard 
+// focus within the keyboard focus within the popup.
+Dialog.prototype.lostFocus = function()
+{
 };
 var ListBox = Selectioner.Display.ListBox = function() {};
 
@@ -1198,24 +1236,18 @@ SingleSelect.prototype.render = function()
 	var element = this.element
 		.on
 			(
-				'mouseenter',
+				'mousemove',
 				'li',
 				function()
-				{
-					var target = dialog.getSelectableOptions().filter(this);
-					if (target.length > 0 && !target.hasClass('current'))
+				{	
+					var target = $(this);
+					
+					if (!target.hasClass('highlight') && 
+						dialog.getSelectableOptions().filter(this).length > 0)
 					{
-						element.find('li').removeClass('current');
-						target.addClass('current');
+						element.find('li').removeClass('highlight');
+						target.addClass('highlight');
 					}
-				}
-			)
-		.on
-			(
-				'mouseleave',
-				function()
-				{
-					$(this).find('li').removeClass('current');
 				}
 			);
 };
@@ -1346,9 +1378,9 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 {
 	var items = this.getSelectableOptions();
 	
-	if (items.filter('.current').length === 0)
+	if (items.filter('.highlight').length === 0)
 	{
-		(isNext ? items.first() : items.last()).addClass('current');
+		(isNext ? items.first() : items.last()).addClass('highlight');
 		return true;
 	}
 	else
@@ -1357,16 +1389,16 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
 			var item = $(items[i]);
 			
-			var currentItem;
+			var highlightItem;
 			
-			if (item.hasClass('current'))
+			if (item.hasClass('highlight'))
 			{
 				if (isNext)
 				{
 					if (i < length - 1)
 					{
-						item.removeClass('current');
-						currentItem = $(items[i + 1]).addClass('current');
+						item.removeClass('highlight');
+						highlightItem = $(items[i + 1]).addClass('highlight');
 						this.scrollToHighlightedOption();					
 						return true;
 					}
@@ -1375,14 +1407,14 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 				{
 					if (i > 0)
 					{
-						item.removeClass('current');
-						currentItem = $(items[i - 1]).addClass('current');
+						item.removeClass('highlight');
+						highlightItem = $(items[i - 1]).addClass('highlight');
 						this.scrollToHighlightedOption();
 						return true;
 					}
 				}
 				
-				items.removeClass('current');
+				items.removeClass('highlight');
 				
 				return false;
 			}
@@ -1390,9 +1422,10 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Scroll to the highlighted option.
 Dialog.prototype.scrollToHighlightedOption = function()
 {
-	var option = this.getSelectableOptions().filter('.current');
+	var option = this.getSelectableOptions().filter('.highlight');
 	
 	if (option.length > 0)
 	{
@@ -1415,20 +1448,20 @@ Dialog.prototype.scrollToHighlightedOption = function()
 	}
 };
 
-// Select the currently highlighted option.
+// Select the highlightly highlighted option.
 Dialog.prototype.selectHighlightedOption = function()
 {
 	this.getSelectableOptions()
-		.filter('.current')
+		.filter('.highlight')
 		.find('a,label')
 		.trigger('click');
 };
 
 // Handle key-down events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-SingleSelect.prototype.keydown = function (key)
+SingleSelect.prototype.keyDown = function (key)
 {
-	var result = Dialog.prototype.keydown.call(this, key);
+	var result = Dialog.prototype.keyDown.call(this, key);
 
 	if (!result.handled)
 	{
@@ -1476,6 +1509,8 @@ SingleSelect.prototype.keydown = function (key)
 	return result;
 };
 
+// Handle key-press events. This method is called by the pop-up, and
+// thus usually should not be called manually elsewhere.
 Dialog.prototype.keyPress = function(key)
 {
 	var result = 
@@ -1511,8 +1546,8 @@ Dialog.prototype.keyPress = function(key)
 			var option = $(options[i]);
 			if (option.text().toUpperCase().indexOf(this.keyPressFilter) > -1)
 			{
-				options.removeClass('current');
-				option.addClass('current');
+				options.removeClass('highlight');
+				option.addClass('highlight');
 				isSet = true;
 				break;
 			}
@@ -1529,6 +1564,11 @@ Dialog.prototype.keyPress = function(key)
 	}
 	
 	return result;
+};
+
+SingleSelect.prototype.lostFocus = function()
+{
+	this.element.find('li').removeClass('highlight');
 };
 var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
 

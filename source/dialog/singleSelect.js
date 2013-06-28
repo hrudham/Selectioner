@@ -19,24 +19,18 @@ SingleSelect.prototype.render = function()
 	var element = this.element
 		.on
 			(
-				'mouseenter',
+				'mousemove',
 				'li',
 				function()
-				{
-					var target = dialog.getSelectableOptions().filter(this);
-					if (target.length > 0 && !target.hasClass('current'))
+				{	
+					var target = $(this);
+					
+					if (!target.hasClass('highlight') && 
+						dialog.getSelectableOptions().filter(this).length > 0)
 					{
-						element.find('li').removeClass('current');
-						target.addClass('current');
+						element.find('li').removeClass('highlight');
+						target.addClass('highlight');
 					}
-				}
-			)
-		.on
-			(
-				'mouseleave',
-				function()
-				{
-					$(this).find('li').removeClass('current');
 				}
 			);
 };
@@ -167,9 +161,9 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 {
 	var items = this.getSelectableOptions();
 	
-	if (items.filter('.current').length === 0)
+	if (items.filter('.highlight').length === 0)
 	{
-		(isNext ? items.first() : items.last()).addClass('current');
+		(isNext ? items.first() : items.last()).addClass('highlight');
 		return true;
 	}
 	else
@@ -178,16 +172,16 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
 			var item = $(items[i]);
 			
-			var currentItem;
+			var highlightItem;
 			
-			if (item.hasClass('current'))
+			if (item.hasClass('highlight'))
 			{
 				if (isNext)
 				{
 					if (i < length - 1)
 					{
-						item.removeClass('current');
-						currentItem = $(items[i + 1]).addClass('current');
+						item.removeClass('highlight');
+						highlightItem = $(items[i + 1]).addClass('highlight');
 						this.scrollToHighlightedOption();					
 						return true;
 					}
@@ -196,14 +190,14 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 				{
 					if (i > 0)
 					{
-						item.removeClass('current');
-						currentItem = $(items[i - 1]).addClass('current');
+						item.removeClass('highlight');
+						highlightItem = $(items[i - 1]).addClass('highlight');
 						this.scrollToHighlightedOption();
 						return true;
 					}
 				}
 				
-				items.removeClass('current');
+				items.removeClass('highlight');
 				
 				return false;
 			}
@@ -211,9 +205,10 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 	}
 };
 
+// Scroll to the highlighted option.
 Dialog.prototype.scrollToHighlightedOption = function()
 {
-	var option = this.getSelectableOptions().filter('.current');
+	var option = this.getSelectableOptions().filter('.highlight');
 	
 	if (option.length > 0)
 	{
@@ -236,20 +231,20 @@ Dialog.prototype.scrollToHighlightedOption = function()
 	}
 };
 
-// Select the currently highlighted option.
+// Select the highlightly highlighted option.
 Dialog.prototype.selectHighlightedOption = function()
 {
 	this.getSelectableOptions()
-		.filter('.current')
+		.filter('.highlight')
 		.find('a,label')
 		.trigger('click');
 };
 
 // Handle key-down events. This method is called by the pop-up, and
 // thus usually should not be called manually elsewhere.
-SingleSelect.prototype.keydown = function (key)
+SingleSelect.prototype.keyDown = function (key)
 {
-	var result = Dialog.prototype.keydown.call(this, key);
+	var result = Dialog.prototype.keyDown.call(this, key);
 
 	if (!result.handled)
 	{
@@ -297,6 +292,8 @@ SingleSelect.prototype.keydown = function (key)
 	return result;
 };
 
+// Handle key-press events. This method is called by the pop-up, and
+// thus usually should not be called manually elsewhere.
 Dialog.prototype.keyPress = function(key)
 {
 	var result = 
@@ -332,8 +329,8 @@ Dialog.prototype.keyPress = function(key)
 			var option = $(options[i]);
 			if (option.text().toUpperCase().indexOf(this.keyPressFilter) > -1)
 			{
-				options.removeClass('current');
-				option.addClass('current');
+				options.removeClass('highlight');
+				option.addClass('highlight');
 				isSet = true;
 				break;
 			}
@@ -350,4 +347,9 @@ Dialog.prototype.keyPress = function(key)
 	}
 	
 	return result;
+};
+
+SingleSelect.prototype.lostFocus = function()
+{
+	this.element.find('li').removeClass('highlight');
 };
