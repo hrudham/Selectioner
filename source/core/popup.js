@@ -30,6 +30,19 @@ Popup.prototype.initialize = function(selectioner)
 					// the popup. Thus, we stop propagation of these events here.
 					event.stopPropagation();
 				}
+			)
+		// Allow the popup to have a tabindex such that we can detect focusin events.
+		// This allows us to redirect focus to the display if anything in the popup
+		// gains focus (such as a checkbox), which stops the keyboard integration
+		// from breaking.
+		.prop('tabindex', selectioner.target.prop('tabindex') + 1)
+		.on
+			(
+				'focusin.selectioner',
+				function(event)
+				{
+					selectioner.display.element.focus();
+				}
 			);
 
 	this.update();

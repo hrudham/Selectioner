@@ -48,8 +48,8 @@ Dialog.prototype.keyDown = function(key)
 			handled: false
 		};
 		
-	// Escape || Backspace
-	if (key == 27 || key == 8)
+	// Escape
+	if (key == 27)
 	{
 		this.popup.hide();
 		result.preventDefault = true;

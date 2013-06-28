@@ -227,6 +227,19 @@ Popup.prototype.initialize = function(selectioner)
 					// the popup. Thus, we stop propagation of these events here.
 					event.stopPropagation();
 				}
+			)
+		// Allow the popup to have a tabindex such that we can detect focusin events.
+		// This allows us to redirect focus to the display if anything in the popup
+		// gains focus (such as a checkbox), which stops the keyboard integration
+		// from breaking.
+		.prop('tabindex', selectioner.target.prop('tabindex') + 1)
+		.on
+			(
+				'focusin.selectioner',
+				function(event)
+				{
+					selectioner.display.element.focus();
+				}
 			);
 
 	this.update();
@@ -894,8 +907,8 @@ Dialog.prototype.keyDown = function(key)
 			handled: false
 		};
 		
-	// Escape || Backspace
-	if (key == 27 || key == 8)
+	// Escape
+	if (key == 27)
 	{
 		this.popup.hide();
 		result.preventDefault = true;
@@ -1423,7 +1436,7 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 };
 
 // Scroll to the highlighted option.
-Dialog.prototype.scrollToHighlightedOption = function()
+SingleSelect.prototype.scrollToHighlightedOption = function()
 {
 	var option = this.getSelectableOptions().filter('.highlight');
 	
@@ -1449,10 +1462,19 @@ Dialog.prototype.scrollToHighlightedOption = function()
 };
 
 // Select the highlightly highlighted option.
-Dialog.prototype.selectHighlightedOption = function()
+SingleSelect.prototype.selectHighlightedOption = function()
 {
 	this.getSelectableOptions()
 		.filter('.highlight')
+		.find('a,label')
+		.trigger('click');
+};
+
+// Clear the selected item(s) if possible.
+SingleSelect.prototype.clearSelection = function()
+{
+	this.getSelectableOptions()
+		.filter('.none:first')
 		.find('a,label')
 		.trigger('click');
 };
@@ -1483,6 +1505,14 @@ SingleSelect.prototype.keyDown = function (key)
 					result.handled = true;
 					result.preventDefault = true;
 				}
+				break;
+				
+			// Backspace
+			case 8: 
+				this.clearSelection();
+				this.popup.hide();
+				result.handled = true;
+				result.preventDefault = true;
 				break;
 				
 			// Space
@@ -1676,6 +1706,13 @@ MultiSelect.prototype.renderGroup = function(group)
 		);
 	
 	return groupElement;
+};
+
+MultiSelect.prototype.clearSelection = function()
+{
+	this.getSelectableOptions()
+		.find('input:checkbox:checked')
+		.trigger('click');
 };
 var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
 
@@ -2006,6 +2043,7 @@ DateSelect.prototype.render = function()
 				'.selected',
 				function()
 				{
+					dateSelect.setCurrentDate(dateSelect.getCurrentDate());
 					dateSelect.popup.hide();
 				}
 			)
@@ -2015,6 +2053,8 @@ DateSelect.prototype.render = function()
 				'.today',
 				function()
 				{
+					// Always set the date, in case it's been 
+					// cleared, and we want to set it to today.
 					dateSelect.setCurrentDate(new Date());
 					dateSelect.popup.hide();
 				}
@@ -2145,11 +2185,7 @@ DateSelect.prototype.setCurrentDate = function(date)
 // thus usually should not be called manually elsewhere.
 DateSelect.prototype.keyDown = function (key)
 {
-	var result = 
-		{
-			preventDefault: false,
-			handled: false
-		};
+	var result = Dialog.prototype.keyDown.call(this, key);
 		
 	if (!result.handled)
 	{
@@ -2176,18 +2212,12 @@ DateSelect.prototype.keyDown = function (key)
 				result.handled = true;
 				result.preventDefault = true;
 				break;
-			
-			// Escape
-			case 27:
-				this.popup.hide();
-				result.preventDefault = true;
-				result.handled = true;
-				break;
 				
 			// Space
 			case 32:
 			// Enter / Return
 			case 13:
+				this.setCurrentDate(this.getCurrentDate());
 				this.popup.hide();
 				result.handled = true;
 				result.preventDefault = true;

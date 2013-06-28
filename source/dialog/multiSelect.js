@@ -105,3 +105,10 @@ MultiSelect.prototype.renderGroup = function(group)
 	
 	return groupElement;
 };
+
+MultiSelect.prototype.clearSelection = function()
+{
+	this.getSelectableOptions()
+		.find('input:checkbox:checked')
+		.trigger('click');
+};

@@ -206,7 +206,7 @@ SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 };
 
 // Scroll to the highlighted option.
-Dialog.prototype.scrollToHighlightedOption = function()
+SingleSelect.prototype.scrollToHighlightedOption = function()
 {
 	var option = this.getSelectableOptions().filter('.highlight');
 	
@@ -232,10 +232,19 @@ Dialog.prototype.scrollToHighlightedOption = function()
 };
 
 // Select the highlightly highlighted option.
-Dialog.prototype.selectHighlightedOption = function()
+SingleSelect.prototype.selectHighlightedOption = function()
 {
 	this.getSelectableOptions()
 		.filter('.highlight')
+		.find('a,label')
+		.trigger('click');
+};
+
+// Clear the selected item(s) if possible.
+SingleSelect.prototype.clearSelection = function()
+{
+	this.getSelectableOptions()
+		.filter('.none:first')
 		.find('a,label')
 		.trigger('click');
 };
@@ -266,6 +275,14 @@ SingleSelect.prototype.keyDown = function (key)
 					result.handled = true;
 					result.preventDefault = true;
 				}
+				break;
+				
+			// Backspace
+			case 8: 
+				this.clearSelection();
+				this.popup.hide();
+				result.handled = true;
+				result.preventDefault = true;
 				break;
 				
 			// Space

@@ -187,6 +187,7 @@ DateSelect.prototype.render = function()
 				'.selected',
 				function()
 				{
+					dateSelect.setCurrentDate(dateSelect.getCurrentDate());
 					dateSelect.popup.hide();
 				}
 			)
@@ -196,6 +197,8 @@ DateSelect.prototype.render = function()
 				'.today',
 				function()
 				{
+					// Always set the date, in case it's been 
+					// cleared, and we want to set it to today.
 					dateSelect.setCurrentDate(new Date());
 					dateSelect.popup.hide();
 				}
@@ -326,11 +329,7 @@ DateSelect.prototype.setCurrentDate = function(date)
 // thus usually should not be called manually elsewhere.
 DateSelect.prototype.keyDown = function (key)
 {
-	var result = 
-		{
-			preventDefault: false,
-			handled: false
-		};
+	var result = Dialog.prototype.keyDown.call(this, key);
 		
 	if (!result.handled)
 	{
@@ -357,18 +356,12 @@ DateSelect.prototype.keyDown = function (key)
 				result.handled = true;
 				result.preventDefault = true;
 				break;
-			
-			// Escape
-			case 27:
-				this.popup.hide();
-				result.preventDefault = true;
-				result.handled = true;
-				break;
 				
 			// Space
 			case 32:
 			// Enter / Return
 			case 13:
+				this.setCurrentDate(this.getCurrentDate());
 				this.popup.hide();
 				result.handled = true;
 				result.preventDefault = true;
