@@ -99,7 +99,7 @@
 		</div>
 		<h2>Examples</h2>
 		<form>
-			<div class="box">
+			<div class="box" style="position: fixed; right: 16px; bottom: 16px; overflow-y: scroll; z-index: 5001;">
 				<h3>Single-select</h3>
 				<p>
 					<label>Empty: </label>
@@ -172,9 +172,9 @@
 					</script>
 				</p>
 			</div>
-			<div class="box">
+			<div class="box" style="overflow: auto; height: 140px;">
 				<h3>Multi-select</h3>
-				<p>
+				<p style="height: 100px;">
 					<label for="BasicMultiple">Basic Multiple: </label>
 					<select id="BasicMultiple" multiple="multiple">
 						<option disabled="disabled">Disabled</option>

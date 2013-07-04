@@ -54,20 +54,20 @@ Popup.prototype.initialize = function(selectioner)
 	this.selectioner
 		.target
 		.on
-		(
-			'change',
-			function(event, data)
-			{
-				if (!data || data.source !== 'selectioner')
+			(
+				'change',
+				function(event, data)
 				{
-					if (popup.isShown())
+					if (!data || data.source !== 'selectioner')
 					{
-						popup.update();
-						popup.reposition();
+						if (popup.isShown())
+						{
+							popup.update();
+							popup.reposition();
+						}
 					}
 				}
-			}
-		);
+			);
 			
 	$('body').append(this.element);
 };
@@ -189,35 +189,48 @@ Popup.prototype.show = function()
 					popup.hide();
 				}
 			);
-
-		if (!this.isShown())
+	
+		this._isVisible = true;
+		this.update();
+		
+		var popUpHeight = this.element.height();
+		
+		this.reposition();
+		
+		this.element.css({ visibility: 'visible', zIndex: '' });
+		
+		if (popUpHeight != this.element.height())
 		{
-			this._isVisible = true;
-			this.update();
-			
-			var popUpHeight = this.element.height();
-			
+			// Height can often only be calculated by jQuery after the 
+			// element is visible on the page. If our CSS happens to change
+			// the height of the pop-up because of this, reposition it again.
 			this.reposition();
-			
-			this.element.css({ visibility: 'visible', zIndex: '' });
-			
-			if (popUpHeight != this.element.height())
-			{
-				// Height can often only be calculated by jQuery after the 
-				// element is visible on the page. If our CSS happens to change
-				// the height of the pop-up because of this, reposition it again.
-				this.reposition();
-			}
-						
-			this.selectioner.trigger('show.selectioner');
 		}
+		
+		this.selectioner
+			.target
+			.parents()
+			.add(window)
+			.on
+				(
+					'scroll.selectioner_' + this.selectioner.id, 
+					function() 
+					{
+						if (popup.isShown())
+						{
+							popup.hide();
+						}
+					}
+				);
+					
+		this.selectioner.trigger('show.selectioner');
 	}
 };
 
 // Simply hides the pop-up.
 Popup.prototype.hide = function()
 {
-	$(window).off('resize.selectioner_' + this.selectioner.id);
+	$(window).off('resize.selectioner_{id} scroll.selectioner_{id}'.replace(/\{id\}/g, this.selectioner.id));
 
 	if (this.isShown())
 	{
