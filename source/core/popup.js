@@ -183,7 +183,7 @@ Popup.prototype.show = function()
 		$(window)
 			.one
 			(
-				'resize.selectioner',
+				'resize.selectioner_' + this.selectioner.id,
 				function()
 				{
 					popup.hide();
@@ -217,12 +217,18 @@ Popup.prototype.show = function()
 // Simply hides the pop-up.
 Popup.prototype.hide = function()
 {
-	$(window).off('resize.selectioner');
+	$(window).off('resize.selectioner_' + this.selectioner.id);
 
 	if (this.isShown())
 	{
 		this._isVisible = false;
-		this.element.css({ visibility: 'hidden', zIndex: '-1' });
+		this.element.css
+			({ 
+				visibility: 'hidden', 
+				zIndex: '-1',
+				top: 0,
+				left: 0
+			});
 		this.selectioner.trigger('hide.selectioner');
 		this._dialogFocusIndex = null;
 	}

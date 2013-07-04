@@ -131,6 +131,8 @@ Eventable.prototype.trigger = function (name, data)
 };
 var Selectioner = window.Selectioner = function(target, display, dialogs)
 {
+	this.id = Selectioner._idSeed++;
+	
 	// Convert dialogs to an array if it isn't one already.
 	if (!(dialogs instanceof Array))
 	{
@@ -176,6 +178,8 @@ Eventable.prototype.trigger = function (name, data)
 };
 
 Selectioner.prototype = new Eventable();
+
+Selectioner._idSeed = 0;
 
 Selectioner.Core = {};
 
@@ -380,7 +384,7 @@ Popup.prototype.show = function()
 		$(window)
 			.one
 			(
-				'resize.selectioner',
+				'resize.selectioner_' + this.selectioner.id,
 				function()
 				{
 					popup.hide();
@@ -414,12 +418,18 @@ Popup.prototype.show = function()
 // Simply hides the pop-up.
 Popup.prototype.hide = function()
 {
-	$(window).off('resize.selectioner');
+	$(window).off('resize.selectioner_' + this.selectioner.id);
 
 	if (this.isShown())
 	{
 		this._isVisible = false;
-		this.element.css({ visibility: 'hidden', zIndex: '-1' });
+		this.element.css
+			({ 
+				visibility: 'hidden', 
+				zIndex: '-1',
+				top: 0,
+				left: 0
+			});
 		this.selectioner.trigger('hide.selectioner');
 		this._dialogFocusIndex = null;
 	}

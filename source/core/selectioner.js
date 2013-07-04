@@ -1,5 +1,7 @@
 var Selectioner = window.Selectioner = function(target, display, dialogs)
 {
+	this.id = Selectioner._idSeed++;
+	
 	// Convert dialogs to an array if it isn't one already.
 	if (!(dialogs instanceof Array))
 	{
@@ -45,6 +47,8 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 };
 
 Selectioner.prototype = new Eventable();
+
+Selectioner._idSeed = 0;
 
 Selectioner.Core = {};
 
