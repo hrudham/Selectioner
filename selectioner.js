@@ -1077,13 +1077,9 @@ ComboBox.prototype.render = function()
 		.addClass(Selectioner.Settings.cssPrefix + 'text')
 		.on(
 			'change.selectioner', 
-			function() 
-			{
-				// Note that "event" refers not to this change 
-				// event, but the native event object (which in 
-				// this case may be click when someone picks an
-				// option in the drop-down.				
-				if (event && !$.contains(comboBox.selectioner.display.popup.element[0], event.target))
+			function(e, data) 
+			{			
+				if (!data || data.source != 'selectioner')
 				{
 					comboBox.textChanged();
 				}
@@ -1125,7 +1121,8 @@ ComboBox.prototype.textChanged = function()
 	// the drop-down, and select it if it does.
 	// If it doesn't match an option, select the 
 	// option with no value.
-	var text = this.textElement.val().toUpperCase();
+	var value = this.textElement.val();
+	var text = value.toUpperCase();
 	var option = this.selectioner.target.find('option')
 		.filter(function() { return $(this).text().toUpperCase() == text; });
 	
@@ -1134,8 +1131,11 @@ ComboBox.prototype.textChanged = function()
 		option = this.getEmptyOptions();
 	}
 	
-	option[0].selected = true;
-	this.selectioner.target.trigger('change');
+	if (!option[0].selected)
+	{
+		option[0].selected = true;
+		this.selectioner.target.trigger('change', { source: 'selectioner' });
+	}
 };
 
 ComboBox.prototype.update = function()
@@ -1151,7 +1151,7 @@ ComboBox.prototype.update = function()
 	}
 	else if (value !== '')
 	{
-		this.textElement.val(value).trigger('change');
+		this.textElement.val(value).trigger('change', { source: 'selectioner' });
 	}
 };
 
@@ -1804,9 +1804,9 @@ AutoComplete.prototype.render = function()
 	this.textElement.on
 		(
 			'keyup change', 
-			function()
+			function(e, data)
 			{
-				if (event && !$.contains(dialog.popup.element[0], event.target))
+				if (!data || data.source != 'selectioner')
 				{
 					dialog.update();
 					if (!dialog.popup.isShown())
@@ -1840,7 +1840,7 @@ AutoComplete.prototype.update = function()
 					{
 						option[0].selected = true;
 						dialog.popup.hide();
-						dialog.selectioner.target.trigger('change');
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					}
 				);
 		

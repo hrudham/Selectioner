@@ -34,9 +34,9 @@ AutoComplete.prototype.render = function()
 	this.textElement.on
 		(
 			'keyup change', 
-			function()
+			function(e, data)
 			{
-				if (event && !$.contains(dialog.popup.element[0], event.target))
+				if (!data || data.source != 'selectioner')
 				{
 					dialog.update();
 					if (!dialog.popup.isShown())
@@ -70,7 +70,7 @@ AutoComplete.prototype.update = function()
 					{
 						option[0].selected = true;
 						dialog.popup.hide();
-						dialog.selectioner.target.trigger('change');
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					}
 				);
 		
