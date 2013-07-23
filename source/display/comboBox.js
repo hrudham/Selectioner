@@ -40,10 +40,22 @@ ComboBox.prototype.render = function()
 	this.element = $('<span />');
 		
 	var comboBox = this;
-		
+	
 	this.textElement
 		.addClass(Selectioner.Settings.cssPrefix + 'text')
-		.on('change.selectioner', function() { comboBox.textChanged(); });
+		.on(
+			'change.selectioner', 
+			function() 
+			{
+				// Note that "event" refers not to this change 
+				// event, but the native event object (which in 
+				// this case may be click when someone picks an
+				// option in the drop-down.				
+				if (!$.contains(comboBox.selectioner.display.popup.element[0], event.target))
+				{
+					comboBox.textChanged();
+				}
+			});
 	
 	var button = $('<span />')
 		.addClass(Selectioner.Settings.cssPrefix + 'button');
@@ -107,7 +119,7 @@ ComboBox.prototype.update = function()
 	}
 	else if (value !== '')
 	{
-		this.textElement.val(value);
+		this.textElement.val(value).trigger('change');
 	}
 };
 

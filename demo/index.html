@@ -232,6 +232,12 @@
 					<script>
 						$(function(){
 							$('#BasicComboSelect').comboSelect();
+							$('#BasicComboText').on(
+								'change', 
+								function()
+								{
+									console.log('#BasicComboText: ' + this.value);
+								});
 						});
 					</script>
 				</p>		
@@ -258,6 +264,12 @@
 					<script>
 						$(function(){
 							$('#OptGroupComboSelect').comboSelect();
+							$('#OptGroupComboText').on(
+								'change', 
+								function()
+								{
+									console.log('#OptGroupComboText: ' + this.value);
+								});
 						});
 					</script>
 				</p>
@@ -359,6 +371,12 @@
 					<script>
 						$(function(){
 							$('#BasicAutoCompleteSelect').autoComplete();
+							$('#BasicAutoCompleteText').on(
+								'change', 
+								function()
+								{
+									console.log('#BasicAutoCompleteText: ' + this.value);
+								});
 						});
 					</script>
 				</p>
