@@ -51,7 +51,7 @@ ComboBox.prototype.render = function()
 				// event, but the native event object (which in 
 				// this case may be click when someone picks an
 				// option in the drop-down.				
-				if (!$.contains(comboBox.selectioner.display.popup.element[0], event.target))
+				if (event && !$.contains(comboBox.selectioner.display.popup.element[0], event.target))
 				{
 					comboBox.textChanged();
 				}

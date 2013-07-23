@@ -1083,7 +1083,7 @@ ComboBox.prototype.render = function()
 				// event, but the native event object (which in 
 				// this case may be click when someone picks an
 				// option in the drop-down.				
-				if (!$.contains(comboBox.selectioner.display.popup.element[0], event.target))
+				if (event && !$.contains(comboBox.selectioner.display.popup.element[0], event.target))
 				{
 					comboBox.textChanged();
 				}
@@ -1798,16 +1798,15 @@ AutoComplete.prototype.render = function()
 	}
 	
 	this.update();
-	this._textValue = this.textElement.val();
 	
 	var dialog = this;
 	
 	this.textElement.on
 		(
 			'keyup change', 
-			function(event)
+			function()
 			{
-				if (dialog._textValue !== dialog.textElement.val())
+				if (event && !$.contains(dialog.popup.element[0], event.target))
 				{
 					dialog.update();
 					if (!dialog.popup.isShown())
@@ -1818,8 +1817,6 @@ AutoComplete.prototype.render = function()
 					{
 						dialog.popup.reposition();
 					}
-					
-					dialog._textValue = dialog.textElement.val();
 				}
 			}
 		);
