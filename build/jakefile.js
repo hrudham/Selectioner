@@ -139,8 +139,6 @@ task
             var sourceFiles = getSourceFiles();
             var destination = getDestinationFiles();
 			
-			log('');
-
 			// Mash and minify the files
             mash(sourceFiles, destination.development);
             minify(destination.development, destination.release);

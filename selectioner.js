@@ -1121,8 +1121,7 @@ ComboBox.prototype.textChanged = function()
 	// the drop-down, and select it if it does.
 	// If it doesn't match an option, select the 
 	// option with no value.
-	var value = this.textElement.val();
-	var text = value.toUpperCase();
+	var text = this.textElement.val().toUpperCase();
 	var option = this.selectioner.target.find('option')
 		.filter(function() { return $(this).text().toUpperCase() == text; });
 	
@@ -1803,7 +1802,7 @@ AutoComplete.prototype.render = function()
 	
 	this.textElement.on
 		(
-			'keyup change', 
+			'keyup click', 
 			function(e, data)
 			{
 				if (!data || data.source != 'selectioner')

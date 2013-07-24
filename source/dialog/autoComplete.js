@@ -33,7 +33,7 @@ AutoComplete.prototype.render = function()
 	
 	this.textElement.on
 		(
-			'keyup change', 
+			'keyup click', 
 			function(e, data)
 			{
 				if (!data || data.source != 'selectioner')
