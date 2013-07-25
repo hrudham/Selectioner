@@ -11,28 +11,6 @@ Display.prototype.initialize = function(selectioner)
 	this.createPopup();
 };
 
-Display.prototype.updateInteractivity = function()
-{
-	var isDisabled = this.isDisabled();
-
-	if (isDisabled)
-	{
-		this.element.removeAttr('tabindex');		
-	}
-	else
-	{
-		this.element
-			.prop
-				(
-					'tabindex', 
-					this.selectioner.target.prop('tabindex')
-				);
-	}
-	
-	this.element.toggleClass('disabled', isDisabled);
-	this.element.toggleClass('readonly', this.isReadOnly());
-};
-
 Display.prototype.isReadOnly = function()
 {
 	return false;
@@ -52,9 +30,7 @@ Display.prototype.createDisplay = function()
 
 	this.element
 		.addClass(Selectioner.Settings.cssPrefix + 'display');
-	
-	this.updateInteractivity();
-			
+				
 	// Make sure we update when parent forms are reset.
 	this.selectioner
 		.target

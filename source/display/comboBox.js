@@ -71,13 +71,7 @@ ComboBox.prototype.render = function()
 					);
 			}
 		);
-		
-	if (this.selectioner.isDisabled)
-	{
-		this.element.addClass('disabled');
-		this.textElement.prop('disabled', true);
-	}
-	
+			
 	this.element
 		.append(button)
 		.append(this.textElement);
