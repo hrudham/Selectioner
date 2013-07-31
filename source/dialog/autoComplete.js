@@ -91,7 +91,7 @@ AutoComplete.prototype.update = function()
 		{
 			filteredOptions = filteredOptions.add(buildOption(option));
 			
-			if (filteredOptions.length > Selectioner.Settings.maxAutoCompleteItems)
+			if (filteredOptions.length > this.selectioner.settings.maxAutoCompleteItems)
 			{
 				break;
 			}
@@ -104,7 +104,7 @@ AutoComplete.prototype.update = function()
 			.addClass('none')
 			.append
 				(
-					$('<span />').text(Selectioner.Settings.noOptionText)
+					$('<span />').text(this.selectioner.settings.noOptionText)
 				);
 	}
 	

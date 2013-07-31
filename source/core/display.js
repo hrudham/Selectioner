@@ -29,7 +29,7 @@ Display.prototype.createDisplay = function()
 	this.update();
 
 	this.element
-		.addClass(Selectioner.Settings.cssPrefix + 'display');
+		.addClass(this.selectioner.settings.cssPrefix + 'display');
 				
 	// Make sure we update when parent forms are reset.
 	this.selectioner
@@ -205,7 +205,7 @@ Display.prototype.createPopup = function()
 			}
 		);
 
-	var cssClass = Selectioner.Settings.cssPrefix + 'visible';
+	var cssClass = this.selectioner.settings.cssPrefix + 'visible';
 
 	this.selectioner
 		.on
@@ -268,7 +268,7 @@ Display.prototype.getNoSelectionText = function()
 
 	if (!text)
 	{
-		text = Selectioner.Settings.noSelectionText;
+		text = this.selectioner.settings.noSelectionText;
 	}
 	
 	return text;	

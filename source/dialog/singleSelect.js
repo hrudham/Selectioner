@@ -64,7 +64,7 @@ SingleSelect.prototype.update = function()
 						.addClass('none')
 						.append
 							(
-								$('<span />').text(Selectioner.Settings.noOptionText)
+								$('<span />').text(this.selectioner.settings.noOptionText)
 							)
 				);
 	}
@@ -84,14 +84,14 @@ SingleSelect.prototype.renderOption = function(option)
 	{
 		selectElement = $('<span />')
 			.addClass('disabled')
-			.text(text || Selectioner.Settings.emptyOptionText);
+			.text(text || this.selectioner.settings.emptyOptionText);
 	}
 	else
 	{
 		selectElement = $('<a />')
 			.attr('href', 'javascript:;')
 			.on('click', function(){ dialog.selectOption(option); })
-			.text(text || Selectioner.Settings.emptyOptionText);
+			.text(text || this.selectioner.settings.emptyOptionText);
 	}
 	
 	var listItem = $('<li />');
@@ -122,7 +122,7 @@ SingleSelect.prototype.renderGroup = function(group)
 			.text(group.attr('label'));
 
 	var options = $('<li />')
-		.addClass(Selectioner.Settings.cssPrefix + 'group-title')
+		.addClass(this.selectioner.settings.cssPrefix + 'group-title')
 		.append(groupTitle);
 	
 	var children = group.children();

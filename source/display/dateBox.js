@@ -20,9 +20,9 @@ DateBox.prototype.render = function()
 	this.element = $('<span />');
 		
 	this.textElement = $('<span />')
-		.addClass(Selectioner.Settings.cssPrefix + 'text');
+		.addClass(this.selectioner.settings.cssPrefix + 'text');
 	
-	var button = $('<span />').addClass(Selectioner.Settings.cssPrefix + 'button');
+	var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 	
 	this.element
 		.append(button)

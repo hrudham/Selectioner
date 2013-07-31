@@ -463,14 +463,25 @@
 						{
 							var customSelectioner = new Selectioner
 								(
+									// Target control
 									$('#CustomSelect2'), 
+									
+									// Display:
 									new Selectioner.Display.ListBox(),	
+									
+									// Dialogs
 									[
 										new Selectioner.Dialog.SingleSelect(),
 										new Selectioner.Dialog.SingleSelect(),
 										new Selectioner.Dialog.SingleSelect(),
 										new Selectioner.Dialog.SingleSelect()
-									]
+									],
+									
+									// Settings to override
+									{
+										noSelectionText: 'No selection',
+										emptyOptionText: 'Empty',
+									} 
 								);
 						});
 					</script>

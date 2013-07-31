@@ -1,5 +1,12 @@
-var Selectioner = window.Selectioner = function(target, display, dialogs)
+var Selectioner = window.Selectioner = function(target, display, dialogs, settings)
 {
+	this.settings = Selectioner.DefaultSettings;
+	
+	for (var prop in settings)
+	{
+		this.settings[prop] = settings[prop];
+	}
+	
 	this.id = Selectioner._idSeed++;
 	
 	// Convert dialogs to an array if it isn't one already.
@@ -18,7 +25,7 @@ var Selectioner = window.Selectioner = function(target, display, dialogs)
 		// This occurs if we attempt to provide more than one Selectioner on a single element.
 		throw new Error('The target element has already has a Selectioner associated with it.');
 	}
-	else if (target.next().hasClass(Selectioner.Settings.cssPrefix + 'display'))
+	else if (target.next().hasClass(this.settings.cssPrefix + 'display'))
 	{
 		// Remove any old Displays that may already have been rendered.
 		// This can occur if someone saves a webpage as-is to their PC, 
@@ -60,7 +67,7 @@ Selectioner.Extensions = {};
 
 Selectioner.Popup = {};
 
-Selectioner.Settings =
+Selectioner.DefaultSettings =
 {
 	cssPrefix: 'select-',
 	noSelectionText: 'Select an option',

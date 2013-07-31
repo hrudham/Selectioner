@@ -10,7 +10,7 @@ Popup.prototype.initialize = function(selectioner)
 	this._dialogFocusIndex = null;
 
 	this.element = $('<div />')
-		.addClass(Selectioner.Settings.cssPrefix + 'popup')
+		.addClass(this.selectioner.settings.cssPrefix + 'popup')
 		.css
 			({
 				visibility: 'hidden',

@@ -114,7 +114,7 @@ DateSelect.prototype.render = function()
 					event.preventDefault();
 				}
 			)
-		.addClass(Selectioner.Settings.cssPrefix + 'date')
+		.addClass(this.selectioner.settings.cssPrefix + 'date')
 		.on
 			(
 				'mousewheel wheel',

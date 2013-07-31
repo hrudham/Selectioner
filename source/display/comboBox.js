@@ -42,7 +42,7 @@ ComboBox.prototype.render = function()
 	var comboBox = this;
 	
 	this.textElement
-		.addClass(Selectioner.Settings.cssPrefix + 'text')
+		.addClass(this.selectioner.settings.cssPrefix + 'text')
 		.on(
 			'change.selectioner', 
 			function(e, data) 
@@ -54,7 +54,7 @@ ComboBox.prototype.render = function()
 			});
 	
 	var button = $('<span />')
-		.addClass(Selectioner.Settings.cssPrefix + 'button');
+		.addClass(this.selectioner.settings.cssPrefix + 'button');
 		
 	this.selectioner.on
 		(
@@ -147,7 +147,7 @@ Display.prototype.getNoSelectionText = function()
 
 	if (!text)
 	{
-		text = Selectioner.Settings.noSelectionText;
+		text = this.selectioner.settings.noSelectionText;
 	}
 	
 	return text;	
