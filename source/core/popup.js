@@ -175,7 +175,6 @@ Popup.prototype.reposition = function()
 Popup.prototype.show = function()
 {
 	if (!this.selectioner.display.isDisabled() && 
-		!this.selectioner.display.isReadOnly() && 
 		!this.isShown())
 	{
 		// Hide the popup any time the window resizes.

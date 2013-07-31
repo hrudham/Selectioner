@@ -383,7 +383,6 @@ Popup.prototype.reposition = function()
 Popup.prototype.show = function()
 {
 	if (!this.selectioner.display.isDisabled() && 
-		!this.selectioner.display.isReadOnly() && 
 		!this.isShown())
 	{
 		// Hide the popup any time the window resizes.
@@ -601,14 +600,9 @@ Display.prototype.initialize = function(selectioner)
 	this.createPopup();
 };
 
-Display.prototype.isReadOnly = function()
-{
-	return false;
-};
-
 Display.prototype.isDisabled = function()
 {
-	return this.selectioner.target.is('[disabled]');
+	return this.selectioner.target.prop('disabled');
 };
 
 Display.prototype.createDisplay = function()
@@ -617,6 +611,11 @@ Display.prototype.createDisplay = function()
 
 	this.render();
 	this.update();
+	
+	this.element
+		.prop(
+			'tabindex', 
+			this.selectioner.target.prop('tabindex'));
 
 	this.element
 		.addClass(this.selectioner.settings.cssPrefix + 'display');
@@ -757,14 +756,12 @@ Display.prototype.createPopup = function()
 					}					
 				}
 			)
-		.children()
-		.andSelf()
 		.on
 			(
 				'mousedown.selectioner',
 				function(event)
 				{
-					event.stopPropagation();
+					//event.stopPropagation();
 					if (popup.isShown())
 					{
 						popup.hide();
@@ -776,6 +773,7 @@ Display.prototype.createPopup = function()
 				}
 			);
 
+			
 	// Hide the pop-up whenever it loses focus to an
 	// element that is not part of the pop-up or display.
 	$(document)
