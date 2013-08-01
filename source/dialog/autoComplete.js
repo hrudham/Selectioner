@@ -58,25 +58,6 @@ AutoComplete.prototype.update = function()
 {
 	var dialog = this;
 
-	var buildOption = function(option)
-	{
-		var selectAnchor = $('<a />')
-			.attr('href', 'javascript:;')
-			.text(option.text())
-			.on
-				(
-					'click', 
-					function(event)
-					{
-						option[0].selected = true;
-						dialog.popup.hide();
-						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
-					}
-				);
-		
-		return $('<li />').append(selectAnchor);
-	};
-
 	var filterText = this.textElement.val().toLowerCase();
 	
 	var children = this.selectioner.target.find('option');
@@ -89,7 +70,7 @@ AutoComplete.prototype.update = function()
 		
 		if (text !== '' && text.indexOf(filterText) === 0)
 		{
-			filteredOptions = filteredOptions.add(buildOption(option));
+			filteredOptions = filteredOptions.add(this.renderOption(option));
 			
 			if (filteredOptions.length > this.selectioner.settings.maxAutoCompleteItems)
 			{
