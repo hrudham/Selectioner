@@ -64,6 +64,7 @@ module.exports = function(grunt)
 									baseUrl: '.',
 									optimize: 'none',
 									optimizeCss: 'none',
+									removeCombined: true,
 									paths: 
 										{
 										},
