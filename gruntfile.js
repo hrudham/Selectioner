@@ -113,6 +113,21 @@ module.exports = function(grunt)
 							'build/selectioner.js'
 						]
 				},
+			less: 
+				{
+					options: 
+						{
+							paths: ['source/styles']
+						},
+					src: 
+						{
+							expand: true,
+							cwd: 'source/styles',
+							src: '*.less',
+							ext: '.css',
+							dest: 'build/styles'
+						}
+				},
 			uglify: 
 				{
 					options: 
@@ -142,11 +157,12 @@ module.exports = function(grunt)
 				});
 		});
 
-	// Load the plugins that provide the jshint and uglify tasks.
+	// Load the required grunt plugins
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
+	grunt.loadNpmTasks('grunt-contrib-less');
 
 	// Default task(s).
-	grunt.registerTask('default', ['jshint', 'requirejs', 'stripdefine', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'requirejs', 'stripdefine', 'less', 'uglify']);
 };

@@ -1,0 +1,299 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Selectioner</title>
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<link href="../demo.css" rel="stylesheet" />
+		<link href="../../build/styles/base.css" rel="stylesheet" />
+		<script src="../../libraries/jquery-1.10.2.min.js"></script>
+		<script src="../../build/selectioner.js"></script>
+		<script src="../initdemo.js"></script>
+		<!--
+		<script src="../libraries/Globalize/globalize.js"></script>
+		<script src="../libraries/Globalize/cultures/globalize.culture.en-US.js"></script>
+		<script src="../libraries/Globalize/cultures/globalize.culture.en-ZA.js"></script>
+		<script src="../libraries/Globalize/cultures/globalize.culture.it-IT.js"></script>
+		-->
+		<script>
+			$(
+				function()
+				{
+					$(initdemo);
+				}
+			);
+		</script>
+	</head>
+	<body>
+		<h1>Selectioner</h1>
+		<h2>Page State Controls</h2>
+		<p>
+			<a id="ResetButton" href="javascript:;" class="button">Reset Form</a>
+			<a id="ToggleDisableButton" href="javascript:;" class="button">Disable</a>
+			<a id="ToggleReadonlyButton" href="javascript:;" class="button">Read Only</a>
+		</p>
+		<div class="box">
+			<p>
+				<strong>Note:</strong> The "Read Only" toggle will only affect elements with 
+				text <code>&lt;input /&gt;</code> elements. If there is an underlying 
+				<code>&lt;select /&gt;</code> element, this will remain editable, since 
+				these elements do not support the <code>readonly</code> property in HTML5. 
+				Thus only the combo-selects, auto-completes and date-select will be affected,
+				and only the date-select will have it's drop-down disabled.
+			<p>
+		</div>
+		<h2>Examples</h2>
+		<form>
+			<div class="box" style="position: fixed; right: 16px; bottom: 16px; overflow-y: scroll; z-index: 5001;">
+				<h3>Single-select</h3>
+				<p>
+					<label>Empty: </label>
+					<select class="empty" data-placeholder="Pick an option">
+					</select>
+				</p>
+				<p>
+					<label>Basic with no ID attribute: </label>
+					<select class="basic" data-placeholder="Pick an option">
+						<option></option><!-- empty option -->
+						<option>Salsa</option>
+						<option>Bachata</option>
+						<option>Kizomba</option>
+						<option>Merengue</option>
+					</select>
+				</p>
+				<p>
+					<label for="BasicSingle">Basic with ID attribute: </label>
+					<select id="BasicSingle">
+						<option></option><!-- empty option -->
+						<option>LA On1 style</option>
+						<option>LA On2 style</option>
+						<option>New York style</option>
+						<option>Cuban style</option>
+						<option>Cali style</option>
+					</select>
+				</p>
+				<p>
+					<label for="OptGroupSingle">OptGroup: </label>
+					<select id="OptGroupSingle">
+						<option></option>
+						<optgroup label="Islay">
+							<option>Ardbeg</option>
+							<option>Caol Ila</option>
+							<option>Bowmore</option>
+							<option>Bruichladdich</option>
+							<option>Bunnahabhain</option>
+							<option>Kilchoman</option>
+							<option>Lagavulin</option>
+							<option>Laphroaig</option>
+						</optgroup>
+						<optgroup label="Speyside">
+							<option>Cragganmore</option>
+							<option>Glendronach</option>
+							<option>Glenfarclas</option>
+							<option>Glenfiddich</option>
+							<option>Strathisla</option>
+							<option>Tamdhu</option>
+						</optgroup>
+					</select>
+				</p>
+			</div>
+			<div class="box" style="overflow: auto; height: 140px;">
+				<h3>Multi-select</h3>
+				<p style="height: 100px;">
+					<label for="BasicMultiple">Basic Multiple: </label>
+					<select id="BasicMultiple" multiple="multiple">
+						<option disabled="disabled">Disabled</option>
+						<option>Salsa</option>
+						<option>Bachata</option>
+						<option>Kizomba</option>
+						<option>Merengue</option>
+					</select>
+				</p>
+				<p>
+					<label for="OptGroupMultiple">OptGroup Multiple: </label>
+					<select id="OptGroupMultiple" multiple="multiple">
+						<optgroup label="Group 1">
+							<option selected="selected">Option 1.1</option>
+							<option selected="selected">Option 1.2</option>
+							<option>Option 1.3</option>
+							<option>Option 1.4</option>
+							<option>Option 1.5</option>
+							<option disabled="disabled">Disabled</option>
+						</optgroup>
+						<optgroup label="Group 2">
+							<option selected="selected">Option 2.1</option>
+							<option>Option 2.2</option>
+							<option>Option 2.3</option>
+							<option>Option 2.4</option>
+							<option>Option 2.5</option>
+						</optgroup>
+					</select>
+				</p>
+			</div>
+			<div class="box">
+				<h3>Combo-select</h3>
+				<p>
+					<label for="BasicComboText">Basic: </label>
+					<select id="BasicComboSelect" data-placeholder="Pick an option">
+						<option></option>
+						<option disabled="disabled">Disabled Option</option>
+						<option>Cape Town</option>
+						<option>Durban</option>
+						<option>Johannesburg</option>
+						<option>Bloemfontein</option>
+						<option>Pietermaritzburg</option>
+					</select>
+					<input type="text" id="BasicComboText" value="Custom entry" />
+				</p>		
+				<p>
+					<label for="OptGroupComboText">OptGroup: </label>
+					<select id="OptGroupComboSelect">
+						<option value=''></option>
+						<optgroup label="Group 1">
+							<option>Option 1.1</option>
+							<option>Option 1.2</option>
+							<option>Option 1.3</option>
+							<option>Option 1.4</option>
+							<option>Option 1.5</option>
+						</optgroup>
+						<optgroup label="Group 2">
+							<option>Option 2.1</option>
+							<option>Option 2.2</option>
+							<option>Option 2.3</option>
+							<option>Option 2.4</option>
+							<option>Option 2.5</option>
+						</optgroup>
+					</select>
+					<input type="text" id="OptGroupComboText" />
+				</p>
+			</div>
+			<div class="box">
+				<h3>Auto-complete</h3>
+				<p>
+					<label for="BasicAutoCompleteText">Basic: </label>
+					<select id="BasicAutoCompleteSelect">
+						<option></option>
+						<option>Aberlour</option>
+						<option>Amrut</option>
+						<option>An Cnoc</option>
+						<option>Ardbeg</option>
+						<option>Ardmore</option>
+						<option>Auchentoshan</option>
+						<option>Balblair</option>
+						<option>Balmenach</option>
+						<option>Ben Nevis</option>
+						<option>BenRiach</option>
+						<option>Benrinnes</option>
+						<option>Benromach</option>
+						<option>Bladnoch</option>
+						<option>Blair Athol</option>
+						<option>Bowmore</option>
+						<option>Braeval</option>
+						<option>Brora</option>
+						<option>Bruichladdich</option>
+						<option>Buffalo Trace</option>
+						<option>Bunnahabhain</option>
+						<option>Old Bushmills</option>
+						<option>Caol Ila</option>
+						<option>Caperdonich</option>
+						<option>Cardhu</option>
+						<option>Clynelish</option>
+						<option disabled="disabled">Cooley</option>
+						<option>Cragganmore</option>
+						<option>Craigellachie</option>
+						<option>Dallas Dhu</option>
+						<option>Dalmore</option>
+						<option>Dalwhinnie</option>
+						<option>Deanston</option>
+						<option>Drayman's</option>
+						<option>Dufftown</option>
+						<option>Edradour</option>
+						<option>Fettercairn</option>
+						<option>Glen Albyn</option>
+						<option>Glencadam</option>
+						<option>Glendronach</option>
+						<option>Glen Elgin</option>
+						<option>Glenfarclas</option>
+						<option>Glenfiddich</option>
+						<option>Glen Garioch</option>
+						<option>Glenglassaugh</option>
+						<option>Glengoyne</option>
+						<option>Glen Grant</option>
+						<option disabled="disabled">Glen Keith</option>
+						<option>Glenkinchie</option>
+						<option>Glenmorangie</option>
+						<option>Glen Ord</option>
+						<option>Glenrothes</option>
+						<option>Highland Park</option>
+						<option>Isle of Arran</option>
+						<option>Isle of Jura</option>
+						<option>Jack Daniels</option>
+						<option>James Sedgwick</option>
+						<option>Jim Beam</option>
+						<option>Karuizawa</option>
+						<option>Kilchoman</option>
+						<option>Knockdhu</option>
+						<option>Lagavulin</option>
+						<option>Laphroaig</option>
+						<option>Longmorn</option>
+						<option>Macallan</option>
+						<option>Maker's Mark</option>
+						<option>Midleton</option>
+						<option>Millburn</option>
+						<option>Miyagikyo</option>
+						<option>Mortlach</option>
+						<option>Oban</option>
+						<option>Penderyn</option>
+						<option disabled="disabled">Port Ellen</option>
+						<option>Old Pultney</option>
+						<option>Royal Brackla</option>
+						<option>Springbank</option>
+						<option>Strathisla</option>
+						<option>Strathmill</option>
+						<option>Talisker</option>
+						<option>Tamdhu</option>
+						<option>The Balvenie</option>
+						<option>The Glenlivet</option>
+						<option>Tomatin</option>
+						<option>Wild Turkey</option>
+						<option>Woodford Reserve</option>
+						<option>Yamazaki</option>
+						<option>Yoichi</option>
+					</select>
+					<input type="text" id="BasicAutoCompleteText" placeholder="Choose an option" />
+				</p>
+			</div>
+			<div class="box">
+				<h3>Date</h3>
+				<p>
+					<label for="DateInput">Date: </label>
+					<!-- set a value for this control the following attribute: value="2013-04-15" -->
+					<input type="date" id="DateInput" value="2013-03-01" placeholder="Choose a date" />
+				</p>
+			</div>
+			<div class="box">
+				<h3>Custom</h3>
+				<p>
+					<label for="CustomSelect1">Custom 1: </label>
+					<select id="CustomSelect1">
+						<option></option>
+						<option>Red</option>
+						<option>Green</option>
+						<option>Blue</option>
+					</select>
+					<span id="CustomButtons" style="border-top: 1px dotted #CCC; text-align: right; display: block;">
+						<a href="javascript:;" class="button">Close</a>
+					</span>
+				</p>
+				<p>
+					<label for="CustomSelect2">Custom 2: </label>
+					<select id="CustomSelect2">
+						<option></option>
+						<option>Duplicate 1</option>
+						<option>Duplicate 2</option>
+						<option>Duplicate 3</option>
+					</select>
+				</p>
+			</div>
+		</form>
+	</body>
+</html>
