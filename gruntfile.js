@@ -123,7 +123,7 @@ module.exports = function(grunt)
 						{
 							expand: true,
 							cwd: 'source/styles',
-							src: '*.less',
+							src: ['*.less', '!mixins.less'],
 							ext: '.css',
 							dest: 'build/styles'
 						}
@@ -132,12 +132,30 @@ module.exports = function(grunt)
 				{
 					options: 
 						{
-							banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
+							banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n',
+							report: 'gzip',
+							sourceMap: 'build/<%= pkg.name.toLowerCase() %>.min.map'
 						},
-					build: 
+					build:
 						{
 							src: 'build/<%= pkg.name.toLowerCase() %>.js',
 							dest: 'build/<%= pkg.name.toLowerCase() %>.min.js'
+						}
+				},
+			cssmin:
+				{
+					options: 
+						{
+							banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */',
+							report: 'gzip'
+						},
+					minify: 
+						{
+							expand: true,
+							cwd: 'build/styles',
+							src: ['*.css', '!*.min.css'],
+							ext: '.min.css',
+							dest: 'build/styles'
 						}
 				}
 		});
@@ -157,12 +175,13 @@ module.exports = function(grunt)
 				});
 		});
 
-	// Load the required grunt plugins
+	// Load the required grunt plug-ins
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-requirejs');
 	grunt.loadNpmTasks('grunt-contrib-less');
+	grunt.loadNpmTasks('grunt-contrib-cssmin');
 
 	// Default task(s).
-	grunt.registerTask('default', ['jshint', 'requirejs', 'stripdefine', 'less', 'uglify']);
+	grunt.registerTask('default', ['jshint', 'requirejs', 'stripdefine', 'less', 'uglify', 'cssmin']);
 };
