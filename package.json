@@ -1,0 +1,29 @@
+{
+  "name": "Selectioner",
+  "version": "0.0.1",
+  "description": "A general purpose jQuery-based enhancement for HTML select boxes",
+  "author": 
+  {
+    "name": "Selectioner",
+    "url": "http://hrudham.github.io/"
+  },
+  "contributors": 
+  [
+    {
+      "name": "Hilton Rudham"
+    }
+  ],
+  "license": "MIT",
+  "repository": 
+  {
+    "type": "git",
+    "url": "https://github.com/hrudham/Selectioner.git"
+  },
+  "devDependencies": 
+  {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.2",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-requirejs": "~0.4.1"
+  }
+}

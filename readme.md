@@ -1,6 +1,6 @@
 #Selectioner
 
-A light-weight jQuery replacement for HTML select boxes. 
+A jQuery-based enhancement for HTML select boxes.
 
 You can view the live demo here: [http://hrudham.github.io/](http://hrudham.github.io/)
 
@@ -14,7 +14,7 @@ Tested in Google Chrome, Firefox, Safari (for Windows), Opera 12, Internet Explo
 
 Make sure that you've included the following in your project:
 
-- [jQuery](http://www.jquery.com/) v1.9.1+
+- [jQuery](http://www.jquery.com/)
 - [selectioner.min.js](selectioner.min.js) (or the [development](selectioner.js) version)
 - [selectioner.css](selectioner.css) 
 	- You'll probably want to edit this to suit your website's look and feel.
@@ -174,7 +174,7 @@ Alternatively, in the case of Combo-selects and other controls that support it, 
 ### How it's built
 
 - Built in a modular pattern with prototyping in mind.
-- The build process uses [NodeJS](http://nodejs.org/) and [Jake](https://github.com/mde/jake) to mash, minify and validate everything.
+- The build process uses [NodeJS](http://nodejs.org/) and [Grunt](http://gruntjs.com/) to mash, minify and validate everything.
 - It has [JSHint](http://www.jshint.com/) implemented, and has been written in [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
 - It uses [LESS](http://lesscss.org/) to build it's CSS files.
 
@@ -182,10 +182,10 @@ Alternatively, in the case of Combo-selects and other controls that support it, 
 
 If you've never built the project before, download [nodejs.org](http://nodejs.org/), and make sure that you have the [Node Packet Manager (NPM)](https://npmjs.org/) installed (this usually comes bundled with Node). 
 
-Once that's done, you're going to need [Jake](https://github.com/mde/jake). This is a Rake port for NodeJS. You can obtain this with NPM via the following command:
+Once that's done, you're going to need [Grunt](http://gruntjs.com/). You can obtain this with NPM via the following command:
 
-		$ npm install jake -g
+		$ npm install -g grunt-cli
 
-Thereafter, build the solution from the `[ProjectPath]\Build` directory with the following command: 
+Thereafter, build the solution from the project's root directory with the following command: 
 
-		$ jake
+		$ grunt
