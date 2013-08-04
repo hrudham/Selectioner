@@ -8,7 +8,7 @@ You can view the live demo here: [http://hrudham.github.io/](http://hrudham.gith
 
 ### What it works in
 
-Tested in Google Chrome 26, Firefox 19, Safari 5, Opera 12, Internet Explorer 8, 9 and 10.
+Tested in Google Chrome, Firefox, Safari (for Windows), Opera 12, Internet Explorer 8, 9 and 10.
 
 ### How to use it
 
@@ -18,8 +18,6 @@ Make sure that you've included the following in your project:
 - [selectioner.min.js](selectioner.min.js) (or the [development](selectioner.js) version)
 - [selectioner.css](selectioner.css) 
 	- You'll probably want to edit this to suit your website's look and feel.
-
-See the [demo](demo/index.html) page for a more in-depth examples.
 
 ### What features it has
 
@@ -135,7 +133,10 @@ You can write custom Selectioner controls quite easily, and even chop-and-change
 					staticDialogHtml,
 					new Selectioner.Dialog.SingleSelect(),
 					'#CustomButtons'
-				]
+				],
+				{	
+					// Add custom options here. This overrides Selectioner.Settings.
+				}
 			);
 		
 		// Hook up an event handler to the button's click event.
