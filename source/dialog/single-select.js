@@ -87,16 +87,16 @@ define(
 			if (option.is(':disabled'))
 			{
 				selectElement = $('<span />')
-					.addClass('disabled')
-					.text(text || this.selectioner.settings.emptyOptionText);
+					.addClass('disabled');
 			}
 			else
 			{
 				selectElement = $('<a />')
 					.attr('href', 'javascript:;')
-					.on('click', function(){ dialog.selectOption(option); })
-					.text(text || this.selectioner.settings.emptyOptionText);
+					.on('click', function(){ dialog.selectOption(option); });
 			}
+			
+			selectElement.text(text || this.selectioner.settings.emptyOptionText);
 			
 			var listItem = $('<li />');
 			

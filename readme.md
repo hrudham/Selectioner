@@ -189,3 +189,7 @@ Once that's done, you're going to need [Grunt](http://gruntjs.com/). You can obt
 Thereafter, build the solution from the project's root directory with the following command: 
 
 		$ grunt
+		
+If the RequireJS task refuses to work for some reason, run the following:
+
+		$ npm install grunt-contrib-requirejs --save-dev
