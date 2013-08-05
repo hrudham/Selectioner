@@ -14,12 +14,6 @@ module.exports = function(grunt)
 {
 	'use strict';
 	
-	var amdJs = 
-		'\n\tif (typeof define === \'function\' && define.amd)' + 
-		'\n\t{' + 
-		'\n\t\tdefine(\'selectioner\', [], function () { return Selectioner; });' + 
-		'\n\t}\n\n';
-	
 	var settings =
     {
         encoding: 'utf-8',
@@ -88,7 +82,7 @@ module.exports = function(grunt)
 									wrap: 
 										{
 											start: '<%= banner.full %>' + '\n;(function(window, document, $){ \n\'use strict\';',
-											end: amdJs + '})(this, document, jQuery);'
+											end: '})(this, document, jQuery);'
 										},
 									onBuildWrite: 
 										function (id, path, contents) 
@@ -172,18 +166,19 @@ module.exports = function(grunt)
 			this.filesSrc.forEach(
 				function(filepath) 
 				{
-					// Remove define(...) from the built file.
-					// We use a bit of a hack here to avoid   
-					// removing the actual AMD support.
-					var amdJsKey = '_amdjs_';
-					
-					var content = grunt.file.read(filepath);
-					
-					//content = content.replace(amdJs, amdJsKey);
-					content = content.replace(/;\s*define\(.*\);/g, ';');
-					//content = content.replace(amdJsKey, amdJs);
-					
-					grunt.file.write(filepath, content);
+					// Remove define(...) from the built file, and 
+					// replace it with an actual AMD definition.	
+					var amdJs = 
+						'\n\n\tif (typeof define === \'function\' && define.amd)' + 
+						'\n\t{' + 
+						'\n\t\tdefine(\'selectioner\', [], function () { return Selectioner; });' + 
+						'\n\t}\n';
+						
+					grunt.file.write(
+						filepath, 
+						grunt.file
+							.read(filepath)
+							.replace(/\s*define\(.*\);/g, amdJs));
 				});
 		});
 
