@@ -2,14 +2,15 @@ define(
 	['core/eventable'],
 	function() 
 	{
-		var Selectioner = window.Selectioner = function(target, display, dialogs, settings)
+		var Selectioner = window.Selectioner = function(target, display, dialogs, options)
 		{
-			this.settings = Selectioner.DefaultSettings;
-			
-			for (var prop in settings)
-			{
-				this.settings[prop] = settings[prop];
-			}
+			this.settings = $.extend(
+				true, 
+				$.extend(
+					true, 
+					{}, 
+					Selectioner.DefaultSettings), 
+				options);
 			
 			this.id = Selectioner._idSeed++;
 			
@@ -56,7 +57,7 @@ define(
 				.css('display', 'none')
 				.after(this.display.element);
 		};
-
+		
 		Selectioner.prototype = new Eventable();
 
 		Selectioner._idSeed = 0;
