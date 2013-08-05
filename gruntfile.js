@@ -14,8 +14,11 @@ module.exports = function(grunt)
 {
 	'use strict';
 	
-	var filesystem = require('fs');
-	var path = require('path');
+	var amdJs = 
+		'\n\tif (typeof define === \'function\' && define.amd)' + 
+		'\n\t{' + 
+		'\n\t\tdefine(\'selectioner\', [], function () { return Selectioner; });' + 
+		'\n\t}\n\n';
 	
 	var settings =
     {
@@ -85,7 +88,7 @@ module.exports = function(grunt)
 									wrap: 
 										{
 											start: '<%= banner.full %>' + '\n;(function(window, document, $){ \n\'use strict\';',
-											end: '})(this, document, jQuery);'
+											end: amdJs + '})(this, document, jQuery);'
 										},
 									onBuildWrite: 
 										function (id, path, contents) 
@@ -170,9 +173,17 @@ module.exports = function(grunt)
 				function(filepath) 
 				{
 					// Remove define(...) from the built file.
-					grunt.file.write(
-						filepath, 
-						grunt.file.read(filepath).replace(/define\(.*\);\s*/g, ''));
+					// We use a bit of a hack here to avoid   
+					// removing the actual AMD support.
+					var amdJsKey = '_amdjs_';
+					
+					var content = grunt.file.read(filepath);
+					
+					//content = content.replace(amdJs, amdJsKey);
+					content = content.replace(/;\s*define\(.*\);/g, ';');
+					//content = content.replace(amdJsKey, amdJs);
+					
+					grunt.file.write(filepath, content);
 				});
 		});
 
