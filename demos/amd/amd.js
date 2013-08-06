@@ -20,5 +20,5 @@ require(
 	], 
 	function()
 	{
-		initdemo();
+		$(initdemo);
 	});

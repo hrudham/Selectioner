@@ -13,16 +13,7 @@
 module.exports = function(grunt) 
 {
 	'use strict';
-	
-	var settings =
-    {
-        encoding: 'utf-8',
-        eol: process.platform === 'win32' ? '\n\r' : '\n',
-        pathDelimiter: process.platform == 'win32' ? '\\' : '/',
-        defaultSourcePath: 'source/',
-        defaultDestinationPath: 'build/'
-    };
-	
+		
 	// Project configuration.
 	grunt.config.init(
 		{
