@@ -10,15 +10,15 @@ define(
 			this.validateTarget();
 		};
 
-		// Render the dialog. This method should be explicity 
+		// Render the dialog. This method should be explicitly 
 		// overridden by prototypes that inherit from it, 
 		// and must set this.element to some jQuery object.
 		Dialog.prototype.render = function()
 		{
-			throw new Error('The render method needs to be explicity overridden, and must set "this.element" to a jQuery object.');
+			throw new Error('The render method needs to be explicitly overridden, and must set "this.element" to a jQuery object.');
 		};
 
-		// Associates a dialog with a popup.
+		// Associates a dialog with a pop-up.
 		Dialog.prototype.setPopup = function(popup)
 		{
 			this.popup = popup;
@@ -43,7 +43,7 @@ define(
 		// Override this method to allow for keyboard integration.
 		// The method itself can be called manually, although this 
 		// is generally not recommended, as this is usually 
-		// handled by the popup. 
+		// handled by the pop-up. 
 		Dialog.prototype.keyDown = function(key)
 		{
 			var result = 
@@ -66,7 +66,7 @@ define(
 		// Override this method to allow for keyboard integration.
 		// The method itself can be called manually, although this 
 		// is generally not recommended, as this is usually 
-		// handled by the popup. 
+		// handled by the pop-up. 
 		Dialog.prototype.keyPress = function(key)
 		{
 			var result = 
@@ -79,7 +79,7 @@ define(
 		};
 
 		// This will fire every time the dialog loses mouse or keyboard 
-		// focus within the keyboard focus within the popup.
+		// focus within the keyboard focus within the pop-up.
 		Dialog.prototype.lostFocus = function()
 		{
 		};

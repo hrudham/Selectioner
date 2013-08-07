@@ -147,7 +147,7 @@ define(
 		// Create a new dialog for the underlying target element.
 		Display.prototype.createPopup = function()
 		{
-			// Bind this display to a popup.
+			// Bind this display to a pop-up.
 			var dialog = this;
 			var popup = this.popup = new Selectioner.Popup();
 			popup.initialize(this.selectioner);
@@ -181,7 +181,6 @@ define(
 						'mousedown.selectioner',
 						function(event)
 						{
-							//event.stopPropagation();
 							if (popup.isShown())
 							{
 								popup.hide();
@@ -193,7 +192,6 @@ define(
 						}
 					);
 
-					
 			// Hide the pop-up whenever it loses focus to an
 			// element that is not part of the pop-up or display.
 			$(document)
@@ -237,11 +235,11 @@ define(
 		// Add a dialog to this display.
 		Display.prototype.addDialog = function(dialog)
 		{
-			// Add the dialog to the popup.
+			// Add the dialog to the pop-up.
 			this.popup.addDialog(dialog);
 		};
 
-		// Render the display. This method should be explicity
+		// Render the display. This method should be explicitly
 		// overridden by prototypes that inherit from it,
 		// and must set this.element to some jQuery object.
 		Display.prototype.render = function()

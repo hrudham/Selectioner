@@ -28,16 +28,16 @@ define(
 						{
 							// The selectioner watches for mouse-down / focusin events outside of 
 							// itself in order to know when to close. Sometimes, however, these
-							// event will occur insides the popup and cause a re-render,
+							// event will occur insides the pop-up and cause a re-render,
 							// and thus the element that caused the event no longer exists.
 							// This means we cannot determine if it exists inside or outside
-							// the popup. Thus, we stop propagation of these events here.
+							// the pop-up. Thus, we stop propagation of these events here.
 							event.stopPropagation();
 						}
 					)
-				// Allow the popup to have a tabindex such that we can detect focusin events.
-				// This allows us to redirect focus to the display if anything in the popup
-				// gains focus (such as a checkbox), which stops the keyboard integration
+				// Allow the pop-up to have a tabindex such that we can detect focusin events.
+				// This allows us to redirect focus to the display if anything in the pop-up
+				// gains focus (such as a check box), which stops the keyboard integration
 				// from breaking.
 				.prop('tabindex', selectioner.target.prop('tabindex') + 1)
 				.on
@@ -76,7 +76,7 @@ define(
 			$('body').append(this.element);
 		};
 
-		// Add a dialog to this popup.
+		// Add a dialog to this pop-up.
 		Popup.prototype.addDialog = function(dialog)
 		{
 			if (!(dialog instanceof Selectioner.Core.Dialog))
@@ -119,7 +119,7 @@ define(
 					);
 		};
 
-		// Update all the dialogs that appear on this popup.
+		// Update all the dialogs that appear on this pop-up.
 		Popup.prototype.update = function()
 		{
 			for (var i = 0, length = this.dialogs.length; i < length; i++)
@@ -181,7 +181,7 @@ define(
 			if (!this.selectioner.display.isDisabled() && 
 				!this.isShown())
 			{
-				// Hide the popup any time the window resizes.
+				// Hide the pop-up any time the window resizes.
 				var popup = this;
 				$(window)
 					.one
@@ -300,7 +300,7 @@ define(
 			return this._dialogFocusIndex;
 		};
 
-		// Simply indicates whether the popup is shown to the user currently.
+		// Simply indicates whether the pop-up is shown to the user currently.
 		Popup.prototype.isShown = function()
 		{
 			return this._isVisible;

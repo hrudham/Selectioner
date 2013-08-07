@@ -39,7 +39,7 @@ define(
 		{
 			if (!this._eventHandlers) return this;
 
-			// Function that unbinds any occurances of an event handler from an event.
+			// Function that unbinds any occurrences of an event handler from an event.
 			var unbindEventHandler = function (eventName, eventHandler)
 			{
 				for (var i = 0, length = this._eventHandlers[eventName].length; i < length; i++)

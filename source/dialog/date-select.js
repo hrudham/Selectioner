@@ -112,7 +112,7 @@ define(
 						'mousewheel wheel', 
 						function(event) 
 						{ 
-							// Stop the mousewheel being picked up outside of this 
+							// Stop the mouse wheel being picked up outside of this 
 							// control, even when it's contents are being re-rendered.
 							event.preventDefault();
 						}
@@ -337,7 +337,7 @@ define(
 
 		DateSelect.prototype.addDays = function(day)
 		{
-			// zero is falsy, so do nothing for zero.
+			// zero is "falsy", so do nothing for it.
 			if (day)
 			{
 				var date = this.getCurrentDate();
@@ -348,7 +348,7 @@ define(
 
 		DateSelect.prototype.addMonths = function(months)
 		{
-			// zero is falsy, so do nothing for zero.
+			// zero is "falsy", so do nothing for it.
 			if (months)
 			{
 				var date = this.getCurrentDate();
@@ -359,7 +359,7 @@ define(
 
 		DateSelect.prototype.addYears = function(years)
 		{
-			// zero is falsy, so do nothing for zero.
+			// zero is "falsy", so do nothing for it.
 			if (years)
 			{
 				var date = this.getCurrentDate();

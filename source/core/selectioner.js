@@ -33,7 +33,7 @@ define(
 			else if (target.next().hasClass(this.settings.cssPrefix + 'display'))
 			{
 				// Remove any old Displays that may already have been rendered.
-				// This can occur if someone saves a webpage as-is to their PC, 
+				// This can occur if someone saves a web page as-is to their PC, 
 				// and then opens it in their browser from their file-system.
 				// This will unfortunately break for any control that "steals" 
 				// elements from elsewhere on the page, such as the ComboBox,
