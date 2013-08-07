@@ -92,36 +92,33 @@ define(
 					'keydown.selectioner',
 					function(event)
 					{
-						// Only perform keyboard-related actions if they are directly 
-						// related to the display, and not a child element thereof.
-						var key = event.which;
-										
-						if (event.target == display.element[0])
-						{
-							if (display.popup.isShown())
-							{
-								if (display.popup.keyDown(key).preventDefault)
-								{
-									event.preventDefault();
-								}
-							}
-							else
-							{
-								switch (key)
-								{
-									case 38: // Up arrow
-									case 40: // Down arrow
-									case 13: // Return / Enter
-										event.preventDefault();
-										display.popup.show();
-										break;
-								}
-							}
-						}
-						else if (key === 27) 
+						if (event.which == 27)
 						{
 							// Escape key was pressed.
-							display.element.focus();
+							display.popup.hide();
+						}
+						else
+						{
+							var isPopupShown = display.popup.isShown();
+						
+							if (isPopupShown)
+							{
+								display.popup.keyDown(event.which);
+							}
+							
+							switch (event.which)
+							{
+								case 37: // Left arrow
+								case 38: // Up arrow
+								case 39: // Right arrow
+								case 40: // Down arrow
+								case 13: // Return / Enter
+									event.preventDefault();
+									if (!isPopupShown)
+									{
+										display.popup.show();
+									}
+							}
 						}
 					}
 				);
@@ -131,14 +128,15 @@ define(
 				(
 					'keypress.selectioner',
 					function(event)
-					{
-						var key = event.which;
-						
-						if (event.target == display.element[0] && 
-							display.popup.isShown() && 
-							display.popup.keyPress(key).preventDefault)
+					{						
+						if (display.popup.isShown())
 						{
-							event.preventDefault();
+							var result = display.popup.keyPress(event.which);
+							
+							if (event.target == display.element[0] && result.preventDefault) 
+							{
+								event.preventDefault();
+							}
 						}
 					}
 				);

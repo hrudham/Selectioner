@@ -40,7 +40,8 @@ define(
 					'keyup click', 
 					function(e, data)
 					{
-						if (!data || data.source != 'selectioner')
+						if ((!data || data.source != 'selectioner') && 
+							e.which !== 27) // e.which == 27 == Escape key pressed.
 						{
 							dialog.update();
 							if (!dialog.popup.isShown())
@@ -59,68 +60,75 @@ define(
 		};
 
 		FilteredSelect.prototype.update = function()
-		{
+		{		
 			var dialog = this;
 
 			var filterText = this.textElement.val().toLowerCase();
-			var filteredOptions = $();
-			var minFilterLength = this.selectioner.settings.filteredSelect.minFilterLength || 1;
 			
-			if (filterText.length >= minFilterLength)
+			// Don't re-update unless we have to.
+			if (filterText !== this._lastFilterText)
 			{
-				var children = this.selectioner.target.find('option');
+				this._lastFilterText = filterText;
+			
+				var filteredOptions = $();
+				var minFilterLength = this.selectioner.settings.filteredSelect.minFilterLength || 1;
 				
-				for (var i = 0, length = children.length; i < length; i++)
+				if (filterText.length >= minFilterLength)
 				{
-					var option = $(children[i]);
-					var text = option.text().toLowerCase();
+					var children = this.selectioner.target.find('option');
 					
-					if (text !== '' && text.indexOf(filterText) === 0)
+					for (var i = 0, length = children.length; i < length; i++)
 					{
-						filteredOptions = filteredOptions.add(this.renderOption(option));
+						var option = $(children[i]);
+						var text = option.text().toLowerCase();
 						
-						if (filteredOptions.length > this.selectioner.settings.filteredSelect.maxItems)
+						if (text !== '' && text.indexOf(filterText) === 0)
 						{
-							break;
+							filteredOptions = filteredOptions.add(this.renderOption(option));
+							
+							if (filteredOptions.length > this.selectioner.settings.filteredSelect.maxItems)
+							{
+								break;
+							}
 						}
 					}
+					
+					if (filteredOptions.length === 0)
+					{
+						filteredOptions = $('<li />')
+							.addClass('none')
+							.append
+								(
+									$('<span />').text(this.selectioner.settings.noMatchesFoundText)
+								);
+					}
 				}
-				
-				if (filteredOptions.length === 0)
+				else
 				{
+					
+					var settings = this.selectioner.settings.filteredSelect;
+					var enterMoreText = settings.enterOneMoreCharacterText;
+					
+					if (minFilterLength - filterText.length > 1)
+					{
+						enterMoreText = settings.enterNumberMoreCharactersText
+							.replace(
+								/{{number}}/, 
+								minFilterLength - filterText.length);
+					}
+				
 					filteredOptions = $('<li />')
 						.addClass('none')
 						.append
 							(
-								$('<span />').text(this.selectioner.settings.noMatchesFoundText)
+								$('<span />').text(enterMoreText)
 							);
-				}
+				}			
+				
+				this.element
+					.empty()
+					.append(filteredOptions);
 			}
-			else
-			{
-				
-				var settings = this.selectioner.settings.filteredSelect;
-				var enterMoreText = settings.enterOneMoreCharacterText;
-				
-				if (minFilterLength - filterText.length > 1)
-				{
-					enterMoreText = settings.enterNumberMoreCharactersText
-						.replace(
-							/{{number}}/, 
-							minFilterLength - filterText.length);
-				}
-			
-				filteredOptions = $('<li />')
-					.addClass('none')
-					.append
-						(
-							$('<span />').text(enterMoreText)
-						);
-			}			
-			
-			this.element
-				.empty()
-				.append(filteredOptions);
 		};
 	}
 );
