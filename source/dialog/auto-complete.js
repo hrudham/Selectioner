@@ -14,7 +14,7 @@ define(
 			}
 		};
 
-		// Render an the equivilant control that represents an 
+		// Render an the equivalent control that represents an 
 		// <option /> element for the underlying <select /> element. 
 		AutoComplete.prototype.render = function()
 		{
@@ -63,35 +63,54 @@ define(
 			var dialog = this;
 
 			var filterText = this.textElement.val().toLowerCase();
-			
-			var children = this.selectioner.target.find('option');
 			var filteredOptions = $();
 			
-			for (var i = 0, length = children.length; i < length; i++)
+			if (filterText.length >= (this.selectioner.settings.autoComplete.minFilterLength || 1))
 			{
-				var option = $(children[i]);
-				var text = option.text().toLowerCase();
+				var children = this.selectioner.target.find('option');
 				
-				if (text !== '' && text.indexOf(filterText) === 0)
+				for (var i = 0, length = children.length; i < length; i++)
 				{
-					filteredOptions = filteredOptions.add(this.renderOption(option));
+					var option = $(children[i]);
+					var text = option.text().toLowerCase();
 					
-					if (filteredOptions.length > this.selectioner.settings.maxAutoCompleteItems)
+					if (text !== '' && text.indexOf(filterText) === 0)
 					{
-						break;
+						filteredOptions = filteredOptions.add(this.renderOption(option));
+						
+						if (filteredOptions.length > this.selectioner.settings.autoComplete.maxItems)
+						{
+							break;
+						}
 					}
 				}
+				
+				if (filteredOptions.length === 0)
+				{
+					filteredOptions = $('<li />')
+						.addClass('none')
+						.append
+							(
+								$('<span />').text(this.selectioner.settings.noMatchesFoundText)
+							);
+				}
 			}
-			
-			if (filteredOptions.length === 0)
+			else
 			{
 				filteredOptions = $('<li />')
 					.addClass('none')
 					.append
 						(
-							$('<span />').text(this.selectioner.settings.noOptionText)
+							$('<span />').text(
+								this.selectioner
+									.settings
+									.autoComplete
+									.minFilterText
+									.replace(
+										/{{number}}/, 
+										filterText.length + 1))
 						);
-			}
+			}			
 			
 			this.element
 				.empty()

@@ -77,8 +77,15 @@ define(
 			cssPrefix: 'select-',
 			noSelectionText: 'Select an option',
 			emptyOptionText: 'None',
-			noOptionText: 'No Options Available',
-			maxAutoCompleteItems: 5
+			noOptionText: 'No options available',
+			noMatchesFoundText: 'No matches found',
+			typeToSearchText: 'Type to search',
+			autoComplete:
+				{
+					maxItems: 5,
+					minFilterLength: 1,
+					minFilterText: 'Enter {{number}} more character(s)'
+				}
 		};
 	}
 );
