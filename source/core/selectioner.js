@@ -84,7 +84,8 @@ define(
 				{
 					maxItems: 5,
 					minFilterLength: 1,
-					minFilterText: 'Enter {{number}} more character(s)'
+					enterOneMoreCharacterText: 'Enter 1 more character',
+					enterNumberMoreCharactersText: 'Enter {{number}} more characters',
 				}
 		};
 	}

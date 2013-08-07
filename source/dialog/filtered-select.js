@@ -64,8 +64,9 @@ define(
 
 			var filterText = this.textElement.val().toLowerCase();
 			var filteredOptions = $();
+			var minFilterLength = this.selectioner.settings.filteredSelect.minFilterLength || 1;
 			
-			if (filterText.length >= (this.selectioner.settings.filteredSelect.minFilterLength || 1))
+			if (filterText.length >= minFilterLength)
 			{
 				var children = this.selectioner.target.find('option');
 				
@@ -97,18 +98,23 @@ define(
 			}
 			else
 			{
+				
+				var settings = this.selectioner.settings.filteredSelect;
+				var enterMoreText = settings.enterOneMoreCharacterText;
+				
+				if (minFilterLength - filterText.length > 1)
+				{
+					enterMoreText = settings.enterNumberMoreCharactersText
+						.replace(
+							/{{number}}/, 
+							minFilterLength - filterText.length);
+				}
+			
 				filteredOptions = $('<li />')
 					.addClass('none')
 					.append
 						(
-							$('<span />').text(
-								this.selectioner
-									.settings
-									.filteredSelect
-									.minFilterText
-									.replace(
-										/{{number}}/, 
-										filterText.length + 1))
+							$('<span />').text(enterMoreText)
 						);
 			}			
 			
