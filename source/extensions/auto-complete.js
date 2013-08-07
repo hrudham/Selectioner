@@ -1,5 +1,5 @@
 define(
-	['core/selectioner', 'display/combo-box', 'dialog/auto-complete'],
+	['core/selectioner', 'display/auto-complete-box', 'dialog/auto-complete'],
 	function()
 	{
 		$.fn.autoComplete = function ()
@@ -12,7 +12,7 @@ define(
 						new Selectioner
 							(
 								this, 
-								new Selectioner.Display.ComboBox(),
+								new Selectioner.Display.AutoCompleteBox(),
 								new Selectioner.Dialog.AutoComplete()
 							);
 					}

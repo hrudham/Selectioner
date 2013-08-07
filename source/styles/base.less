@@ -152,10 +152,9 @@ textarea
 	> .select-text
 	{
         .box-shadow(none);
-
 		border: none;
-		line-height: 16px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
-		min-height: 16px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
+		line-height: 18px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
+		min-height: 18px; /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
 		display: inline-block;
 		min-width: 133px;
 		text-align: left;
@@ -180,8 +179,7 @@ textarea
 	
 	.select-button
 	{
-		.transition(all 0.15s linear);
-        
+		.transition(all 0.15s linear);        
         position: absolute;
 		cursor: pointer;
 		right: 4px;
@@ -197,13 +195,36 @@ textarea
 	&.select-visible .select-button:not(ie8)
 	{
 		.transform(rotate(-180deg));
-
 		background-position: 0px 0px;
 	}
 	
 	&.select-visible .select-button
 	{
 		background-position: 0px -16px;
+	}
+	
+	&.select-auto-complete
+	{
+		.select-button
+		{
+			.opacity(0.5);
+			right: 3px;
+			margin-top: -7px;
+			height: 13px;
+			width: 13px;	
+			background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAANCAYAAABy6+R8AAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QgHCDIgF97zKAAAAU9JREFUKM+N0DFLW1EYxvH/c0+gJqaUQAbd/QAKnbp1rxQEcRGc9NxgME6pnVoKrpksyYmTfgIRcXAQF2d1ESE4RQUd4naz3dflRkwb0Xc5hwM/zvM+4sU0m81x51wJoN/v39VqtZQREw0u7Xb7h3PuGugC3Xw+fx5CmB+FlIEtYNXMbiVtAZPAGoCZLXnvd4dQCOGrpGMzO03TdLZSqTwChBBmgCNJY2maTsVxfP8cT9KcmWFm1QEA8N6fAZtAMYqiL//u9BGwJEkuR8S/yM6xIWRmN5JULBa/j0ALgAEPLx9zZrYjaQPYbrVaSa/XOyyVSoUoilYkLQP3SZKcDP0Ux3EHWAQ+STool8tXzrmOpEYWf6JQKDT+qzxr6zOwLmkaSM1sT1IO+JlV/9d7Xx1Cr00I4Zek3xlsAvU3UQbrkv4AH4Bv70IZ3Jc0C8w8AY0EegF+aEAhAAAAAElFTkSuQmCC) no-repeat 0px 0px;
+		}
+		
+		&.select-visible 
+		{
+			.select-button,
+			.select-button:not(ie8)
+			{
+				.transform(none);
+				.opacity(0.8);				
+				background-position: 0px 0px;
+			}
+		}
 	}
 }
 
