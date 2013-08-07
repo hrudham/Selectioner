@@ -255,55 +255,53 @@ define(
 
 		// Handle key-down events. This method is called by the pop-up, and
 		// thus usually should not be called manually elsewhere.
-		SingleSelect.prototype.keyDown = function (key)
-		{
-			var result = Selectioner.Core.Dialog.prototype.keyDown.call(this, key);
+		SingleSelect.prototype.keyDown = function (simpleEvent)
+		{			
+			var result = Selectioner.Core.Dialog.prototype.keyDown.call(this, simpleEvent.key);
 
 			if (!result.handled)
 			{
-				switch(key)
+				switch(simpleEvent.key)
 				{				
-					// Up arrow
-					case 38: 
+					case 38: // Up arrow
 						if (this.highlightAdjacentOption(false))
 						{
+							simpleEvent.preventDefault();
 							result.handled = true;
-							result.preventDefault = true;
 						}
 						break;
 						
-					// Down arrow
-					case 40: 
+					case 40: // Down arrow
 						if (this.highlightAdjacentOption(true))
 						{
+							simpleEvent.preventDefault();
 							result.handled = true;
-							result.preventDefault = true;
 						}
 						break;
 						
-					// Backspace
-					case 8: 
-						this.clearSelection();
-						this.popup.hide();
-						result.handled = true;
-						result.preventDefault = true;
+					case 8: // Backspace
+						if (simpleEvent.target === this.selectioner.display.element[0])
+						{
+							this.clearSelection();
+							this.popup.hide();
+							simpleEvent.preventDefault();
+							result.handled = true;
+						}
 						break;
 						
-					// Space
-					case 32:
-						if (!this.keyPressFilter)
+					case 32: // Space
+						if (!this.keyPressFilter && simpleEvent.target === this.selectioner.display.element[0])
 						{
 							this.selectHighlightedOption();
+							simpleEvent.preventDefault();
 							result.handled = true;
-							result.preventDefault = true;
 						}
 						break;
 						 
-					// Enter / Return
-					case 13:
+					case 13: // Enter / Return
 						this.selectHighlightedOption();
+						simpleEvent.preventDefault();
 						result.handled = true;
-						result.preventDefault = true;
 						break;
 				}
 			}
@@ -315,22 +313,18 @@ define(
 
 		// Handle key-press events. This method is called by the pop-up, and
 		// thus usually should not be called manually elsewhere.
-		SingleSelect.prototype.keyPress = function(key)
+		SingleSelect.prototype.keyPress = function(simpleEvent)
 		{
-			var result = 
-				{
-					preventDefault: false,
-					handled: false
-				};
+			var result = { handled: false };
 
 			// Do not filter on enter / return or tab.
-			if (key != 13 && key != 9)
+			if (simpleEvent.key != 13 && simpleEvent.key != 9)
 			{
 				var dialog = this;
 				
 				clearTimeout(this.keyPressFilterTimeout);
 			
-				this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(key).toUpperCase();
+				this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(simpleEvent.key).toUpperCase();
 								
 				this.keyPressFilterTimeout = setTimeout
 					(
@@ -363,7 +357,11 @@ define(
 					this.keyPressFilter = '';
 				}
 				
-				result.preventDefault = true;
+				if (event.target == this.selectioner.display.element[0])
+				{
+					simpleEvent.preventDefault();
+				}
+				
 				result.handled = true;
 			}
 			

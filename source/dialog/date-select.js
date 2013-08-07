@@ -393,44 +393,39 @@ define(
 
 		// Handle key-down events. This method is called by the pop-up, and
 		// thus usually should not be called manually elsewhere.
-		DateSelect.prototype.keyDown = function (key)
+		DateSelect.prototype.keyDown = function (simpleEvent)
 		{
-			var result = Selectioner.Core.Dialog.prototype.keyDown.call(this, key);
+			var result = Selectioner.Core.Dialog.prototype.keyDown.call(this, simpleEvent.key);
 				
 			if (!result.handled)
 			{
-				switch(key)
-				{				
-					// Up arrow
-					case 38: 
+				switch(simpleEvent.key)
+				{
+					case 38: // Up arrow
 						this.addDays(-1);
+						simpleEvent.preventDefault();
 						result.handled = true;
-						result.preventDefault = true;
 						break;
 						
-					// Down arrow
-					case 40: 
+					case 40:  // Down arrow
 						this.addDays(1);
+						simpleEvent.preventDefault();
 						result.handled = true;
-						result.preventDefault = true;
 						break;
 					
-					// Backspace			
-					case 8: 
+					case 8: // Backspace
 						this.setCurrentDate(null);
 						this.popup.hide();
+						simpleEvent.preventDefault();
 						result.handled = true;
-						result.preventDefault = true;
 						break;
 						
-					// Space
-					case 32:
-					// Enter / Return
-					case 13:
+					case 32: // Space
+					case 13: // Enter / Return
 						this.setCurrentDate(this.getCurrentDate());
 						this.popup.hide();
+						simpleEvent.preventDefault();
 						result.handled = true;
-						result.preventDefault = true;
 						break;
 				}
 			}

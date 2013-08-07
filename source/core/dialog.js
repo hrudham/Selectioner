@@ -44,19 +44,15 @@ define(
 		// The method itself can be called manually, although this 
 		// is generally not recommended, as this is usually 
 		// handled by the pop-up. 
-		Dialog.prototype.keyDown = function(key)
+		Dialog.prototype.keyDown = function(simpleEvent)
 		{
-			var result = 
-				{
-					preventDefault: false,
-					handled: false
-				};
-				
+			var result = { handled: false };
+			
 			// Escape
-			if (key == 27)
+			if (simpleEvent.key == 27)
 			{
 				this.popup.hide();
-				result.preventDefault = true;
+				simpleEvent.preventDefault();
 				result.handled = true;
 			}
 			
@@ -67,15 +63,9 @@ define(
 		// The method itself can be called manually, although this 
 		// is generally not recommended, as this is usually 
 		// handled by the pop-up. 
-		Dialog.prototype.keyPress = function(key)
-		{
-			var result = 
-				{
-					preventDefault: false,
-					handled: false
-				};
-					
-			return result;
+		Dialog.prototype.keyPress = function(simpleEvent)
+		{					
+			return { handled: false };
 		};
 
 		// This will fire every time the dialog loses mouse or keyboard 

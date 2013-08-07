@@ -310,14 +310,14 @@ define(
 		// and probably should not be called manually else where.
 		// It works out which dialog to feed the key to, and 
 		// passes it along.
-		Popup.prototype.keyDown = function (key)
+		Popup.prototype.keyDown = function (simpleEvent)
 		{
-			var result = { preventDefault: false };
+			var result = null;
 
 			var moveUp = 
-				key == 38 ||	// Up arrow
-				key == 37 ||	// Left Arrow
-				key == 8;		// Backspace
+				simpleEvent.key == 38 ||	// Up arrow
+				simpleEvent.key == 37 ||	// Left Arrow
+				simpleEvent.key == 8;		// Backspace
 			
 			var index = this.dialogFocusIndex();
 			
@@ -334,7 +334,7 @@ define(
 				// an infinite loop.
 				coveredDialogs[index] = true;
 				
-				result = this.dialogs[index].keyDown(key);
+				result = this.dialogs[index].keyDown(simpleEvent);
 				
 				// If the pop-up is still visible, but the dialog indicates that it 
 				// wants to hand off keyboard focus, then move to the next dialog.
@@ -351,9 +351,9 @@ define(
 		// and probably should not be called manually else where.
 		// It works out which dialog to feed the key to, and 
 		// passes it along.
-		Popup.prototype.keyPress = function (key)
+		Popup.prototype.keyPress = function (simpleEvent)
 		{	
-			var result = { preventDefault: false };
+			var result = null;
 			var moveUp = this.element.hasClass('above');
 
 			var index = this.dialogFocusIndex();
@@ -371,7 +371,7 @@ define(
 				// an infinite loop.
 				coveredDialogs[index] = true;
 				
-				result = this.dialogs[index].keyPress(key);
+				result = this.dialogs[index].keyPress(simpleEvent);
 				
 				// If the pop-up is still visible, but the dialog indicates that it 
 				// wants to hand off keyboard focus, then move to the next dialog.

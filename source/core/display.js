@@ -103,7 +103,11 @@ define(
 						
 							if (isPopupShown)
 							{
-								display.popup.keyDown(event.which);
+								display.popup
+									.keyDown({ 
+										key: event.which, 
+										target: event.target, 
+										preventDefault: function() { event.preventDefault(); } });
 							}
 							
 							switch (event.which)
@@ -131,12 +135,11 @@ define(
 					{						
 						if (display.popup.isShown())
 						{
-							var result = display.popup.keyPress(event.which);
-							
-							if (event.target == display.element[0] && result.preventDefault) 
-							{
-								event.preventDefault();
-							}
+							var result = display.popup
+								.keyPress({ 
+									key: event.which, 
+									target: event.target, 
+									preventDefault: function() { event.preventDefault(); } });
 						}
 					}
 				);
