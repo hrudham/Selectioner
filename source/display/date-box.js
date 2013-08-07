@@ -21,6 +21,8 @@ define(
 
 		DateBox.prototype.render = function()
 		{
+			this.cssClass = this.selectioner.settings.cssPrefix  + 'date-box';
+		
 			this.element = $('<span />');
 				
 			this.textElement = $('<span />')

@@ -18,6 +18,8 @@ define(
 		{
 			var display = this;
 			
+			this.cssClass = this.selectioner.settings.cssPrefix  + 'list-box';
+			
 			this.element = $('<span />');
 				
 			this.textElement = $('<span />')

@@ -178,29 +178,38 @@ textarea
 	}
 	
 	.select-button
-	{
-		.transition(all 0.15s linear);        
-        position: absolute;
-		cursor: pointer;
-		right: 4px;
-		top: 50%;
-		margin-top: -8px;
-		display: inline-block;
-		height: 16px;
-		width: 16px;
-		z-index: 5000; /* Fixes a Chrome issue when elements float to the right of this element. */
-		background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
-	}
+		{
+			.transition(all 0.15s linear);        
+			position: absolute;
+			right: 4px;
+			top: 50%;
+			margin-top: -8px;
+			display: inline-block;
+			height: 16px;
+			width: 16px;
+			z-index: 5000; /* Fixes a Chrome issue when elements float to the right of this element. */
+			background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+		}
 	
-	&.select-visible .select-button:not(ie8)
+	&.select-list-box,
+	&.select-combo-box
 	{
-		.transform(rotate(-180deg));
-		background-position: 0px 0px;
-	}
-	
-	&.select-visible .select-button
-	{
-		background-position: 0px -16px;
+		.select-button
+		{
+			cursor: pointer;
+			background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAgCAYAAAAbifjMAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsSAAALEgHS3X78AAAAB3RJTUUH3QMWDxotrgg2UQAAAPBJREFUSMftVDGOgzAQHBvc8xc3PIIr/AL7afYLXCTf8BNcQEHFD5DZFBEkcSDkRHM6MZKLkT2za2l2GRHhCDgO4h8YlM/EOXcB0Oxorlrrn1UDAI2UEkIICCEwjiPKskRVVRBCAAC8983mF4wxLITwuOQcRVEs3HsPYwx7KUlEy5lhraUYI8UYqes6GoaBrLW0qlkzmE3atqW+71/EuQH7lETnHAGA1pptvWFnlI8bnNiBtfYtxr8Sb83CV+JP07i5kWZxXdcAgJQSOL9HRSkFAJTvA56LpZQLn6YJKaWFK6WQd5J3cA0h7O7EM15/DTfgNabJMCO4QAAAAABJRU5ErkJggg==) no-repeat 0px 0px;
+		}
+		
+		&.select-visible .select-button:not(ie8)
+		{
+			.transform(rotate(-180deg));
+			background-position: 0px 0px;
+		}
+		
+		&.select-visible .select-button
+		{
+			background-position: 0px -16px;
+		}
 	}
 	
 	&.select-auto-complete
@@ -220,9 +229,28 @@ textarea
 			.select-button,
 			.select-button:not(ie8)
 			{
-				.transform(none);
-				.opacity(0.8);				
-				background-position: 0px 0px;
+				.opacity(0.8);
+			}
+		}
+	}
+	
+	&.select-date-box
+	{
+		.select-button
+		{
+			.opacity(0.5);
+			height: 15px;
+			width: 15px;
+			cursor: pointer;
+			background: transparent url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAYAAAA71pVKAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAA7DAAAOwwHHb6hkAAAAB3RJTUUH3QgHCh4S5bwdaAAAAG5JREFUKM/VktEJwCAMRM/iXm7lDucsWcI/t7r+tLSVKrX2pwcHCSHkQQ6SsLuUonNfu547ksKmEAJyzmipnl+WR7VgQh4AYoxudDGlpNvLZiYzU6+exgbJ7ntaJnlgP0H9KfanIZnC9nta3hxeASZ4/9Rk3rj7AAAAAElFTkSuQmCC) no-repeat 0px 0px;
+		}
+		
+		&.select-visible 
+		{
+			.select-button,
+			.select-button:not(ie8)
+			{
+				.opacity(0.8);
 			}
 		}
 	}

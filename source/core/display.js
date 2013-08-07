@@ -34,6 +34,11 @@ define(
 
 			this.element
 				.addClass(this.selectioner.settings.cssPrefix + 'display');
+				
+			if (this.cssClass)
+			{
+				this.element.addClass(this.cssClass);
+			}
 						
 			// Make sure we update when parent forms are reset.
 			this.selectioner
@@ -44,7 +49,7 @@ define(
 						'reset', 
 						function() 
 						{
-							// Strangely, this small timeout allows for the 
+							// Strangely, this small time-out allows for the 
 							// reset to be performed, and only then perform
 							// the update required.
 							setTimeout(function() { display.update(); }, 1);

@@ -2,11 +2,11 @@ define(
 	['core/selectioner', 'dialog/single-select'],
 	function()
 	{
-		var AutoComplete = Selectioner.Dialog.AutoComplete = function() {};
+		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() {};
 
-		AutoComplete.prototype = new Selectioner.Dialog.SingleSelect();
+		FilteredSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
-		AutoComplete.prototype.validateTarget = function()
+		FilteredSelect.prototype.validateTarget = function()
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
@@ -16,7 +16,7 @@ define(
 
 		// Render an the equivalent control that represents an 
 		// <option /> element for the underlying <select /> element. 
-		AutoComplete.prototype.render = function()
+		FilteredSelect.prototype.render = function()
 		{
 			Selectioner.Dialog.SingleSelect.prototype.render.apply(this, arguments);
 
@@ -28,7 +28,7 @@ define(
 			
 			if (this.textElement.length === 0)
 			{
-				throw new Error('AutoComplete expects the Display to contain an <input type="text" /> element');
+				throw new Error('FilteredSelect expects the Display to contain an <input type="text" /> element');
 			}
 			
 			this.update();
@@ -58,14 +58,14 @@ define(
 			this.update();
 		};
 
-		AutoComplete.prototype.update = function()
+		FilteredSelect.prototype.update = function()
 		{
 			var dialog = this;
 
 			var filterText = this.textElement.val().toLowerCase();
 			var filteredOptions = $();
 			
-			if (filterText.length >= (this.selectioner.settings.autoComplete.minFilterLength || 1))
+			if (filterText.length >= (this.selectioner.settings.filteredSelect.minFilterLength || 1))
 			{
 				var children = this.selectioner.target.find('option');
 				
@@ -78,7 +78,7 @@ define(
 					{
 						filteredOptions = filteredOptions.add(this.renderOption(option));
 						
-						if (filteredOptions.length > this.selectioner.settings.autoComplete.maxItems)
+						if (filteredOptions.length > this.selectioner.settings.filteredSelect.maxItems)
 						{
 							break;
 						}
@@ -104,7 +104,7 @@ define(
 							$('<span />').text(
 								this.selectioner
 									.settings
-									.autoComplete
+									.filteredSelect
 									.minFilterText
 									.replace(
 										/{{number}}/, 

@@ -80,7 +80,7 @@ define(
 			noOptionText: 'No options available',
 			noMatchesFoundText: 'No matches found',
 			typeToSearchText: 'Type to search',
-			autoComplete:
+			filteredSelect:
 				{
 					maxItems: 5,
 					minFilterLength: 1,

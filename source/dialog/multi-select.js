@@ -17,7 +17,7 @@ define(
 			}
 		};
 
-		// Render an the equivilant control that represents an
+		// Render an the equivalent control that represents an
 		// <option /> element for the underlying <select /> element. 
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderOption = function(option)
@@ -61,7 +61,7 @@ define(
 			return element;
 		};
 
-		// Render an the equivilant control that represents an 
+		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderGroup = function(group)

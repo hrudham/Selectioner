@@ -74,7 +74,7 @@ define(
 			}
 		};
 
-		// Render an the equivilant control that represents an 
+		// Render an the equivalent control that represents an 
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
@@ -118,7 +118,7 @@ define(
 			this.selectioner.target.trigger('change', { source: 'selectioner' });
 		};
 
-		// Render an the equivilant control that represents an 
+		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
 		{		
@@ -160,7 +160,7 @@ define(
 					);
 		};
 
-		// Hightlight the next or previous item.
+		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
 			var items = this.getSelectableOptions();
@@ -235,7 +235,7 @@ define(
 			}
 		};
 
-		// Select the highlightly highlighted option.
+		// Select the highlighted option.
 		SingleSelect.prototype.selectHighlightedOption = function()
 		{
 			this.getSelectableOptions()

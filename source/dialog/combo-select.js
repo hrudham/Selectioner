@@ -14,7 +14,7 @@ define(
 			}
 		};
 
-		// Render an the equivilant control that represents an 
+		// Render an the equivalent control that represents an 
 		// <option /> element for the underlying <select /> element. 
 		ComboSelect.prototype.renderOption = function(option)
 		{

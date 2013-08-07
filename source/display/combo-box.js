@@ -16,6 +16,8 @@ define(
 			
 		ComboBox.prototype.render = function()
 		{
+			this.cssClass = this.selectioner.settings.cssPrefix  + 'combo-box';
+		
 			this.textElement = this.selectioner.target.next();
 			
 			if (!this.textElement.is('input[type="text"]'))
