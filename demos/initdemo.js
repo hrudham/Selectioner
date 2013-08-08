@@ -67,7 +67,8 @@ var initdemo = window.initdemo = function()
 	$('#BasicMultiple').multiSelect();
 	$('#OptGroupMultiple').multiSelect();
 
-	$('#BasicComboSelect').comboSelect();						
+	$('#EmptyComboSelect').comboSelect();
+	$('#BasicComboSelect').comboSelect();				
 	$('#OptGroupComboSelect').comboSelect();
 	$('#BasicAutoCompleteSelect').autoComplete();
 

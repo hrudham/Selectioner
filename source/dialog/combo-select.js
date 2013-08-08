@@ -13,6 +13,15 @@ define(
 				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
 			}
 		};
+		
+		ComboSelect.prototype.isEmpty = function()
+		{
+			return this.selectioner
+				.target
+				.children()
+				.not('option[value=""], option:empty:not([value])')
+				.length > 0;
+		};
 
 		// Render an the equivalent control that represents an 
 		// <option /> element for the underlying <select /> element. 

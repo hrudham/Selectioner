@@ -1012,14 +1012,19 @@
 						}
 					});
 		};
+		
+		SingleSelect.prototype.isEmpty = function()
+		{
+			return this.selectioner.target.children().length > 0;
+		};
 
 		SingleSelect.prototype.update = function()
 		{
 			this.element.empty();
 
-			var children = this.selectioner.target.children();
-			if (children.length > 0)
+			if (this.isEmpty())
 			{
+				var children = this.selectioner.target.children();
 				for (var i = 0, length = children.length; i < length; i++)
 				{
 					var child = $(children[i]);
@@ -1039,12 +1044,22 @@
 			}
 			else
 			{
+				// Although the single-select itself will never use 
+				// an <option /> without a value for it's no-option
+				// text, other dialogs that inherit from it often do, 
+				// such as in the case of the combo-select.
+				var noOptionText = this.selectioner
+					.target
+					.find('option[value=""], option:empty:not([value])')
+					.text();
+			
 				this.element
 					.append(
 						$('<li />')
 							.addClass('none')
 							.append(
-								$('<span />').text(this.selectioner.settings.noOptionText)));
+								$('<span />').text(
+									noOptionText || this.selectioner.settings.noOptionText)));
 			}
 		};
 
@@ -1116,15 +1131,13 @@
 		{
 			return this.element
 				.find('li')
-				.filter
-					(
-						function()
-						{ 
-							return $(this)
-								.children('a,input,label')
-								.filter(':not(.disabled,[disabled])').length > 0; 
-						}
-					);
+				.filter(
+					function()
+					{ 
+						return $(this)
+							.children('a,input,label')
+							.filter(':not(.disabled,[disabled])').length > 0; 
+					});
 		};
 
 		// Highlight the next or previous item.
@@ -2107,6 +2120,15 @@
 			{
 				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
 			}
+		};
+		
+		ComboSelect.prototype.isEmpty = function()
+		{
+			return this.selectioner
+				.target
+				.children()
+				.not('option[value=""], option:empty:not([value])')
+				.length > 0;
 		};
 
 		// Render an the equivalent control that represents an 

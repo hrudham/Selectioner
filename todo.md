@@ -2,23 +2,17 @@
 
 ## Required Tasks
 
-- Keyboard navigation.
-- Disabled element support.
 - Test and implement with AJAX.
 - Expose hide and show functions on the root Selectioner object.
 - Overridable options / settings.
-- Manual refresh call via JS.
 - Build a required CSS file with just the basics that will get the control to work.
 	- Add an additional CSS file for cosmetic purposes.
-- Build LESS files with Jake.
-- Split out extensions such that they are separate to the core library.
 
 ## Nice To Have
 
 - Consider implementing responsive support for mobile.
 - jQuery validation support.
 - dir="rtl" support.
-- Search and highlight input text for SingleSelect dialog..
 
 ## Stuff to Remember / Think about
 
@@ -45,5 +39,3 @@
 ## Pipe dreams
 
 - Remove jQuery as a dependency.
-- Convert everything to CommonJS / RequireJS, and use Google Closure Compiler to compile out the final, non-AMD JS.
-	- http://www.nonblocking.io/2011/12/experimental-support-for-common-js-and.html
