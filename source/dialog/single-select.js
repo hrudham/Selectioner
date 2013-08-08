@@ -47,9 +47,10 @@ define(
 			// Only re-render when the target's HTML changes.
 			// This allows us to stop re-rendering really large lists.
 			var currentTargetHtml = this.selectioner.target.html();
-			
 			if (currentTargetHtml !== this._lastRenderedTargetHtml)
 			{
+				this._lastRenderedTargetHtml = currentTargetHtml;
+			
 				this.element.empty();
 				this._selectableOptions = null;
 
@@ -92,8 +93,6 @@ define(
 									$('<span />').text(
 										noOptionText || this.selectioner.settings.noOptionText)));
 				}
-				
-				this._lastRenderedTargetHtml = currentTargetHtml;
 			}
 		};
 

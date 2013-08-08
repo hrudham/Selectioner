@@ -105,7 +105,6 @@ define(
 							case 38: // Up arrow
 							case 39: // Right arrow
 							case 40: // Down arrow
-							case 13: // Return / Enter
 								e.preventDefault();
 								display.popup.show();
 						}

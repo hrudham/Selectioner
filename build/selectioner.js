@@ -761,7 +761,6 @@
 							case 38: // Up arrow
 							case 39: // Right arrow
 							case 40: // Down arrow
-							case 13: // Return / Enter
 								e.preventDefault();
 								display.popup.show();
 						}
@@ -1023,9 +1022,10 @@
 			// Only re-render when the target's HTML changes.
 			// This allows us to stop re-rendering really large lists.
 			var currentTargetHtml = this.selectioner.target.html();
-			
 			if (currentTargetHtml !== this._lastRenderedTargetHtml)
 			{
+				this._lastRenderedTargetHtml = currentTargetHtml;
+			
 				this.element.empty();
 				this._selectableOptions = null;
 
@@ -1068,8 +1068,6 @@
 									$('<span />').text(
 										noOptionText || this.selectioner.settings.noOptionText)));
 				}
-				
-				this._lastRenderedTargetHtml = currentTargetHtml;
 			}
 		};
 
