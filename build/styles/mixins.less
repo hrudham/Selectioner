@@ -1,0 +1,218 @@
+﻿/*
+	This file is designed to only contain .LESS mix-ins. 
+	No other CSS should make it into this file; if it's not 
+	a .LESS function, it doesn't belong here.
+*/
+
+.clear()
+{
+    &:before,
+    &:after
+    {
+        content: '';
+		display: table;
+    }
+
+	&:after
+	{
+		clear: both;
+	}
+}
+
+.box-sizing(@args: border-box)
+{
+	-moz-box-sizing: @args;
+	-webkit-box-sizing: @args;
+	-ms-box-sizing: @args;
+	box-sizing: @args;
+}
+
+.border-radius(@radius: 4px)
+{
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+.opacity(@opacity: 0.5) 
+{
+	-moz-opacity: @opacity;
+	-khtml-opacity: @opacity;
+	-webkit-opacity: @opacity;
+	opacity: @opacity;
+}
+
+.box-shadow(@args) 
+{
+	-webkit-box-shadow: @args;
+	-moz-box-shadow: @args;
+	box-shadow: @args;
+}
+
+/* 
+	Overload for applying multiple shadows to an element.
+	E.g.: .box-shadow(1px 1px #FFF, inset -1px -1px #FFF);
+*/
+.box-shadow(@arg1, @arg2) 
+{
+	-webkit-box-shadow: @arg1, @arg2;
+	-moz-box-shadow: @arg1, @arg2;
+	box-shadow: @arg1, @arg2;
+}
+
+.text-overflow(@rule: ellipsis)
+{
+	-ms-text-overflow: @rule;
+	-o-text-overflow: @rule;
+	text-overflow: @rule;
+}
+
+.text-shadow(@args)
+{
+	-webkit-text-shadow: @args;
+	text-shadow: @args;
+}
+
+.user-select(@args: none)
+{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.background-size(@args)
+{
+    -moz-background-size: @args;
+    -o-background-size: @args;
+    -webkit-background-size: @args;
+    background-size: @args;
+}
+
+.gradient(@color)
+{
+	background: @color;
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(enabled=false)";
+}
+
+.filter-gradient(@startColor, @endColor)
+{
+	-ms-filter: %(progid:DXImageTransform.Microsoft.gradient(startColorstr='%d', endColorstr='%d', GradientType=0), @startColor, @endColor);
+}
+
+.css3-gradient(@startColor, @endColor, @fallbackColor)
+{    
+    @escapedStartColor: %('%D', @startColor);
+    @escapedEndColor: %('%D', @endColor);
+
+	background: @fallbackColor url("../Svg/LinearGradient/@{escapedStartColor}/@{escapedEndColor}"); /* IE9 / Opera 11.10- */
+	background: @fallbackColor -o-linear-gradient(top, @startColor, @endColor); /* Opera 11.10+ */
+	background: @fallbackColor -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)); /* Old webkit / Safari / Chrome */
+	background: @fallbackColor -webkit-linear-gradient(@startColor, @endColor); /* New webkit / Safari / Chrome */
+	background: @fallbackColor -moz-linear-gradient(@startColor, @endColor); /* gecko / Firefox*/
+	background: @fallbackColor -khtml-gradient(linear, left top, left bottom, from(@startColor), to(@endColor)); /* Konqueror */
+	background: @fallbackColor linear-gradient(@startColor, @endColor);  /* Future CSS3 browsers */
+}
+
+.css3-gradient(@startColor, @endColor)
+{
+	.css3-gradient(@startColor, @endColor, @startColor);
+}
+
+.gradient(@startColor, @endColor, @fallbackColor)
+{
+	.css3-gradient(@startColor, @endColor, @fallbackColor);
+	.filter-gradient(@startColor, @endColor);
+}
+
+.gradient(@startColor, @endColor)
+{
+	.css3-gradient(@startColor, @endColor);
+	.filter-gradient(@startColor, @endColor);
+}
+
+.transition(@args)
+{
+	-moz-transition: @args;
+	-o-transition: @args;
+	-webkit-transition: @args;
+	transition: @args;
+}
+
+.transition-duration(@duration: 0.2s) 
+{
+	-moz-transition-duration: @duration;
+	-webkit-transition-duration: @duration;
+	-o-transition-duration: @duration;
+	transition-duration: @duration;
+}
+
+.transform(@args)
+{
+    -moz-transform: @args;
+    -ms-transform: @args;
+    -o-transform: @args;
+    -webkit-transform: @args;
+    transform: @args;
+}
+
+.transition(@args)
+{
+    -moz-transition: @args;
+    -o-transition: @args;
+    -webkit-transition: @args;
+    transition: @args;
+}
+
+.transform-origin(@xOffset, @yOffset)
+{
+    -moz-transform-origin: @xOffset @yOffset;
+    -ms-transform-origin: @xOffset @yOffset;
+    -o-transform-origin: @xOffset @yOffset;
+    -webkit-transform-origin: @xOffset @yOffset;
+    transform-origin: @xOffset @yOffset;
+}
+
+.arrow-base()
+{
+    .box-sizing(border-box);
+    display: inline-block;
+    height: 0px;
+    width: 0px;
+    min-width: 0px;
+    line-height: 0px;
+}
+
+.right-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-left-color: @color;
+    border-right-width: 0px;
+}
+
+.left-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-right-color: @color;
+    border-left-width: 0px;
+}
+
+.top-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-bottom-color: @color;
+    border-top-width: 0px;
+}
+
+.bottom-arrow(@color: #808183, @size: 6px)
+{
+    .arrow-base();
+    border: @size solid transparent;
+    border-top-color: @color;
+    border-bottom-width: 0px;
+}

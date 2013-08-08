@@ -18,6 +18,11 @@ define(
 			var text = this.selectioner
 				.target
 				.data('placeholder');
+				
+			if (!text)
+			{
+				text = this.textElement.attr('placeholder');
+			}
 
 			if (!text)
 			{
