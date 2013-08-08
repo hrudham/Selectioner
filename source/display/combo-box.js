@@ -83,13 +83,15 @@ define(
 			// the drop-down, and select it if it does.
 			// If it doesn't match an option, select the 
 			// option with no value.
+			var display = this;
+			
 			var option = this.selectioner
 				.target
 				.find('option')
 				.filter(
 					function() 
 					{ 
-						return $(this).text().toUpperCase() == this.textElement.val().toUpperCase(); 
+						return $(this).text().toUpperCase() == display.textElement.val().toUpperCase(); 
 					});
 			
 			if (option.length != 1)

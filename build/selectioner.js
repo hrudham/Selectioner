@@ -1020,46 +1020,56 @@
 
 		SingleSelect.prototype.update = function()
 		{
-			this.element.empty();
-
-			if (this.isEmpty())
+			// Only re-render when the target's HTML changes.
+			// This allows us to stop re-rendering really large lists.
+			var currentTargetHtml = this.selectioner.target.html();
+			
+			if (currentTargetHtml !== this._lastRenderedTargetHtml)
 			{
-				var children = this.selectioner.target.children();
-				for (var i = 0, length = children.length; i < length; i++)
+				this.element.empty();
+				this._selectableOptions = null;
+
+				if (this.isEmpty())
 				{
-					var child = $(children[i]);
-					if (children[i].tagName == 'OPTION')
+					var children = this.selectioner.target.children();
+					for (var i = 0, length = children.length; i < length; i++)
 					{
-						this.element.append(this.renderOption(child));
-					}
-					else 
-					{
-						// We can safely assume that all other elements are 
-						// optgroups, since the HTML5 spec only allows these 
-						// two child elements. 
-						// See http://www.w3.org/TR/html-markup/select.html
-						this.element.append(this.renderGroup(child));
+						var child = $(children[i]);
+						if (children[i].tagName == 'OPTION')
+						{
+							this.element.append(this.renderOption(child));
+						}
+						else 
+						{
+							// We can safely assume that all other elements are 
+							// optgroups, since the HTML5 spec only allows these 
+							// two child elements. 
+							// See http://www.w3.org/TR/html-markup/select.html
+							this.element.append(this.renderGroup(child));
+						}
 					}
 				}
-			}
-			else
-			{
-				// Although the single-select itself will never use 
-				// an <option /> without a value for it's no-option
-				// text, other dialogs that inherit from it often do, 
-				// such as in the case of the combo-select.
-				var noOptionText = this.selectioner
-					.target
-					.find('option[value=""], option:empty:not([value])')
-					.text();
-			
-				this.element
-					.append(
-						$('<li />')
-							.addClass('none')
-							.append(
-								$('<span />').text(
-									noOptionText || this.selectioner.settings.noOptionText)));
+				else
+				{
+					// Although the single-select itself will never use 
+					// an <option /> without a value for it's no-option
+					// text, other dialogs that inherit from it often do, 
+					// such as in the case of the combo-select.
+					var noOptionText = this.selectioner
+						.target
+						.find('option[value=""], option:empty:not([value])')
+						.text();
+				
+					this.element
+						.append(
+							$('<li />')
+								.addClass('none')
+								.append(
+									$('<span />').text(
+										noOptionText || this.selectioner.settings.noOptionText)));
+				}
+				
+				this._lastRenderedTargetHtml = currentTargetHtml;
 			}
 		};
 
@@ -1129,15 +1139,20 @@
 		// Get all options that can potentially be selected.
 		SingleSelect.prototype.getSelectableOptions = function()
 		{
-			return this.element
-				.find('li')
-				.filter(
-					function()
-					{ 
-						return $(this)
-							.children('a,input,label')
-							.filter(':not(.disabled,[disabled])').length > 0; 
-					});
+			if (!this._selectableOptions)
+			{
+				this._selectableOptions = this.element
+					.find('li')
+					.filter(
+						function()
+						{ 
+							return $(this)
+								.children('a,input,label')
+								.filter(':not(.disabled,[disabled])').length > 0; 
+						});
+			}
+			
+			return this._selectableOptions;
 		};
 
 		// Highlight the next or previous item.
@@ -2040,13 +2055,15 @@
 			// the drop-down, and select it if it does.
 			// If it doesn't match an option, select the 
 			// option with no value.
+			var display = this;
+			
 			var option = this.selectioner
 				.target
 				.find('option')
 				.filter(
 					function() 
 					{ 
-						return $(this).text().toUpperCase() == this.textElement.val().toUpperCase(); 
+						return $(this).text().toUpperCase() == display.textElement.val().toUpperCase(); 
 					});
 			
 			if (option.length != 1)
