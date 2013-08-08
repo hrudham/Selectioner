@@ -99,7 +99,9 @@ Notice that it targets an `input type="date"` instead of a `select` element this
 
 ### Build your own!
 
-You can write custom Selectioner controls quite easily, and even chop-and-change what parts are shown. You are not limited to targetting just `select` elements either, as the Date-select illustrates. For example:
+You can write custom Selectioner controls quite easily, and even chop-and-change what parts are shown. You are not limited to targetting just `select` elements either, as the date-select illustrates.
+
+Read the comments in the following example to see how this is done:
 
 ```html
 <select id="CustomSelect">
@@ -135,7 +137,7 @@ You can write custom Selectioner controls quite easily, and even chop-and-change
 					'#CustomButtons'
 				],
 				{	
-					// Add custom options here. This overrides Selectioner.Settings.
+					// Add custom options here. This overrides Selectioner.DefaultSettings.
 				}
 			);
 		
@@ -152,13 +154,22 @@ You can write custom Selectioner controls quite easily, and even chop-and-change
 The following global settings will affect all Selectioners on your page. These are their defaults:
 
 ```javascript
-Selectioner.Settings =
-{
-	cssPrefix: 'select-',
-	noSelectionText: 'Select an option',
-	emptyOptionText: 'None',
-	maxAutoCompleteItems: 5
-};
+Selectioner.DefaultSettings =
+	{
+		cssPrefix: 'select-',
+		noSelectionText: 'Select an option',
+		emptyOptionText: 'None',
+		noOptionText: 'No options available',
+		noMatchesFoundText: 'No matches found',
+		typeToSearchText: 'Type to search',
+		filteredSelect:
+			{
+				maxItems: 5,
+				minFilterLength: 1,
+				enterOneMoreCharacterText: 'Enter 1 more character',
+				enterNumberMoreCharactersText: 'Enter {{number}} more characters',
+			}
+	};
 ```
 
 Some of these are editable per-control with the following overrides:
@@ -174,9 +185,14 @@ Alternatively, in the case of Combo-selects and other controls that support it, 
 ### How it's built
 
 - Built in a modular pattern with prototyping in mind.
-- The build process uses [NodeJS](http://nodejs.org/) and [Grunt](http://gruntjs.com/) to mash, minify and validate everything.
-- It has [JSHint](http://www.jshint.com/) implemented, and has been written in [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/).
-- It uses [LESS](http://lesscss.org/) to build it's CSS files.
+- [RequireJS](http://requirejs.org/) has been used in order to allow for build optimizations (still a work in progress).
+- The build process uses [NodeJS](http://nodejs.org/) with [Grunt](http://gruntjs.com/) to build the project. This includes:
+	- [JSHint](http://www.jshint.com/) to detect errors and problems within the source code.
+	- [RequireJS Optimizer](http://requirejs.org/docs/optimization.html). The dependency on this is removed however, but the project output is still AMD compatible.
+	- [UglifyJS2](http://lisperator.net/uglifyjs/) to minify the JavaScript.
+	- [LESS](http://lesscss.org/) to build it's LESS files into CSS files.
+	- [Clean-css](https://github.com/GoalSmashers/clean-css) to minify the generated CSS.
+- The project has written in [strict mode](http://ejohn.org/blog/ecmascript-5-strict-mode-json-and-more/). 
 
 ### How you can build it
 
