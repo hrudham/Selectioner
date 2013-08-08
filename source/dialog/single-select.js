@@ -21,22 +21,20 @@ define(
 			var dialog = this;
 			
 			var element = this.element
-				.on
-					(
-						'mousemove',
-						'li',
-						function()
-						{	
-							var target = $(this);
-							
-							if (!target.hasClass('highlight') && 
-								dialog.getSelectableOptions().filter(this).length > 0)
-							{
-								element.find('li').removeClass('highlight');
-								target.addClass('highlight');
-							}
+				.on(
+					'mousemove',
+					'li',
+					function()
+					{	
+						var target = $(this);
+						
+						if (!target.hasClass('highlight') && 
+							dialog.getSelectableOptions().filter(this).length > 0)
+						{
+							element.find('li').removeClass('highlight');
+							target.addClass('highlight');
 						}
-					);
+					});
 		};
 
 		SingleSelect.prototype.update = function()
@@ -53,8 +51,12 @@ define(
 					{
 						this.element.append(this.renderOption(child));
 					}
-					else if (children[i].tagName == 'OPTGROUP')
+					else 
 					{
+						// We can safely assume that all other elements are 
+						// optgroups, since the HTML5 spec only allows these 
+						// two child elements. 
+						// See http://www.w3.org/TR/html-markup/select.html
 						this.element.append(this.renderGroup(child));
 					}
 				}
@@ -62,15 +64,11 @@ define(
 			else
 			{
 				this.element
-					.append
-						(
-							$('<li />')
-								.addClass('none')
-								.append
-									(
-										$('<span />').text(this.selectioner.settings.noOptionText)
-									)
-						);
+					.append(
+						$('<li />')
+							.addClass('none')
+							.append(
+								$('<span />').text(this.selectioner.settings.noOptionText)));
 			}
 		};
 
@@ -78,10 +76,6 @@ define(
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
-			var dialog = this;
-
-			var text = option.text();
-			
 			var selectElement;
 			
 			if (option.is(':disabled'))
@@ -91,12 +85,13 @@ define(
 			}
 			else
 			{
+				var dialog = this;
 				selectElement = $('<a />')
 					.attr('href', 'javascript:;')
 					.on('click', function(){ dialog.selectOption(option); });
 			}
 			
-			selectElement.text(text || this.selectioner.settings.emptyOptionText);
+			selectElement.text(option.text() || this.selectioner.settings.emptyOptionText);
 			
 			var listItem = $('<li />');
 			
@@ -121,25 +116,21 @@ define(
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{		
-			var groupTitle = $('<span />')
-					.text(group.attr('label'));
-
+		{
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
-				.append(groupTitle);
+				.append(
+					$('<span />').text(group.attr('label')));
 			
 			var children = group.children();
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				var child = $(children[i]);
-				options = options.add(this.renderOption(child));
+				options = options.add(
+					this.renderOption(
+						$(children[i])));
 			}
 			
-			var groupElement = $('<li />').append
-				(
-					$('<ul >').append(options)
-				);
+			var groupElement = $('<li />').append($('<ul >').append(options));
 
 			return groupElement;
 		};
@@ -163,50 +154,44 @@ define(
 		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
+			var isHighlighted = false;
 			var items = this.getSelectableOptions();
 			
 			if (items.filter('.highlight').length === 0)
 			{
 				(isNext ? items.first() : items.last()).addClass('highlight');
-				return true;
+				isHighlighted = true;
 			}
 			else
 			{
 				for (var i = 0, length = items.length; i < length; i++)
 				{
 					var item = $(items[i]);
-					
-					var highlightItem;
-					
+										
 					if (item.hasClass('highlight'))
 					{
+						item.removeClass('highlight');
+						
 						if (isNext)
 						{
 							if (i < length - 1)
 							{
-								item.removeClass('highlight');
-								highlightItem = $(items[i + 1]).addClass('highlight');
-								this.scrollToHighlightedOption();					
-								return true;
+								$(items[i + 1]).addClass('highlight');					
+								isHighlighted = true;
+								break;
 							}
 						}
-						else
+						else if (i > 0)
 						{
-							if (i > 0)
-							{
-								item.removeClass('highlight');
-								highlightItem = $(items[i - 1]).addClass('highlight');
-								this.scrollToHighlightedOption();
-								return true;
-							}
+							$(items[i - 1]).addClass('highlight');
+							isHighlighted = true;
+							break;
 						}
-						
-						items.removeClass('highlight');
-						
-						return false;
 					}
 				}
 			}
+			
+			return isHighlighted;
 		};
 
 		// Scroll to the highlighted option.
@@ -217,19 +202,20 @@ define(
 			if (option.length > 0)
 			{
 				var optionTop = option.position().top;
+				var popupElement = this.popup.element;
 					
 				if (optionTop < 0)
 				{
-					this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop);
+					popupElement.scrollTop(popupElement.scrollTop() + optionTop);
 				}
 				else
 				{
-					var popupHeight = this.popup.element.height();
+					var popupHeight = popupElement.height();
 					optionTop += option.height();
 					
 					if (optionTop > popupHeight)
 					{
-						this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop - popupHeight);
+						popupElement.scrollTop(popupElement.scrollTop() + optionTop - popupHeight);
 					}
 				}
 			}
@@ -241,7 +227,7 @@ define(
 			this.getSelectableOptions()
 				.filter('.highlight')
 				.find('a,label')
-				.trigger('click');
+				.click();
 		};
 
 		// Clear the selected item(s) if possible.
@@ -250,7 +236,7 @@ define(
 			this.getSelectableOptions()
 				.filter('.none:first')
 				.find('a,label')
-				.trigger('click');
+				.click();
 		};
 
 		// Handle key-down events. This method is called by the pop-up, and
@@ -326,14 +312,12 @@ define(
 			
 				this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(simpleEvent.key).toUpperCase();
 								
-				this.keyPressFilterTimeout = setTimeout
-					(
-						function()
-						{  
-							dialog.keyPressFilter = '';
-						},
-						400
-					);
+				this.keyPressFilterTimeout = setTimeout(
+					function()
+					{  
+						dialog.keyPressFilter = '';
+					},
+					400);
 					
 				// Find the first option that satisfies the filter, 
 				// and highlight and select it.
@@ -357,7 +341,7 @@ define(
 					this.keyPressFilter = '';
 				}
 				
-				if (event.target == this.selectioner.display.element[0])
+				if (simpleEvent.target == this.selectioner.display.element[0])
 				{
 					simpleEvent.preventDefault();
 				}
@@ -372,5 +356,4 @@ define(
 		{
 			this.element.find('li').removeClass('highlight');
 		};
-	}
-);
+	});

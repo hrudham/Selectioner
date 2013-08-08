@@ -88,5 +88,4 @@ define(
 					enterNumberMoreCharactersText: 'Enter {{number}} more characters',
 				}
 		};
-	}
-);
+	});

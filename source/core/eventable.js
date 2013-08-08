@@ -10,14 +10,12 @@ define(
 			{
 				// Bind a set of space separated events to a single 
 				// event handler recursively.
-				names.forEach
-					(
-						function (item, index, array)
-						{
-							this.on(item, handler, context);
-						},
-						this
-					);
+				names.forEach(
+					function (item, index, array)
+					{
+						this.on(item, handler, context);
+					},
+					this);
 			}
 			else
 			{
@@ -25,8 +23,8 @@ define(
 				if (!this._eventHandlers) this._eventHandlers = {};
 				if (!this._eventHandlers[name]) this._eventHandlers[name] = [];
 
-				this._eventHandlers[name].push
-					({
+				this._eventHandlers[name].push(
+					{
 						handler: handler,
 						context: context ? context : this
 					});
@@ -89,7 +87,6 @@ define(
 			return this;
 		};
 
-
 		// Triggers an event, passing through data as an optional parameter.
 		Eventable.prototype.trigger = function (name, data)
 		{
@@ -102,19 +99,16 @@ define(
 				for (var i = 0, length = eventHandlers.length; i < length; i++)
 				{
 					var eventHandler = eventHandlers[i];
-					eventHandler.handler.call
-						(
-							eventHandler.context,
-							{
-								target: target,
-								name: name,
-								data: data
-							}
-						);
+					eventHandler.handler.call(
+						eventHandler.context,
+						{
+							target: target,
+							name: name,
+							data: data
+						});
 				}
 			}
 
 			return this;
 		};
-	}
-);
+	});

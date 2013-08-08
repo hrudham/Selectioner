@@ -89,18 +89,18 @@ define(
 		{
 			var dateSelect = this;
 			
-			var handleWheelChange = function(event)
+			var handleWheelChange = function(e)
 			{
-				event.preventDefault();
+				e.preventDefault();
 				
 				var delta = 0;
-				if (event.originalEvent.wheelDelta)
+				if (e.originalEvent.wheelDelta)
 				{
-					delta = event.originalEvent.wheelDelta;
+					delta = e.originalEvent.wheelDelta;
 				}
 				else
 				{
-					delta = -1 * event.originalEvent.deltaY;
+					delta = -1 * e.originalEvent.deltaY;
 				}
 				
 				return delta < 0 ? 1 : -1;
@@ -110,127 +110,85 @@ define(
 				.on
 					(
 						'mousewheel wheel', 
-						function(event) 
+						function(e) 
 						{ 
 							// Stop the mouse wheel being picked up outside of this 
 							// control, even when it's contents are being re-rendered.
-							event.preventDefault();
+							e.preventDefault();
 						}
 					)
 				.addClass(this.selectioner.settings.cssPrefix + 'date')
-				.on
-					(
-						'mousewheel wheel',
-						'.days',
-						function(event)
-						{
-							dateSelect.addDays(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'mousewheel wheel',
-						'.months',
-						function(event)
-						{
-							dateSelect.addMonths(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'mousewheel wheel',
-						'.years',
-						function(event)
-						{
-							dateSelect.addYears(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'click',
-						'.days .previous, .days .up',
-						function()
-						{
-							dateSelect.addDays(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.days .next, .days .down',
-						function()
-						{
-							dateSelect.addDays(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.months .previous, .months .up',
-						function()
-						{
-							dateSelect.addMonths(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.months .next, .months .down',
-						function()
-						{
-							dateSelect.addMonths(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.years .previous, .years .up',
-						function()
-						{
-							dateSelect.addYears(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.years .next, .years .down',
-						function()
-						{
-							dateSelect.addYears(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.selected',
-						function()
-						{
-							dateSelect.setCurrentDate(dateSelect.getCurrentDate());
-							dateSelect.popup.hide();
-						}
-					)
-				.on
-					(
-						'click',
-						'.today',
-						function()
-						{
-							// Always set the date, in case it's been 
-							// cleared, and we want to set it to today.
-							dateSelect.setCurrentDate(new Date());
-							dateSelect.popup.hide();
-						}
-					)
-				.on
-					(
-						'click',
-						'.clear',
-						function()
-						{
-							dateSelect.setCurrentDate(null);
-							dateSelect.popup.hide();
-						}
-					);
+				.on(
+					'mousewheel wheel',
+					'.days',
+					function(e)
+					{
+						dateSelect.addDays(handleWheelChange(e));
+					})
+				.on(
+					'mousewheel wheel',
+					'.months',
+					function(e)
+					{
+						dateSelect.addMonths(handleWheelChange(e));
+					})
+				.on(
+					'mousewheel wheel',
+					'.years',
+					function(e)
+					{
+						dateSelect.addYears(handleWheelChange(e));
+					})
+				.on(
+					'click',
+					'.days .previous,.days .up,.days .next,.days .down',
+					function()
+					{
+						dateSelect.addDays(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.months .previous,.months .up,.months .next,.months .down',
+					function()
+					{
+						dateSelect.addMonths(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.years .previous,.years .up,.years .next,.years .down',
+					function()
+					{
+						dateSelect.addYears(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.selected',
+					function()
+					{
+						dateSelect.setCurrentDate(dateSelect.getCurrentDate());
+						dateSelect.popup.hide();
+					})
+				.on(
+					'click',
+					'.today',
+					function()
+					{
+						// Always set the date, in case it's been 
+						// cleared, and we want to set it to today.
+						dateSelect.setCurrentDate(new Date());
+						dateSelect.popup.hide();
+					})
+				.on(
+					'click',
+					'.clear',
+					function()
+					{
+						dateSelect.setCurrentDate(null);
+						dateSelect.popup.hide();
+					});
 				
 			this.update();
 		};
@@ -274,7 +232,8 @@ define(
 				
 			var today = new Date();
 			
-			var todayButton = $('<a />').attr('href', 'javascript:;')
+			var todayButton = $('<a />')
+				.attr('href', 'javascript:;')
 				.addClass('today')
 				.append($('<span />').text('Today'));
 				
@@ -399,25 +358,24 @@ define(
 				
 			if (!result.handled)
 			{
+				result.handled = true;
+			
 				switch(simpleEvent.key)
 				{
 					case 38: // Up arrow
 						this.addDays(-1);
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 						
 					case 40:  // Down arrow
 						this.addDays(1);
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 					
 					case 8: // Backspace
 						this.setCurrentDate(null);
 						this.popup.hide();
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 						
 					case 32: // Space
@@ -425,12 +383,13 @@ define(
 						this.setCurrentDate(this.getCurrentDate());
 						this.popup.hide();
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
+						
+					default:
+						result.handled = false;
 				}
 			}
 				
 			return result;
 		};
-	}
-);
+	});

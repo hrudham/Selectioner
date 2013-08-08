@@ -73,5 +73,4 @@ define(
 		Dialog.prototype.lostFocus = function()
 		{
 		};
-	}
-);
+	});

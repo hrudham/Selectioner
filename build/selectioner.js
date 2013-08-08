@@ -20,14 +20,12 @@
 			{
 				// Bind a set of space separated events to a single 
 				// event handler recursively.
-				names.forEach
-					(
-						function (item, index, array)
-						{
-							this.on(item, handler, context);
-						},
-						this
-					);
+				names.forEach(
+					function (item, index, array)
+					{
+						this.on(item, handler, context);
+					},
+					this);
 			}
 			else
 			{
@@ -35,8 +33,8 @@
 				if (!this._eventHandlers) this._eventHandlers = {};
 				if (!this._eventHandlers[name]) this._eventHandlers[name] = [];
 
-				this._eventHandlers[name].push
-					({
+				this._eventHandlers[name].push(
+					{
 						handler: handler,
 						context: context ? context : this
 					});
@@ -99,7 +97,6 @@
 			return this;
 		};
 
-
 		// Triggers an event, passing through data as an optional parameter.
 		Eventable.prototype.trigger = function (name, data)
 		{
@@ -112,15 +109,13 @@
 				for (var i = 0, length = eventHandlers.length; i < length; i++)
 				{
 					var eventHandler = eventHandlers[i];
-					eventHandler.handler.call
-						(
-							eventHandler.context,
-							{
-								target: target,
-								name: name,
-								data: data
-							}
-						);
+					eventHandler.handler.call(
+						eventHandler.context,
+						{
+							target: target,
+							name: name,
+							data: data
+						});
 				}
 			}
 
@@ -299,39 +294,35 @@
 
 			this.element = $('<div />')
 				.addClass(this.selectioner.settings.cssPrefix + 'popup')
-				.css
-					({
+				.css(
+					{
 						visibility: 'hidden',
 						position: 'absolute',
 						zIndex: '-1'
 					})
-				.on
-					(
-						'mousedown focusin',
-						function(event)
-						{
-							// The selectioner watches for mouse-down / focusin events outside of 
-							// itself in order to know when to close. Sometimes, however, these
-							// event will occur insides the pop-up and cause a re-render,
-							// and thus the element that caused the event no longer exists.
-							// This means we cannot determine if it exists inside or outside
-							// the pop-up. Thus, we stop propagation of these events here.
-							event.stopPropagation();
-						}
-					)
+				.on(
+					'mousedown focusin',
+					function(e)
+					{
+						// The selectioner watches for mouse-down / focusin events outside of 
+						// itself in order to know when to close. Sometimes, however, these
+						// event will occur insides the pop-up and cause a re-render,
+						// and thus the element that caused the event no longer exists.
+						// This means we cannot determine if it exists inside or outside
+						// the pop-up. Thus, we stop propagation of these events here.
+						e.stopPropagation();
+					})
 				// Allow the pop-up to have a tabindex such that we can detect focusin events.
 				// This allows us to redirect focus to the display if anything in the pop-up
 				// gains focus (such as a check box), which stops the keyboard integration
 				// from breaking.
 				.prop('tabindex', selectioner.target.prop('tabindex') + 1)
-				.on
-					(
-						'focusin.selectioner',
-						function(event)
-						{
-							selectioner.display.element.focus();
-						}
-					);
+				.on(
+					'focusin.selectioner',
+					function()
+					{
+						selectioner.display.element.focus();
+					});
 
 			this.update();
 			
@@ -339,23 +330,16 @@
 			// pop-up is actually displayed, then make sure it 
 			// updates as expected. This is useful when loading
 			// up information via AJAX, for example.
-			this.selectioner
-				.target
-				.on
-					(
-						'change',
-						function(event, data)
-						{
-							if (!data || data.source !== 'selectioner')
-							{
-								if (popup.isShown())
-								{
-									popup.update();
-									popup.reposition();
-								}
-							}
-						}
-					);
+			this.selectioner.target.on(
+				'change',
+				function(e, data)
+				{
+					if ((!data || data.source !== 'selectioner') && popup.isShown())
+					{
+						popup.update();
+						popup.reposition();
+					}
+				});
 					
 			$('body').append(this.element);
 		};
@@ -388,19 +372,16 @@
 			
 			this.dialogs.push(dialog);
 			
+			// Create closures for the popup and index.
 			var index = this.dialogs.length - 1;
-			
 			var popup = this;
 			
-			dialog.element
-				.on
-					(
-						'mousemove', 
-						function()
-						{
-							popup.dialogFocusIndex(index);
-						}
-					);
+			dialog.element.on(
+				'mousemove', 
+				function()
+				{
+					popup.dialogFocusIndex(index);
+				});
 		};
 
 		// Update all the dialogs that appear on this pop-up.
@@ -424,11 +405,8 @@
 
 			var scrollTop = $(window).scrollTop();
 			var popUpHeight = this.element.outerHeight(true);
-
-			this.element
-				.removeClass('below')
-				.removeClass('above')
-				.removeClass('over');
+			
+			var cssClass = '';
 
 			// If this popup would appear off-screen if below
 			// the display, then make it appear above it instead.
@@ -439,24 +417,31 @@
 				if (top < scrollTop)
 				{
 					top = scrollTop;
-					this.element.addClass('over');
+					cssClass = 'over';
 				}
 				else
 				{
-					this.element.addClass('above');
+					cssClass = 'above';
 				}
 			}
 			else
 			{
-				this.element.addClass('below');
+				cssClass = 'below';
 			}
 			
-			this.element.css
-			({
-				width: width + 'px',
-				left: offset.left + 'px',
-				top: top + 'px'
-			});
+			if (!this.element.hasClass(cssClass))
+			{
+				this.element
+					.removeClass('below above over')
+					.addClass(cssClass);
+			}
+			
+			this.element.css(
+				{
+					width: width + 'px',
+					left: offset.left + 'px',
+					top: top + 'px'
+				});
 		};
 
 		// Shows the pop-up.
@@ -485,45 +470,50 @@
 				this.reposition();
 				
 				this.element.css({ visibility: 'visible', zIndex: '' });
-				
+
+				// This may look odd considering the lines above. However, 
+				// height can often only be calculated by jQuery after the 
+				// element is visible on the page. If our CSS happens to change
+				// the height of the pop-up because of this, we need to 
+				// reposition it again.
 				if (popUpHeight != this.element.height())
 				{
-					// Height can often only be calculated by jQuery after the 
-					// element is visible on the page. If our CSS happens to change
-					// the height of the pop-up because of this, reposition it again.
 					this.reposition();
 				}
 				
 				this.selectioner
+					.trigger('show.selectioner')
 					.target
 					.parents()
 					.add(window)
-					.on
-						(
-							'scroll.selectioner_' + this.selectioner.id, 
-							function() 
+					.on(
+						'scroll.selectioner_' + this.selectioner.id, 
+						function() 
+						{
+							// Hide the pop-up whenever a scroll event
+							// on a parent element occurs. It's either 
+							// this, or some very complex and expensive  
+							// logic to reposition it.
+							if (popup.isShown())
 							{
-								if (popup.isShown())
-								{
-									popup.hide();
-								}
+								popup.hide();
 							}
-						);
-							
-				this.selectioner.trigger('show.selectioner');
+						});
 			}
 		};
 
 		// Simply hides the pop-up.
 		Popup.prototype.hide = function()
 		{
-			$(window).off('resize.selectioner_{id} scroll.selectioner_{id}'.replace(/\{id\}/g, this.selectioner.id));
+			$(window).off(
+				'resize.selectioner_{id} scroll.selectioner_{id}'.replace(
+					/\{id\}/g, this.selectioner.id));
 
 			if (this.isShown())
 			{
 				this._isVisible = false;
-				this.element.css
-					({ 
+				this.element.css(
+					{ 
 						visibility: 'hidden', 
 						zIndex: '-1',
 						top: 0,
@@ -538,17 +528,17 @@
 		// in order to work out which dialog to feed keystrokes to.
 		Popup.prototype.changeDialogFocus = function(moveUp)
 		{
-			var index = null;
+			var offset = null;
 
 			if (moveUp)
 			{
 				if (this._dialogFocusIndex > 0)
 				{
-					index = this.dialogFocusIndex(this._dialogFocusIndex - 1);
+					offset = this._dialogFocusIndex - 1;
 				}
 				else
 				{
-					index = this.dialogFocusIndex(this.dialogs.length - 1);
+					offset = this.dialogs.length - 1;
 				}
 			}
 			else
@@ -556,15 +546,15 @@
 				if (this._dialogFocusIndex < this.dialogs.length - 1 &&
 					this._dialogFocusIndex !== null)
 				{
-					index = this.dialogFocusIndex(this._dialogFocusIndex + 1);
+					offset = this._dialogFocusIndex + 1;
 				}
 				else
 				{
-					index = this.dialogFocusIndex(0);
+					offset = 0;
 				}
 			}
 			
-			return index;
+			return this.dialogFocusIndex(offset);
 		};
 
 		Popup.prototype.dialogFocusIndex = function(index)
@@ -693,10 +683,9 @@
 			this.render();
 			this.update();
 			
-			this.element
-				.prop(
-					'tabindex', 
-					this.selectioner.target.prop('tabindex'));
+			this.element.prop(
+				'tabindex', 
+				this.selectioner.target.prop('tabindex'));
 
 			this.element
 				.addClass(this.selectioner.settings.cssPrefix + 'display');
@@ -710,105 +699,89 @@
 			this.selectioner
 				.target
 				.closest('form')
-				.on
-					(
-						'reset', 
-						function() 
-						{
-							// Strangely, this small time-out allows for the 
-							// reset to be performed, and only then perform
-							// the update required.
-							setTimeout(function() { display.update(); }, 1);
-						}
-					);
+				.on(
+					'reset', 
+					function() 
+					{
+						// Strangely, this small time-out allows for the 
+						// reset to be performed, and only then perform
+						// the update required.
+						setTimeout(function() { display.update(); }, 1);
+					});
 
 			// Make sure the display updates any time
 			// it's underlying target element changes.
 			this.selectioner
 				.target
-				.on
-					(
-						'change.selectioner',
-						function()
-						{
-							display.update();
-						}
-					);
+				.on(
+					'change.selectioner',
+					function()
+					{
+						display.update();
+					});
 				
 			// Find any labels associated with this underlying target
 			// element, and make them focus on this display instead.
 			var targetId = this.selectioner.target.attr('id');
 			if (targetId !== undefined)
 			{
-				this.labels = $(document)
-					.on
-						(
-							'click.selectioner',
-							'label[for="' + targetId + '"]',
-							function (event)
-							{
-								display.element.focus();
-							}
-						);
+				this.labels = $(document).on(
+					'click.selectioner',
+					'label[for="' + targetId + '"]',
+					function ()
+					{
+						display.element.focus();
+					});
 			}
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
-			this.element.on
-				(
-					'keydown.selectioner',
-					function(event)
+			this.element.on(
+				'keydown.selectioner',
+				function(e)
+				{
+					if (e.which == 27)
 					{
-						if (event.which == 27)
-						{
-							// Escape key was pressed.
-							display.popup.hide();
-						}
-						else
-						{
-							var isPopupShown = display.popup.isShown();
-						
-							if (isPopupShown)
-							{
-								display.popup
-									.keyDown({ 
-										key: event.which, 
-										target: event.target, 
-										preventDefault: function() { event.preventDefault(); } });
-							}
-							
-							switch (event.which)
-							{
-								case 37: // Left arrow
-								case 38: // Up arrow
-								case 39: // Right arrow
-								case 40: // Down arrow
-								case 13: // Return / Enter
-									event.preventDefault();
-									if (!isPopupShown)
-									{
-										display.popup.show();
-									}
-							}
-						}
+						// Escape key was pressed.
+						display.popup.hide();
 					}
-				);
-				
-			// Handle key press for things like filtering lists.
-			this.element.on
-				(
-					'keypress.selectioner',
-					function(event)
+					else
 					{						
 						if (display.popup.isShown())
 						{
-							var result = display.popup
-								.keyPress({ 
-									key: event.which, 
-									target: event.target, 
-									preventDefault: function() { event.preventDefault(); } });
+							display.popup
+								.keyDown({ 
+									key: e.which, 
+									target: e.target, 
+									preventDefault: function() { e.preventDefault(); } });
+						}
+						
+						switch (e.which)
+						{
+							case 37: // Left arrow
+							case 38: // Up arrow
+							case 39: // Right arrow
+							case 40: // Down arrow
+							case 13: // Return / Enter
+								e.preventDefault();
+								display.popup.show();
 						}
 					}
-				);
+				});
+				
+			// Handle key press for things like filtering lists.
+			this.element.on(
+				'keypress.selectioner',
+				function(e)
+				{						
+					if (display.popup.isShown())
+					{
+						var result = display.popup
+							.keyPress({ 
+								key: e.which, 
+								target: e.target, 
+								preventDefault: function() { e.preventDefault(); } });
+					}
+				});
 		};
 
 		// Create a new dialog for the underlying target element.
@@ -825,78 +798,68 @@
 
 			// Hide or show the pop-up on mouse-down or focus-in.
 			this.element
-				.on
-					(
-						'focusin.selectioner',
-						function(event)
+				.on(
+					'focusin.selectioner',
+					function(e)
+					{
+						var target = $(e.target);
+					
+						if (e.target === dialog.element ||
+							target.prop('tabindex') > -1)
 						{
-							var target = $(event.target);
-						
-							if (event.target === dialog.element ||
-								target.prop('tabindex') > -1)
-							{
-								popup.show();
-							}
-							else
-							{
-								dialog.element.focus();
-							}					
+							popup.show();
 						}
-					)
-				.on
-					(
-						'mousedown.selectioner',
-						function(event)
+						else
 						{
-							if (popup.isShown())
-							{
-								popup.hide();
-							}
-							else
-							{
-								popup.show();
-							}
+							dialog.element.focus();
+						}					
+					})
+				.on(
+					'mousedown.selectioner',
+					function()
+					{
+						if (popup.isShown())
+						{
+							popup.hide();
 						}
-					);
+						else
+						{
+							popup.show();
+						}
+					});
 
 			// Hide the pop-up whenever it loses focus to an
 			// element that is not part of the pop-up or display.
 			$(document)
-				.on
-				(
-					'mousedown.selectioner focusin.selectioner',
-					function(event)
+				.on(
+				'mousedown.selectioner focusin.selectioner',
+				function(e)
+				{
+					if (popup.isShown() &&
+						e.target !== displayElement[0] &&
+						!$.contains(displayElement[0], e.target) &&
+						e.target !== popup.element[0] &&
+						!$.contains(popup.element[0], e.target))
 					{
-						if (popup.isShown() &&
-							event.target !== displayElement[0] &&
-							!$.contains(displayElement[0], event.target) &&
-							event.target !== popup.element[0] &&
-							!$.contains(popup.element[0], event.target))
-						{
-							popup.hide();
-						}
+						popup.hide();
 					}
-				);
+				});
 
-			var cssClass = this.selectioner.settings.cssPrefix + 'visible';
+			var visibleCssClass = this.selectioner.settings.cssPrefix + 'visible';
 
 			this.selectioner
-				.on
-					(
-						'show.selectioner',
-						function()
-						{
-							displayElement.addClass(cssClass);
-						}
-					)
-				.on
-					(
-						'hide.selectioner',
-						function()
-						{
-							displayElement.removeClass(cssClass);
-						}
-					);
+				.on(
+					'show.selectioner',
+					function()
+					{
+						displayElement.addClass(visibleCssClass);
+					})
+				.on(
+					'hide.selectioner',
+					function()
+					{
+						displayElement.removeClass(visibleCssClass);
+					});
 		};
 
 		// Add a dialog to this display.
@@ -935,16 +898,9 @@
 
 		Display.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-
-			if (!text)
-			{
-				text = this.selectioner.settings.noSelectionText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.selectioner.settings.noSelectionText);
 		};
 
 		var ListBox = Selectioner.Display.ListBox = function() {};
@@ -965,14 +921,12 @@
 			
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'list-box';
 			
-			this.element = $('<span />');
-				
 			this.textElement = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'text');
 			
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 					
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -980,9 +934,11 @@
 		ListBox.prototype.update = function()
 		{
 			var selectedOptions = this.selectioner.target.find('option:selected');
-			this.textElement.removeClass('none');
 			
-			if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
+			var isEmpty = false;
+			
+			if (selectedOptions.length === 0 ||
+				selectedOptions.is('option[value=""], option:empty:not([value])'))
 			{
 				var text = this.getNoSelectionText();
 				
@@ -995,7 +951,7 @@
 					this.textElement.text(text);
 				}
 				
-				this.textElement.addClass('none');
+				isEmpty = true;
 			}
 			else if (selectedOptions.length <= 2)
 			{
@@ -1015,8 +971,11 @@
 			}
 			else
 			{
-				this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
+				this.textElement.text(
+					'Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
 			}
+			
+			this.textElement.toggleClass('none', isEmpty);
 		};
 
 		var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
@@ -1038,22 +997,20 @@
 			var dialog = this;
 			
 			var element = this.element
-				.on
-					(
-						'mousemove',
-						'li',
-						function()
-						{	
-							var target = $(this);
-							
-							if (!target.hasClass('highlight') && 
-								dialog.getSelectableOptions().filter(this).length > 0)
-							{
-								element.find('li').removeClass('highlight');
-								target.addClass('highlight');
-							}
+				.on(
+					'mousemove',
+					'li',
+					function()
+					{	
+						var target = $(this);
+						
+						if (!target.hasClass('highlight') && 
+							dialog.getSelectableOptions().filter(this).length > 0)
+						{
+							element.find('li').removeClass('highlight');
+							target.addClass('highlight');
 						}
-					);
+					});
 		};
 
 		SingleSelect.prototype.update = function()
@@ -1070,8 +1027,12 @@
 					{
 						this.element.append(this.renderOption(child));
 					}
-					else if (children[i].tagName == 'OPTGROUP')
+					else 
 					{
+						// We can safely assume that all other elements are 
+						// optgroups, since the HTML5 spec only allows these 
+						// two child elements. 
+						// See http://www.w3.org/TR/html-markup/select.html
 						this.element.append(this.renderGroup(child));
 					}
 				}
@@ -1079,15 +1040,11 @@
 			else
 			{
 				this.element
-					.append
-						(
-							$('<li />')
-								.addClass('none')
-								.append
-									(
-										$('<span />').text(this.selectioner.settings.noOptionText)
-									)
-						);
+					.append(
+						$('<li />')
+							.addClass('none')
+							.append(
+								$('<span />').text(this.selectioner.settings.noOptionText)));
 			}
 		};
 
@@ -1095,10 +1052,6 @@
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
-			var dialog = this;
-
-			var text = option.text();
-			
 			var selectElement;
 			
 			if (option.is(':disabled'))
@@ -1108,12 +1061,13 @@
 			}
 			else
 			{
+				var dialog = this;
 				selectElement = $('<a />')
 					.attr('href', 'javascript:;')
 					.on('click', function(){ dialog.selectOption(option); });
 			}
 			
-			selectElement.text(text || this.selectioner.settings.emptyOptionText);
+			selectElement.text(option.text() || this.selectioner.settings.emptyOptionText);
 			
 			var listItem = $('<li />');
 			
@@ -1138,25 +1092,21 @@
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{		
-			var groupTitle = $('<span />')
-					.text(group.attr('label'));
-
+		{
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
-				.append(groupTitle);
+				.append(
+					$('<span />').text(group.attr('label')));
 			
 			var children = group.children();
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				var child = $(children[i]);
-				options = options.add(this.renderOption(child));
+				options = options.add(
+					this.renderOption(
+						$(children[i])));
 			}
 			
-			var groupElement = $('<li />').append
-				(
-					$('<ul >').append(options)
-				);
+			var groupElement = $('<li />').append($('<ul >').append(options));
 
 			return groupElement;
 		};
@@ -1180,50 +1130,44 @@
 		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
+			var isHighlighted = false;
 			var items = this.getSelectableOptions();
 			
 			if (items.filter('.highlight').length === 0)
 			{
 				(isNext ? items.first() : items.last()).addClass('highlight');
-				return true;
+				isHighlighted = true;
 			}
 			else
 			{
 				for (var i = 0, length = items.length; i < length; i++)
 				{
 					var item = $(items[i]);
-					
-					var highlightItem;
-					
+										
 					if (item.hasClass('highlight'))
 					{
+						item.removeClass('highlight');
+						
 						if (isNext)
 						{
 							if (i < length - 1)
 							{
-								item.removeClass('highlight');
-								highlightItem = $(items[i + 1]).addClass('highlight');
-								this.scrollToHighlightedOption();					
-								return true;
+								$(items[i + 1]).addClass('highlight');					
+								isHighlighted = true;
+								break;
 							}
 						}
-						else
+						else if (i > 0)
 						{
-							if (i > 0)
-							{
-								item.removeClass('highlight');
-								highlightItem = $(items[i - 1]).addClass('highlight');
-								this.scrollToHighlightedOption();
-								return true;
-							}
+							$(items[i - 1]).addClass('highlight');
+							isHighlighted = true;
+							break;
 						}
-						
-						items.removeClass('highlight');
-						
-						return false;
 					}
 				}
 			}
+			
+			return isHighlighted;
 		};
 
 		// Scroll to the highlighted option.
@@ -1234,19 +1178,20 @@
 			if (option.length > 0)
 			{
 				var optionTop = option.position().top;
+				var popupElement = this.popup.element;
 					
 				if (optionTop < 0)
 				{
-					this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop);
+					popupElement.scrollTop(popupElement.scrollTop() + optionTop);
 				}
 				else
 				{
-					var popupHeight = this.popup.element.height();
+					var popupHeight = popupElement.height();
 					optionTop += option.height();
 					
 					if (optionTop > popupHeight)
 					{
-						this.popup.element.scrollTop(this.popup.element.scrollTop() + optionTop - popupHeight);
+						popupElement.scrollTop(popupElement.scrollTop() + optionTop - popupHeight);
 					}
 				}
 			}
@@ -1258,7 +1203,7 @@
 			this.getSelectableOptions()
 				.filter('.highlight')
 				.find('a,label')
-				.trigger('click');
+				.click();
 		};
 
 		// Clear the selected item(s) if possible.
@@ -1267,7 +1212,7 @@
 			this.getSelectableOptions()
 				.filter('.none:first')
 				.find('a,label')
-				.trigger('click');
+				.click();
 		};
 
 		// Handle key-down events. This method is called by the pop-up, and
@@ -1343,14 +1288,12 @@
 			
 				this.keyPressFilter = (this.keyPressFilter || '') + String.fromCharCode(simpleEvent.key).toUpperCase();
 								
-				this.keyPressFilterTimeout = setTimeout
-					(
-						function()
-						{  
-							dialog.keyPressFilter = '';
-						},
-						400
-					);
+				this.keyPressFilterTimeout = setTimeout(
+					function()
+					{  
+						dialog.keyPressFilter = '';
+					},
+					400);
 					
 				// Find the first option that satisfies the filter, 
 				// and highlight and select it.
@@ -1374,7 +1317,7 @@
 					this.keyPressFilter = '';
 				}
 				
-				if (event.target == this.selectioner.display.element[0])
+				if (simpleEvent.target == this.selectioner.display.element[0])
 				{
 					simpleEvent.preventDefault();
 				}
@@ -1392,19 +1335,14 @@
 
 		$.fn.singleSelect = function ()
 		{
-			this
-				.each
-				(
-					function()
-					{
-						new Selectioner
-							(
-								this, 
-								new Selectioner.Display.ListBox(),
-								new Selectioner.Dialog.SingleSelect()
-							);
-					}
-				);
+			this.each(
+				function()
+				{
+					new Selectioner(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.SingleSelect());
+				});
 			
 			return this;
 		};
@@ -1473,30 +1411,28 @@
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderGroup = function(group)
 		{
-			var dialog = this;
+			var target = this.selectioner.target;
 			
-			var toggleGroupSelect = function(event)
+			var toggleGroupSelect = function()
 			{
 				var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
 				var checkedCount = checkboxes.filter(':checked').length;
 				
 				checkboxes
 					.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
-					.each
-						(
-							function()
-							{
-								$(this).data('option')[0].selected = this.checked;
-							}
-						);
+					.each(
+						function()
+						{
+							$(this).data('option')[0].selected = this.checked;
+						});
 				
-				dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+				target.trigger('change', { source: 'selectioner' });
 			};
 			
 			var groupTitle = $('<a />')
-					.attr('href', 'javascript:;')
-					.on('click', toggleGroupSelect)
-					.text(group.attr('label'));
+				.attr('href', 'javascript:;')
+				.on('click', toggleGroupSelect)
+				.text(group.attr('label'));
 
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
@@ -1505,14 +1441,11 @@
 			var children = group.children();
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				var child = $(children[i]);
-				options = options.add(this.renderOption(child));
+				options = options.add(this.renderOption($(children[i])));
 			}
 
-			var groupElement = $('<li />').append
-				(
-					$('<ul >').append(options)
-				);
+			var groupElement = $('<li />').append(
+				$('<ul >').append(options));
 			
 			return groupElement;
 		};
@@ -1521,24 +1454,19 @@
 		{
 			this.getSelectableOptions()
 				.find('input:checkbox:checked')
-				.trigger('click');
+				.click();
 		};
 
 		$.fn.multiSelect = function ()
 		{
-			this
-				.each
-				(
-					function()
-					{
-						new Selectioner
-							(
-								this, 
-								new Selectioner.Display.ListBox(),
-								new Selectioner.Dialog.MultiSelect()
-							);
-					}
-				);
+			this.each(
+				function()
+				{
+					new Selectioner(
+						this, 
+						new Selectioner.Display.ListBox(),
+						new Selectioner.Dialog.MultiSelect());
+				});
 				
 			return this;
 		};
@@ -1564,14 +1492,12 @@
 		{
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'date-box';
 		
-			this.element = $('<span />');
-				
 			this.textElement = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'text');
 			
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 			
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -1583,12 +1509,13 @@
 			if (dateValue !== '')
 			{
 				var datePart = dateValue.match(/(\d+)/g);
-				var date = new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
-				var dateText = this.getDateText(date);
 				
+				// Remember that months are zero-based
 				this.textElement
 					.removeClass('none')
-					.text(dateText);
+					.text(
+						this.getDateText(
+							new Date(datePart[0], datePart[1] - 1, datePart[2])));
 			}
 			else
 			{
@@ -1701,18 +1628,18 @@
 		{
 			var dateSelect = this;
 			
-			var handleWheelChange = function(event)
+			var handleWheelChange = function(e)
 			{
-				event.preventDefault();
+				e.preventDefault();
 				
 				var delta = 0;
-				if (event.originalEvent.wheelDelta)
+				if (e.originalEvent.wheelDelta)
 				{
-					delta = event.originalEvent.wheelDelta;
+					delta = e.originalEvent.wheelDelta;
 				}
 				else
 				{
-					delta = -1 * event.originalEvent.deltaY;
+					delta = -1 * e.originalEvent.deltaY;
 				}
 				
 				return delta < 0 ? 1 : -1;
@@ -1722,127 +1649,85 @@
 				.on
 					(
 						'mousewheel wheel', 
-						function(event) 
+						function(e) 
 						{ 
 							// Stop the mouse wheel being picked up outside of this 
 							// control, even when it's contents are being re-rendered.
-							event.preventDefault();
+							e.preventDefault();
 						}
 					)
 				.addClass(this.selectioner.settings.cssPrefix + 'date')
-				.on
-					(
-						'mousewheel wheel',
-						'.days',
-						function(event)
-						{
-							dateSelect.addDays(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'mousewheel wheel',
-						'.months',
-						function(event)
-						{
-							dateSelect.addMonths(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'mousewheel wheel',
-						'.years',
-						function(event)
-						{
-							dateSelect.addYears(handleWheelChange(event));
-						}
-					)
-				.on
-					(
-						'click',
-						'.days .previous, .days .up',
-						function()
-						{
-							dateSelect.addDays(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.days .next, .days .down',
-						function()
-						{
-							dateSelect.addDays(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.months .previous, .months .up',
-						function()
-						{
-							dateSelect.addMonths(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.months .next, .months .down',
-						function()
-						{
-							dateSelect.addMonths(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.years .previous, .years .up',
-						function()
-						{
-							dateSelect.addYears(-1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.years .next, .years .down',
-						function()
-						{
-							dateSelect.addYears(1);
-						}
-					)
-				.on
-					(
-						'click',
-						'.selected',
-						function()
-						{
-							dateSelect.setCurrentDate(dateSelect.getCurrentDate());
-							dateSelect.popup.hide();
-						}
-					)
-				.on
-					(
-						'click',
-						'.today',
-						function()
-						{
-							// Always set the date, in case it's been 
-							// cleared, and we want to set it to today.
-							dateSelect.setCurrentDate(new Date());
-							dateSelect.popup.hide();
-						}
-					)
-				.on
-					(
-						'click',
-						'.clear',
-						function()
-						{
-							dateSelect.setCurrentDate(null);
-							dateSelect.popup.hide();
-						}
-					);
+				.on(
+					'mousewheel wheel',
+					'.days',
+					function(e)
+					{
+						dateSelect.addDays(handleWheelChange(e));
+					})
+				.on(
+					'mousewheel wheel',
+					'.months',
+					function(e)
+					{
+						dateSelect.addMonths(handleWheelChange(e));
+					})
+				.on(
+					'mousewheel wheel',
+					'.years',
+					function(e)
+					{
+						dateSelect.addYears(handleWheelChange(e));
+					})
+				.on(
+					'click',
+					'.days .previous,.days .up,.days .next,.days .down',
+					function()
+					{
+						dateSelect.addDays(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.months .previous,.months .up,.months .next,.months .down',
+					function()
+					{
+						dateSelect.addMonths(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.years .previous,.years .up,.years .next,.years .down',
+					function()
+					{
+						dateSelect.addYears(
+							$(this).is('.previous, .up') ? -1 : 1);
+					})
+				.on(
+					'click',
+					'.selected',
+					function()
+					{
+						dateSelect.setCurrentDate(dateSelect.getCurrentDate());
+						dateSelect.popup.hide();
+					})
+				.on(
+					'click',
+					'.today',
+					function()
+					{
+						// Always set the date, in case it's been 
+						// cleared, and we want to set it to today.
+						dateSelect.setCurrentDate(new Date());
+						dateSelect.popup.hide();
+					})
+				.on(
+					'click',
+					'.clear',
+					function()
+					{
+						dateSelect.setCurrentDate(null);
+						dateSelect.popup.hide();
+					});
 				
 			this.update();
 		};
@@ -1886,7 +1771,8 @@
 				
 			var today = new Date();
 			
-			var todayButton = $('<a />').attr('href', 'javascript:;')
+			var todayButton = $('<a />')
+				.attr('href', 'javascript:;')
 				.addClass('today')
 				.append($('<span />').text('Today'));
 				
@@ -2011,25 +1897,24 @@
 				
 			if (!result.handled)
 			{
+				result.handled = true;
+			
 				switch(simpleEvent.key)
 				{
 					case 38: // Up arrow
 						this.addDays(-1);
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 						
 					case 40:  // Down arrow
 						this.addDays(1);
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 					
 					case 8: // Backspace
 						this.setCurrentDate(null);
 						this.popup.hide();
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
 						
 					case 32: // Space
@@ -2037,8 +1922,10 @@
 						this.setCurrentDate(this.getCurrentDate());
 						this.popup.hide();
 						simpleEvent.preventDefault();
-						result.handled = true;
 						break;
+						
+					default:
+						result.handled = false;
 				}
 			}
 				
@@ -2047,19 +1934,14 @@
 
 		$.fn.dateSelect = function ()
 		{
-			this
-				.each
-				(
-					function()
-					{
-						new Selectioner
-							(
-								this, 
-								new Selectioner.Display.DateBox(),
-								new Selectioner.Dialog.DateSelect()
-							);
-					}
-				);
+			this.each(
+				function()
+				{
+					new Selectioner(
+						this, 
+						new Selectioner.Display.DateBox(),
+						new Selectioner.Dialog.DateSelect());
+				});
 			
 			return this;
 		};
@@ -2075,7 +1957,7 @@
 				throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
 			}
 		};
-			
+		
 		ComboBox.prototype.render = function()
 		{
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'combo-box';
@@ -2091,22 +1973,19 @@
 			
 			if (noSelectionText !== null)
 			{
-				this.textElement.attr('placeholder', this.getNoSelectionText());
+				this.textElement.attr('placeholder', noSelectionText);
 			}
 				
 			// Turn off auto-completion on the text box.
 			this.textElement.attr('autocomplete', 'off');
 
 			// Make sure we have an empty option, otherwise throw an error.
-			var emptyOptions = this.getEmptyOptions();
-			if (emptyOptions.length === 0)
+			if (this.getEmptyOptions().length === 0)
 			{
 				// We require an <option></option> element in the underlying select.
 				throw new Error('ComboBox elements require an empty and value-less <option></option> in their underlying <select /> elements.');
 			}
 
-			this.element = $('<span />');
-				
 			var comboBox = this;
 			
 			this.textElement
@@ -2124,23 +2003,20 @@
 			var button = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
-			this.selectioner.on
-				(
-					'show.selectioner',
-					function()
-					{
-						comboBox.element.one
-							(
-								'focusin.selectioner', 
-								function()
-								{
-									comboBox.textElement.select();
-								}
-							);
-					}
-				);
+			this.selectioner.on(
+				'show.selectioner',
+				function()
+				{
+					comboBox.element
+						.one(
+							'focusin.selectioner', 
+							function()
+							{
+								comboBox.textElement.select();
+							});
+				});
 					
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -2151,9 +2027,14 @@
 			// the drop-down, and select it if it does.
 			// If it doesn't match an option, select the 
 			// option with no value.
-			var text = this.textElement.val().toUpperCase();
-			var option = this.selectioner.target.find('option')
-				.filter(function() { return $(this).text().toUpperCase() == text; });
+			var option = this.selectioner
+				.target
+				.find('option')
+				.filter(
+					function() 
+					{ 
+						return $(this).text().toUpperCase() == this.textElement.val().toUpperCase(); 
+					});
 			
 			if (option.length != 1)
 			{
@@ -2170,17 +2051,23 @@
 		ComboBox.prototype.update = function()
 		{
 			var selectedOption = this.selectioner.target.find('option:selected');
-			this.textElement.removeClass('none');
-				
-			var value = selectedOption.text();
-				
+			
 			if (selectedOption.length === 0)
 			{
 				this.textElement.addClass('none');
 			}
-			else if (value !== '')
+			else
 			{
-				this.textElement.val(value).trigger('change', { source: 'selectioner' });
+				this.textElement.removeClass('none');
+				var value = selectedOption.text();
+				
+				if (value !== '')
+				{
+					this.textElement.val(value)
+						.trigger(
+							'change',
+							{ source: 'selectioner' });
+				}
 			}
 		};
 
@@ -2204,21 +2091,10 @@
 
 		ComboBox.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-				
-			if (!text)
-			{
-				text = this.textElement.attr('placeholder');
-			}
-
-			if (!text)
-			{
-				text = this.selectioner.settings.noSelectionText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.textElement.attr('placeholder') ||
+				this.selectioner.settings.noSelectionText);
 		};
 
 		var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
@@ -2247,19 +2123,14 @@
 
 		$.fn.comboSelect = function (textInput)
 		{
-			this
-				.each
-				(
-					function()
-					{
-						new Selectioner
-							(
-								this, 
-								new Selectioner.Display.ComboBox(textInput),
-								new Selectioner.Dialog.ComboSelect()
-							);
-					}
-				);
+			this.each(
+				function()
+				{
+					new Selectioner(
+						this, 
+						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Dialog.ComboSelect());
+				});
 				
 			return this;
 		};
@@ -2277,21 +2148,10 @@
 		
 		AutoComplete.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-				
-			if (!text)
-			{
-				text = this.textElement.attr('placeholder');
-			}
-
-			if (!text)
-			{
-				text = this.selectioner.settings.typeToSearchText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.textElement.attr('placeholder') ||
+				this.selectioner.settings.typeToSearchText);
 		};
 
 		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() {};
@@ -2357,13 +2217,15 @@
 
 			var filterText = this.textElement.val().toLowerCase();
 			
+			var settings = this.selectioner.settings;
+			
 			// Don't re-update unless we have to.
 			if (filterText !== this._lastFilterText)
 			{
 				this._lastFilterText = filterText;
 			
 				var filteredOptions = $();
-				var minFilterLength = this.selectioner.settings.filteredSelect.minFilterLength || 1;
+				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
 				{
@@ -2378,7 +2240,7 @@
 						{
 							filteredOptions = filteredOptions.add(this.renderOption(option));
 							
-							if (filteredOptions.length > this.selectioner.settings.filteredSelect.maxItems)
+							if (filteredOptions.length > settings.filteredSelect.maxItems)
 							{
 								break;
 							}
@@ -2391,19 +2253,17 @@
 							.addClass('none')
 							.append
 								(
-									$('<span />').text(this.selectioner.settings.noMatchesFoundText)
+									$('<span />').text(settings.noMatchesFoundText)
 								);
 					}
 				}
 				else
 				{
-					
-					var settings = this.selectioner.settings.filteredSelect;
-					var enterMoreText = settings.enterOneMoreCharacterText;
+					var enterMoreText = settings.filteredSelect.enterOneMoreCharacterText;
 					
 					if (minFilterLength - filterText.length > 1)
 					{
-						enterMoreText = settings.enterNumberMoreCharactersText
+						enterMoreText = settings.filteredSelect.enterNumberMoreCharactersText
 							.replace(
 								/{{number}}/, 
 								minFilterLength - filterText.length);
@@ -2411,10 +2271,8 @@
 				
 					filteredOptions = $('<li />')
 						.addClass('none')
-						.append
-							(
-								$('<span />').text(enterMoreText)
-							);
+						.append(
+							$('<span />').text(enterMoreText));
 				}			
 				
 				this.element
@@ -2425,19 +2283,14 @@
 
 		$.fn.autoComplete = function ()
 		{
-			this
-				.each
-				(
-					function()
-					{
-						new Selectioner
-							(
-								this, 
-								new Selectioner.Display.AutoComplete(),
-								new Selectioner.Dialog.FilteredSelect()
-							);
-					}
-				);
+			this.each(
+				function()
+				{
+					new Selectioner(
+						this, 
+						new Selectioner.Display.AutoComplete(),
+						new Selectioner.Dialog.FilteredSelect());
+				});
 				
 			return this;
 		};

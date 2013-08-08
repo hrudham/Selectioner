@@ -20,14 +20,12 @@ define(
 			
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'list-box';
 			
-			this.element = $('<span />');
-				
 			this.textElement = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'text');
 			
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 					
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -35,9 +33,11 @@ define(
 		ListBox.prototype.update = function()
 		{
 			var selectedOptions = this.selectioner.target.find('option:selected');
-			this.textElement.removeClass('none');
 			
-			if (selectedOptions.length === 0 || selectedOptions.is('option[value=""], option:empty:not([value])'))
+			var isEmpty = false;
+			
+			if (selectedOptions.length === 0 ||
+				selectedOptions.is('option[value=""], option:empty:not([value])'))
 			{
 				var text = this.getNoSelectionText();
 				
@@ -50,7 +50,7 @@ define(
 					this.textElement.text(text);
 				}
 				
-				this.textElement.addClass('none');
+				isEmpty = true;
 			}
 			else if (selectedOptions.length <= 2)
 			{
@@ -70,8 +70,10 @@ define(
 			}
 			else
 			{
-				this.textElement.text('Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
+				this.textElement.text(
+					'Selected ' + selectedOptions.length + ' of ' + this.selectioner.target.find('option').length);
 			}
+			
+			this.textElement.toggleClass('none', isEmpty);
 		};
-	}
-);
+	});

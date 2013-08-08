@@ -13,7 +13,7 @@ define(
 				throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
 			}
 		};
-			
+		
 		ComboBox.prototype.render = function()
 		{
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'combo-box';
@@ -29,22 +29,19 @@ define(
 			
 			if (noSelectionText !== null)
 			{
-				this.textElement.attr('placeholder', this.getNoSelectionText());
+				this.textElement.attr('placeholder', noSelectionText);
 			}
 				
 			// Turn off auto-completion on the text box.
 			this.textElement.attr('autocomplete', 'off');
 
 			// Make sure we have an empty option, otherwise throw an error.
-			var emptyOptions = this.getEmptyOptions();
-			if (emptyOptions.length === 0)
+			if (this.getEmptyOptions().length === 0)
 			{
 				// We require an <option></option> element in the underlying select.
 				throw new Error('ComboBox elements require an empty and value-less <option></option> in their underlying <select /> elements.');
 			}
 
-			this.element = $('<span />');
-				
 			var comboBox = this;
 			
 			this.textElement
@@ -62,23 +59,20 @@ define(
 			var button = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
-			this.selectioner.on
-				(
-					'show.selectioner',
-					function()
-					{
-						comboBox.element.one
-							(
-								'focusin.selectioner', 
-								function()
-								{
-									comboBox.textElement.select();
-								}
-							);
-					}
-				);
+			this.selectioner.on(
+				'show.selectioner',
+				function()
+				{
+					comboBox.element
+						.one(
+							'focusin.selectioner', 
+							function()
+							{
+								comboBox.textElement.select();
+							});
+				});
 					
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -89,9 +83,14 @@ define(
 			// the drop-down, and select it if it does.
 			// If it doesn't match an option, select the 
 			// option with no value.
-			var text = this.textElement.val().toUpperCase();
-			var option = this.selectioner.target.find('option')
-				.filter(function() { return $(this).text().toUpperCase() == text; });
+			var option = this.selectioner
+				.target
+				.find('option')
+				.filter(
+					function() 
+					{ 
+						return $(this).text().toUpperCase() == this.textElement.val().toUpperCase(); 
+					});
 			
 			if (option.length != 1)
 			{
@@ -108,17 +107,23 @@ define(
 		ComboBox.prototype.update = function()
 		{
 			var selectedOption = this.selectioner.target.find('option:selected');
-			this.textElement.removeClass('none');
-				
-			var value = selectedOption.text();
-				
+			
 			if (selectedOption.length === 0)
 			{
 				this.textElement.addClass('none');
 			}
-			else if (value !== '')
+			else
 			{
-				this.textElement.val(value).trigger('change', { source: 'selectioner' });
+				this.textElement.removeClass('none');
+				var value = selectedOption.text();
+				
+				if (value !== '')
+				{
+					this.textElement.val(value)
+						.trigger(
+							'change',
+							{ source: 'selectioner' });
+				}
 			}
 		};
 
@@ -142,21 +147,9 @@ define(
 
 		ComboBox.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-				
-			if (!text)
-			{
-				text = this.textElement.attr('placeholder');
-			}
-
-			if (!text)
-			{
-				text = this.selectioner.settings.noSelectionText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.textElement.attr('placeholder') ||
+				this.selectioner.settings.noSelectionText);
 		};
-	}
-);
+	});

@@ -15,39 +15,35 @@ define(
 
 			this.element = $('<div />')
 				.addClass(this.selectioner.settings.cssPrefix + 'popup')
-				.css
-					({
+				.css(
+					{
 						visibility: 'hidden',
 						position: 'absolute',
 						zIndex: '-1'
 					})
-				.on
-					(
-						'mousedown focusin',
-						function(event)
-						{
-							// The selectioner watches for mouse-down / focusin events outside of 
-							// itself in order to know when to close. Sometimes, however, these
-							// event will occur insides the pop-up and cause a re-render,
-							// and thus the element that caused the event no longer exists.
-							// This means we cannot determine if it exists inside or outside
-							// the pop-up. Thus, we stop propagation of these events here.
-							event.stopPropagation();
-						}
-					)
+				.on(
+					'mousedown focusin',
+					function(e)
+					{
+						// The selectioner watches for mouse-down / focusin events outside of 
+						// itself in order to know when to close. Sometimes, however, these
+						// event will occur insides the pop-up and cause a re-render,
+						// and thus the element that caused the event no longer exists.
+						// This means we cannot determine if it exists inside or outside
+						// the pop-up. Thus, we stop propagation of these events here.
+						e.stopPropagation();
+					})
 				// Allow the pop-up to have a tabindex such that we can detect focusin events.
 				// This allows us to redirect focus to the display if anything in the pop-up
 				// gains focus (such as a check box), which stops the keyboard integration
 				// from breaking.
 				.prop('tabindex', selectioner.target.prop('tabindex') + 1)
-				.on
-					(
-						'focusin.selectioner',
-						function(event)
-						{
-							selectioner.display.element.focus();
-						}
-					);
+				.on(
+					'focusin.selectioner',
+					function()
+					{
+						selectioner.display.element.focus();
+					});
 
 			this.update();
 			
@@ -55,23 +51,16 @@ define(
 			// pop-up is actually displayed, then make sure it 
 			// updates as expected. This is useful when loading
 			// up information via AJAX, for example.
-			this.selectioner
-				.target
-				.on
-					(
-						'change',
-						function(event, data)
-						{
-							if (!data || data.source !== 'selectioner')
-							{
-								if (popup.isShown())
-								{
-									popup.update();
-									popup.reposition();
-								}
-							}
-						}
-					);
+			this.selectioner.target.on(
+				'change',
+				function(e, data)
+				{
+					if ((!data || data.source !== 'selectioner') && popup.isShown())
+					{
+						popup.update();
+						popup.reposition();
+					}
+				});
 					
 			$('body').append(this.element);
 		};
@@ -104,19 +93,16 @@ define(
 			
 			this.dialogs.push(dialog);
 			
+			// Create closures for the popup and index.
 			var index = this.dialogs.length - 1;
-			
 			var popup = this;
 			
-			dialog.element
-				.on
-					(
-						'mousemove', 
-						function()
-						{
-							popup.dialogFocusIndex(index);
-						}
-					);
+			dialog.element.on(
+				'mousemove', 
+				function()
+				{
+					popup.dialogFocusIndex(index);
+				});
 		};
 
 		// Update all the dialogs that appear on this pop-up.
@@ -140,11 +126,8 @@ define(
 
 			var scrollTop = $(window).scrollTop();
 			var popUpHeight = this.element.outerHeight(true);
-
-			this.element
-				.removeClass('below')
-				.removeClass('above')
-				.removeClass('over');
+			
+			var cssClass = '';
 
 			// If this popup would appear off-screen if below
 			// the display, then make it appear above it instead.
@@ -155,24 +138,31 @@ define(
 				if (top < scrollTop)
 				{
 					top = scrollTop;
-					this.element.addClass('over');
+					cssClass = 'over';
 				}
 				else
 				{
-					this.element.addClass('above');
+					cssClass = 'above';
 				}
 			}
 			else
 			{
-				this.element.addClass('below');
+				cssClass = 'below';
 			}
 			
-			this.element.css
-			({
-				width: width + 'px',
-				left: offset.left + 'px',
-				top: top + 'px'
-			});
+			if (!this.element.hasClass(cssClass))
+			{
+				this.element
+					.removeClass('below above over')
+					.addClass(cssClass);
+			}
+			
+			this.element.css(
+				{
+					width: width + 'px',
+					left: offset.left + 'px',
+					top: top + 'px'
+				});
 		};
 
 		// Shows the pop-up.
@@ -201,45 +191,50 @@ define(
 				this.reposition();
 				
 				this.element.css({ visibility: 'visible', zIndex: '' });
-				
+
+				// This may look odd considering the lines above. However, 
+				// height can often only be calculated by jQuery after the 
+				// element is visible on the page. If our CSS happens to change
+				// the height of the pop-up because of this, we need to 
+				// reposition it again.
 				if (popUpHeight != this.element.height())
 				{
-					// Height can often only be calculated by jQuery after the 
-					// element is visible on the page. If our CSS happens to change
-					// the height of the pop-up because of this, reposition it again.
 					this.reposition();
 				}
 				
 				this.selectioner
+					.trigger('show.selectioner')
 					.target
 					.parents()
 					.add(window)
-					.on
-						(
-							'scroll.selectioner_' + this.selectioner.id, 
-							function() 
+					.on(
+						'scroll.selectioner_' + this.selectioner.id, 
+						function() 
+						{
+							// Hide the pop-up whenever a scroll event
+							// on a parent element occurs. It's either 
+							// this, or some very complex and expensive  
+							// logic to reposition it.
+							if (popup.isShown())
 							{
-								if (popup.isShown())
-								{
-									popup.hide();
-								}
+								popup.hide();
 							}
-						);
-							
-				this.selectioner.trigger('show.selectioner');
+						});
 			}
 		};
 
 		// Simply hides the pop-up.
 		Popup.prototype.hide = function()
 		{
-			$(window).off('resize.selectioner_{id} scroll.selectioner_{id}'.replace(/\{id\}/g, this.selectioner.id));
+			$(window).off(
+				'resize.selectioner_{id} scroll.selectioner_{id}'.replace(
+					/\{id\}/g, this.selectioner.id));
 
 			if (this.isShown())
 			{
 				this._isVisible = false;
-				this.element.css
-					({ 
+				this.element.css(
+					{ 
 						visibility: 'hidden', 
 						zIndex: '-1',
 						top: 0,
@@ -254,17 +249,17 @@ define(
 		// in order to work out which dialog to feed keystrokes to.
 		Popup.prototype.changeDialogFocus = function(moveUp)
 		{
-			var index = null;
+			var offset = null;
 
 			if (moveUp)
 			{
 				if (this._dialogFocusIndex > 0)
 				{
-					index = this.dialogFocusIndex(this._dialogFocusIndex - 1);
+					offset = this._dialogFocusIndex - 1;
 				}
 				else
 				{
-					index = this.dialogFocusIndex(this.dialogs.length - 1);
+					offset = this.dialogs.length - 1;
 				}
 			}
 			else
@@ -272,15 +267,15 @@ define(
 				if (this._dialogFocusIndex < this.dialogs.length - 1 &&
 					this._dialogFocusIndex !== null)
 				{
-					index = this.dialogFocusIndex(this._dialogFocusIndex + 1);
+					offset = this._dialogFocusIndex + 1;
 				}
 				else
 				{
-					index = this.dialogFocusIndex(0);
+					offset = 0;
 				}
 			}
 			
-			return index;
+			return this.dialogFocusIndex(offset);
 		};
 
 		Popup.prototype.dialogFocusIndex = function(index)
@@ -383,5 +378,4 @@ define(
 			
 			return result; 
 		};
-	}
-);
+	});

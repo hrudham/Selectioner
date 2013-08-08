@@ -15,21 +15,9 @@ define(
 		
 		AutoComplete.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-				
-			if (!text)
-			{
-				text = this.textElement.attr('placeholder');
-			}
-
-			if (!text)
-			{
-				text = this.selectioner.settings.typeToSearchText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.textElement.attr('placeholder') ||
+				this.selectioner.settings.typeToSearchText);
 		};
-	}
-);
+	});

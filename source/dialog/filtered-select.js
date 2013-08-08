@@ -65,13 +65,15 @@ define(
 
 			var filterText = this.textElement.val().toLowerCase();
 			
+			var settings = this.selectioner.settings;
+			
 			// Don't re-update unless we have to.
 			if (filterText !== this._lastFilterText)
 			{
 				this._lastFilterText = filterText;
 			
 				var filteredOptions = $();
-				var minFilterLength = this.selectioner.settings.filteredSelect.minFilterLength || 1;
+				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
 				{
@@ -86,7 +88,7 @@ define(
 						{
 							filteredOptions = filteredOptions.add(this.renderOption(option));
 							
-							if (filteredOptions.length > this.selectioner.settings.filteredSelect.maxItems)
+							if (filteredOptions.length > settings.filteredSelect.maxItems)
 							{
 								break;
 							}
@@ -99,19 +101,17 @@ define(
 							.addClass('none')
 							.append
 								(
-									$('<span />').text(this.selectioner.settings.noMatchesFoundText)
+									$('<span />').text(settings.noMatchesFoundText)
 								);
 					}
 				}
 				else
 				{
-					
-					var settings = this.selectioner.settings.filteredSelect;
-					var enterMoreText = settings.enterOneMoreCharacterText;
+					var enterMoreText = settings.filteredSelect.enterOneMoreCharacterText;
 					
 					if (minFilterLength - filterText.length > 1)
 					{
-						enterMoreText = settings.enterNumberMoreCharactersText
+						enterMoreText = settings.filteredSelect.enterNumberMoreCharactersText
 							.replace(
 								/{{number}}/, 
 								minFilterLength - filterText.length);
@@ -119,10 +119,8 @@ define(
 				
 					filteredOptions = $('<li />')
 						.addClass('none')
-						.append
-							(
-								$('<span />').text(enterMoreText)
-							);
+						.append(
+							$('<span />').text(enterMoreText));
 				}			
 				
 				this.element
@@ -130,5 +128,4 @@ define(
 					.append(filteredOptions);
 			}
 		};
-	}
-);
+	});

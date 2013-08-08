@@ -23,14 +23,12 @@ define(
 		{
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'date-box';
 		
-			this.element = $('<span />');
-				
 			this.textElement = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'text');
 			
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 			
-			this.element
+			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
 		};
@@ -42,12 +40,13 @@ define(
 			if (dateValue !== '')
 			{
 				var datePart = dateValue.match(/(\d+)/g);
-				var date = new Date(datePart[0], datePart[1] - 1, datePart[2]); // months are zero-based
-				var dateText = this.getDateText(date);
 				
+				// Remember that months are zero-based
 				this.textElement
 					.removeClass('none')
-					.text(dateText);
+					.text(
+						this.getDateText(
+							new Date(datePart[0], datePart[1] - 1, datePart[2])));
 			}
 			else
 			{
@@ -72,5 +71,4 @@ define(
 				return date.toLocaleDateString();
 			}
 		};
-	}
-);
+	});

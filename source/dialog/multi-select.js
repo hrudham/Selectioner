@@ -66,30 +66,28 @@ define(
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderGroup = function(group)
 		{
-			var dialog = this;
+			var target = this.selectioner.target;
 			
-			var toggleGroupSelect = function(event)
+			var toggleGroupSelect = function()
 			{
 				var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
 				var checkedCount = checkboxes.filter(':checked').length;
 				
 				checkboxes
 					.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
-					.each
-						(
-							function()
-							{
-								$(this).data('option')[0].selected = this.checked;
-							}
-						);
+					.each(
+						function()
+						{
+							$(this).data('option')[0].selected = this.checked;
+						});
 				
-				dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+				target.trigger('change', { source: 'selectioner' });
 			};
 			
 			var groupTitle = $('<a />')
-					.attr('href', 'javascript:;')
-					.on('click', toggleGroupSelect)
-					.text(group.attr('label'));
+				.attr('href', 'javascript:;')
+				.on('click', toggleGroupSelect)
+				.text(group.attr('label'));
 
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
@@ -98,14 +96,11 @@ define(
 			var children = group.children();
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				var child = $(children[i]);
-				options = options.add(this.renderOption(child));
+				options = options.add(this.renderOption($(children[i])));
 			}
 
-			var groupElement = $('<li />').append
-				(
-					$('<ul >').append(options)
-				);
+			var groupElement = $('<li />').append(
+				$('<ul >').append(options));
 			
 			return groupElement;
 		};
@@ -114,7 +109,6 @@ define(
 		{
 			this.getSelectableOptions()
 				.find('input:checkbox:checked')
-				.trigger('click');
+				.click();
 		};
-	}
-);
+	});

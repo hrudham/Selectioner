@@ -27,10 +27,9 @@ define(
 			this.render();
 			this.update();
 			
-			this.element
-				.prop(
-					'tabindex', 
-					this.selectioner.target.prop('tabindex'));
+			this.element.prop(
+				'tabindex', 
+				this.selectioner.target.prop('tabindex'));
 
 			this.element
 				.addClass(this.selectioner.settings.cssPrefix + 'display');
@@ -44,105 +43,89 @@ define(
 			this.selectioner
 				.target
 				.closest('form')
-				.on
-					(
-						'reset', 
-						function() 
-						{
-							// Strangely, this small time-out allows for the 
-							// reset to be performed, and only then perform
-							// the update required.
-							setTimeout(function() { display.update(); }, 1);
-						}
-					);
+				.on(
+					'reset', 
+					function() 
+					{
+						// Strangely, this small time-out allows for the 
+						// reset to be performed, and only then perform
+						// the update required.
+						setTimeout(function() { display.update(); }, 1);
+					});
 
 			// Make sure the display updates any time
 			// it's underlying target element changes.
 			this.selectioner
 				.target
-				.on
-					(
-						'change.selectioner',
-						function()
-						{
-							display.update();
-						}
-					);
+				.on(
+					'change.selectioner',
+					function()
+					{
+						display.update();
+					});
 				
 			// Find any labels associated with this underlying target
 			// element, and make them focus on this display instead.
 			var targetId = this.selectioner.target.attr('id');
 			if (targetId !== undefined)
 			{
-				this.labels = $(document)
-					.on
-						(
-							'click.selectioner',
-							'label[for="' + targetId + '"]',
-							function (event)
-							{
-								display.element.focus();
-							}
-						);
+				this.labels = $(document).on(
+					'click.selectioner',
+					'label[for="' + targetId + '"]',
+					function ()
+					{
+						display.element.focus();
+					});
 			}
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
-			this.element.on
-				(
-					'keydown.selectioner',
-					function(event)
+			this.element.on(
+				'keydown.selectioner',
+				function(e)
+				{
+					if (e.which == 27)
 					{
-						if (event.which == 27)
-						{
-							// Escape key was pressed.
-							display.popup.hide();
-						}
-						else
-						{
-							var isPopupShown = display.popup.isShown();
-						
-							if (isPopupShown)
-							{
-								display.popup
-									.keyDown({ 
-										key: event.which, 
-										target: event.target, 
-										preventDefault: function() { event.preventDefault(); } });
-							}
-							
-							switch (event.which)
-							{
-								case 37: // Left arrow
-								case 38: // Up arrow
-								case 39: // Right arrow
-								case 40: // Down arrow
-								case 13: // Return / Enter
-									event.preventDefault();
-									if (!isPopupShown)
-									{
-										display.popup.show();
-									}
-							}
-						}
+						// Escape key was pressed.
+						display.popup.hide();
 					}
-				);
-				
-			// Handle key press for things like filtering lists.
-			this.element.on
-				(
-					'keypress.selectioner',
-					function(event)
+					else
 					{						
 						if (display.popup.isShown())
 						{
-							var result = display.popup
-								.keyPress({ 
-									key: event.which, 
-									target: event.target, 
-									preventDefault: function() { event.preventDefault(); } });
+							display.popup
+								.keyDown({ 
+									key: e.which, 
+									target: e.target, 
+									preventDefault: function() { e.preventDefault(); } });
+						}
+						
+						switch (e.which)
+						{
+							case 37: // Left arrow
+							case 38: // Up arrow
+							case 39: // Right arrow
+							case 40: // Down arrow
+							case 13: // Return / Enter
+								e.preventDefault();
+								display.popup.show();
 						}
 					}
-				);
+				});
+				
+			// Handle key press for things like filtering lists.
+			this.element.on(
+				'keypress.selectioner',
+				function(e)
+				{						
+					if (display.popup.isShown())
+					{
+						var result = display.popup
+							.keyPress({ 
+								key: e.which, 
+								target: e.target, 
+								preventDefault: function() { e.preventDefault(); } });
+					}
+				});
 		};
 
 		// Create a new dialog for the underlying target element.
@@ -159,78 +142,68 @@ define(
 
 			// Hide or show the pop-up on mouse-down or focus-in.
 			this.element
-				.on
-					(
-						'focusin.selectioner',
-						function(event)
+				.on(
+					'focusin.selectioner',
+					function(e)
+					{
+						var target = $(e.target);
+					
+						if (e.target === dialog.element ||
+							target.prop('tabindex') > -1)
 						{
-							var target = $(event.target);
-						
-							if (event.target === dialog.element ||
-								target.prop('tabindex') > -1)
-							{
-								popup.show();
-							}
-							else
-							{
-								dialog.element.focus();
-							}					
+							popup.show();
 						}
-					)
-				.on
-					(
-						'mousedown.selectioner',
-						function(event)
+						else
 						{
-							if (popup.isShown())
-							{
-								popup.hide();
-							}
-							else
-							{
-								popup.show();
-							}
+							dialog.element.focus();
+						}					
+					})
+				.on(
+					'mousedown.selectioner',
+					function()
+					{
+						if (popup.isShown())
+						{
+							popup.hide();
 						}
-					);
+						else
+						{
+							popup.show();
+						}
+					});
 
 			// Hide the pop-up whenever it loses focus to an
 			// element that is not part of the pop-up or display.
 			$(document)
-				.on
-				(
-					'mousedown.selectioner focusin.selectioner',
-					function(event)
+				.on(
+				'mousedown.selectioner focusin.selectioner',
+				function(e)
+				{
+					if (popup.isShown() &&
+						e.target !== displayElement[0] &&
+						!$.contains(displayElement[0], e.target) &&
+						e.target !== popup.element[0] &&
+						!$.contains(popup.element[0], e.target))
 					{
-						if (popup.isShown() &&
-							event.target !== displayElement[0] &&
-							!$.contains(displayElement[0], event.target) &&
-							event.target !== popup.element[0] &&
-							!$.contains(popup.element[0], event.target))
-						{
-							popup.hide();
-						}
+						popup.hide();
 					}
-				);
+				});
 
-			var cssClass = this.selectioner.settings.cssPrefix + 'visible';
+			var visibleCssClass = this.selectioner.settings.cssPrefix + 'visible';
 
 			this.selectioner
-				.on
-					(
-						'show.selectioner',
-						function()
-						{
-							displayElement.addClass(cssClass);
-						}
-					)
-				.on
-					(
-						'hide.selectioner',
-						function()
-						{
-							displayElement.removeClass(cssClass);
-						}
-					);
+				.on(
+					'show.selectioner',
+					function()
+					{
+						displayElement.addClass(visibleCssClass);
+					})
+				.on(
+					'hide.selectioner',
+					function()
+					{
+						displayElement.removeClass(visibleCssClass);
+					});
 		};
 
 		// Add a dialog to this display.
@@ -269,16 +242,8 @@ define(
 
 		Display.prototype.getNoSelectionText = function()
 		{
-			var text = this.selectioner
-				.target
-				.data('placeholder');
-
-			if (!text)
-			{
-				text = this.selectioner.settings.noSelectionText;
-			}
-			
-			return text;	
+			return (
+				this.selectioner.target.data('placeholder') ||
+				this.selectioner.settings.noSelectionText);
 		};
-	}
-);
+	});
