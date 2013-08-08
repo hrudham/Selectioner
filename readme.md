@@ -174,7 +174,7 @@ Selectioner.DefaultSettings =
 
 Some of these are editable per-control with the following overrides:
 
-### Selectioner.Settings.noSelectionText
+### noSelectionText
 
 Add a `data-placeholder` attribute to the underlying `select` element. 
 
