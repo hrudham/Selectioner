@@ -215,7 +215,9 @@ define(
 							// on a parent element occurs. It's either 
 							// this, or some very complex and expensive  
 							// logic to reposition it.
-							if (popup.isShown())
+							// Only do this if the pop-up does not appear 
+							// over the display.
+							if(!popup.element.hasClass('over'))
 							{
 								popup.hide();
 							}
@@ -226,12 +228,12 @@ define(
 		// Simply hides the pop-up.
 		Popup.prototype.hide = function()
 		{
-			$(window).off(
-				'resize.selectioner_{id} scroll.selectioner_{id}'.replace(
-					/\{id\}/g, this.selectioner.id));
-
 			if (this.isShown())
 			{
+				$(window).off(
+					'resize.selectioner_{id} scroll.selectioner_{id}'.replace(
+						/\{id\}/g, this.selectioner.id));
+			
 				this._isVisible = false;
 				this.element.css(
 					{ 
