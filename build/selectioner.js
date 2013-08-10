@@ -1030,16 +1030,18 @@
 			
 				this.element.empty();
 				this._selectableOptions = null;
+				
+				var results = [];
 
 				if (this.isEmpty())
 				{
 					var children = this.selectioner.target.children();
 					for (var i = 0, length = children.length; i < length; i++)
 					{
-						var child = $(children[i]);
-						if (children[i].tagName == 'OPTION')
+						var child = children[i];
+						if (child.tagName == 'OPTION')
 						{
-							this.element.append(this.renderOption(child));
+							results.push(this.renderOption(child));
 						}
 						else 
 						{
@@ -1047,7 +1049,7 @@
 							// optgroups, since the HTML5 spec only allows these 
 							// two child elements. 
 							// See http://www.w3.org/TR/html-markup/select.html
-							this.element.append(this.renderGroup(child));
+							results.push(this.renderGroup(child));
 						}
 					}
 				}
@@ -1062,14 +1064,16 @@
 						.find('option[value=""], option:empty:not([value])')
 						.text();
 				
-					this.element
-						.append(
+					results
+						.push(
 							$('<li />')
 								.addClass('none')
 								.append(
 									$('<span />').text(
 										noOptionText || this.selectioner.settings.noOptionText)));
 				}
+				
+				this.element.append(results);
 			}
 		};
 
@@ -1079,7 +1083,7 @@
 		{
 			var selectElement;
 			
-			if (option.is(':disabled'))
+			if (option.disabled)
 			{
 				selectElement = $('<span />')
 					.addClass('disabled');
@@ -1092,11 +1096,11 @@
 					.on('click', function(){ dialog.selectOption(option); });
 			}
 			
-			selectElement.text(option.text() || this.selectioner.settings.emptyOptionText);
+			selectElement.text(option.innerText || this.selectioner.settings.emptyOptionText);
 			
 			var listItem = $('<li />');
 			
-			var value = option.val();
+			var value = option.value;
 			if (value === null || value === '')
 			{
 				listItem.addClass('none');
@@ -1109,7 +1113,7 @@
 		// and trigger the "change" event on the underlying element.
 		SingleSelect.prototype.selectOption = function(option)
 		{
-			option[0].selected = true;
+			option.selected = true;
 			this.popup.hide();
 			this.selectioner.target.trigger('change', { source: 'selectioner' });
 		};
@@ -1117,23 +1121,19 @@
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{
-			var options = $('<li />')
-				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
-				.append(
-					$('<span />').text(group.attr('label')));
+		{					
+			var results = ['<li class="' + this.selectioner.settings.cssPrefix + 'group-title"><span>' + group.label + '</span></li>'];
 			
-			var children = group.children();
+			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				options = options.add(
+				results.push(
 					this.renderOption(
-						$(children[i])));
+						children[i]));
 			}
 			
-			var groupElement = $('<li />').append($('<ul >').append(options));
-
-			return groupElement;
+			return $('<li />').append(
+				$('<ul >').append(results));
 		};
 
 		// Get all options that can potentially be selected.
@@ -1401,14 +1401,14 @@
 				.data('option', option)
 				.attr('id', checkboxId);
 							
-			if (option[0].selected)
+			if (option.selected)
 			{
 				checkbox.attr('checked', 'checked');
 			}
 			
 			var label = $('<label />')
 				.append(checkbox)
-				.append($('<span />').text(option.text()))
+				.append($('<span />').text(option.innerText))
 				.attr('for', checkboxId);
 				
 			var selectioner = this.selectioner;
@@ -1418,12 +1418,12 @@
 					'change.selectioner', 
 					function() 
 					{
-						option[0].selected = this.checked;
+						option.selected = this.checked;
 						selectioner.target.trigger('change', { source: 'selectioner' });
 					}
 				);
 				
-			if (option.is(':disabled'))
+			if (option.disabled)
 			{
 				label.addClass('disabled');
 				checkbox.prop('disabled', true);
@@ -1451,7 +1451,7 @@
 					.each(
 						function()
 						{
-							$(this).data('option')[0].selected = this.checked;
+							$(this).data('option').selected = this.checked;
 						});
 				
 				target.trigger('change', { source: 'selectioner' });
@@ -1460,16 +1460,16 @@
 			var groupTitle = $('<a />')
 				.attr('href', 'javascript:;')
 				.on('click', toggleGroupSelect)
-				.text(group.attr('label'));
+				.text(group.label);
 
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
 				.append(groupTitle);
 			
-			var children = group.children();
+			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				options = options.add(this.renderOption($(children[i])));
+				options = options.add(this.renderOption(children[i]));
 			}
 
 			var groupElement = $('<li />').append(
@@ -2063,7 +2063,7 @@
 				.filter(
 					function() 
 					{ 
-						return $(this).text().toUpperCase() == display.textElement.val().toUpperCase(); 
+						return this.innerText.toUpperCase() === display.textElement.val().toUpperCase(); 
 					});
 			
 			if (option.length != 1)
@@ -2152,7 +2152,7 @@
 		// <option /> element for the underlying <select /> element. 
 		ComboSelect.prototype.renderOption = function(option)
 		{
-			if (!option.is('option[value=""], option:empty:not([value])'))
+			if (option.value)
 			{
 				return Selectioner.Dialog.SingleSelect.prototype.renderOption.call(this, option);
 			}
@@ -2226,26 +2226,24 @@
 			
 			var dialog = this;
 			
-			this.textElement.on
-				(
-					'keyup click', 
-					function(e, data)
+			this.textElement.on(
+				'keyup click', 
+				function(e, data)
+				{
+					if ((!data || data.source != 'selectioner') && 
+						e.which !== 27) // e.which == 27 == Escape key pressed.
 					{
-						if ((!data || data.source != 'selectioner') && 
-							e.which !== 27) // e.which == 27 == Escape key pressed.
+						dialog.update();
+						if (!dialog.popup.isShown())
 						{
-							dialog.update();
-							if (!dialog.popup.isShown())
-							{
-								dialog.popup.show();
-							}
-							else
-							{
-								dialog.popup.reposition();
-							}
+							dialog.popup.show();
+						}
+						else
+						{
+							dialog.popup.reposition();
 						}
 					}
-				);
+				});
 			
 			this.update();
 		};
@@ -2261,9 +2259,11 @@
 			// Don't re-update unless we have to.
 			if (filterText !== this._lastFilterText)
 			{
+				this._selectableOptions = null;
+			
 				this._lastFilterText = filterText;
 			
-				var filteredOptions = $();
+				var filteredOptions = [];
 				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
@@ -2272,12 +2272,12 @@
 					
 					for (var i = 0, length = children.length; i < length; i++)
 					{
-						var option = $(children[i]);
-						var text = option.text().toLowerCase();
+						var option = children[i];
+						var text = option.innerText.toLowerCase();
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{
-							filteredOptions = filteredOptions.add(this.renderOption(option));
+							filteredOptions.push(this.renderOption(option));
 							
 							if (filteredOptions.length > settings.filteredSelect.maxItems)
 							{
@@ -2288,12 +2288,7 @@
 					
 					if (filteredOptions.length === 0)
 					{
-						filteredOptions = $('<li />')
-							.addClass('none')
-							.append
-								(
-									$('<span />').text(settings.noMatchesFoundText)
-								);
+						filteredOptions.push('<li class="none"><span>' + settings.noMatchesFoundText + '</span></li>');
 					}
 				}
 				else
@@ -2307,11 +2302,8 @@
 								/{{number}}/, 
 								minFilterLength - filterText.length);
 					}
-				
-					filteredOptions = $('<li />')
-						.addClass('none')
-						.append(
-							$('<span />').text(enterMoreText));
+					
+					filteredOptions.push('<li class="none"><span>' + enterMoreText + '</span></li>');
 				}			
 				
 				this.element
