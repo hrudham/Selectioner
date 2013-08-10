@@ -35,26 +35,24 @@ define(
 			
 			var dialog = this;
 			
-			this.textElement.on
-				(
-					'keyup click', 
-					function(e, data)
+			this.textElement.on(
+				'keyup click', 
+				function(e, data)
+				{
+					if ((!data || data.source != 'selectioner') && 
+						e.which !== 27) // e.which == 27 == Escape key pressed.
 					{
-						if ((!data || data.source != 'selectioner') && 
-							e.which !== 27) // e.which == 27 == Escape key pressed.
+						dialog.update();
+						if (!dialog.popup.isShown())
 						{
-							dialog.update();
-							if (!dialog.popup.isShown())
-							{
-								dialog.popup.show();
-							}
-							else
-							{
-								dialog.popup.reposition();
-							}
+							dialog.popup.show();
+						}
+						else
+						{
+							dialog.popup.reposition();
 						}
 					}
-				);
+				});
 			
 			this.update();
 		};
@@ -70,9 +68,11 @@ define(
 			// Don't re-update unless we have to.
 			if (filterText !== this._lastFilterText)
 			{
+				this._selectableOptions = null;
+			
 				this._lastFilterText = filterText;
 			
-				var filteredOptions = $();
+				var filteredOptions = [];
 				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
@@ -81,12 +81,12 @@ define(
 					
 					for (var i = 0, length = children.length; i < length; i++)
 					{
-						var option = $(children[i]);
-						var text = option.text().toLowerCase();
+						var option = children[i];
+						var text = option.innerText.toLowerCase();
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{
-							filteredOptions = filteredOptions.add(this.renderOption(option));
+							filteredOptions.push(this.renderOption(option));
 							
 							if (filteredOptions.length > settings.filteredSelect.maxItems)
 							{
@@ -97,12 +97,7 @@ define(
 					
 					if (filteredOptions.length === 0)
 					{
-						filteredOptions = $('<li />')
-							.addClass('none')
-							.append
-								(
-									$('<span />').text(settings.noMatchesFoundText)
-								);
+						filteredOptions.push('<li class="none"><span>' + settings.noMatchesFoundText + '</span></li>');
 					}
 				}
 				else
@@ -116,11 +111,8 @@ define(
 								/{{number}}/, 
 								minFilterLength - filterText.length);
 					}
-				
-					filteredOptions = $('<li />')
-						.addClass('none')
-						.append(
-							$('<span />').text(enterMoreText));
+					
+					filteredOptions.push('<li class="none"><span>' + enterMoreText + '</span></li>');
 				}			
 				
 				this.element

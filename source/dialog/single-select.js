@@ -53,16 +53,18 @@ define(
 			
 				this.element.empty();
 				this._selectableOptions = null;
+				
+				var results = [];
 
 				if (this.isEmpty())
 				{
 					var children = this.selectioner.target.children();
 					for (var i = 0, length = children.length; i < length; i++)
 					{
-						var child = $(children[i]);
-						if (children[i].tagName == 'OPTION')
+						var child = children[i];
+						if (child.tagName == 'OPTION')
 						{
-							this.element.append(this.renderOption(child));
+							results.push(this.renderOption(child));
 						}
 						else 
 						{
@@ -70,7 +72,7 @@ define(
 							// optgroups, since the HTML5 spec only allows these 
 							// two child elements. 
 							// See http://www.w3.org/TR/html-markup/select.html
-							this.element.append(this.renderGroup(child));
+							results.push(this.renderGroup(child));
 						}
 					}
 				}
@@ -85,14 +87,16 @@ define(
 						.find('option[value=""], option:empty:not([value])')
 						.text();
 				
-					this.element
-						.append(
+					results
+						.push(
 							$('<li />')
 								.addClass('none')
 								.append(
 									$('<span />').text(
 										noOptionText || this.selectioner.settings.noOptionText)));
 				}
+				
+				this.element.append(results);
 			}
 		};
 
@@ -102,7 +106,7 @@ define(
 		{
 			var selectElement;
 			
-			if (option.is(':disabled'))
+			if (option.disabled)
 			{
 				selectElement = $('<span />')
 					.addClass('disabled');
@@ -115,11 +119,11 @@ define(
 					.on('click', function(){ dialog.selectOption(option); });
 			}
 			
-			selectElement.text(option.text() || this.selectioner.settings.emptyOptionText);
+			selectElement.text(option.innerText || this.selectioner.settings.emptyOptionText);
 			
 			var listItem = $('<li />');
 			
-			var value = option.val();
+			var value = option.value;
 			if (value === null || value === '')
 			{
 				listItem.addClass('none');
@@ -132,7 +136,7 @@ define(
 		// and trigger the "change" event on the underlying element.
 		SingleSelect.prototype.selectOption = function(option)
 		{
-			option[0].selected = true;
+			option.selected = true;
 			this.popup.hide();
 			this.selectioner.target.trigger('change', { source: 'selectioner' });
 		};
@@ -140,23 +144,19 @@ define(
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{
-			var options = $('<li />')
-				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
-				.append(
-					$('<span />').text(group.attr('label')));
+		{					
+			var results = ['<li class="' + this.selectioner.settings.cssPrefix + 'group-title"><span>' + group.label + '</span></li>'];
 			
-			var children = group.children();
+			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				options = options.add(
+				results.push(
 					this.renderOption(
-						$(children[i])));
+						children[i]));
 			}
 			
-			var groupElement = $('<li />').append($('<ul >').append(options));
-
-			return groupElement;
+			return $('<li />').append(
+				$('<ul >').append(results));
 		};
 
 		// Get all options that can potentially be selected.

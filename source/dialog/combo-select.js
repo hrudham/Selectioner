@@ -27,7 +27,7 @@ define(
 		// <option /> element for the underlying <select /> element. 
 		ComboSelect.prototype.renderOption = function(option)
 		{
-			if (!option.is('option[value=""], option:empty:not([value])'))
+			if (option.value)
 			{
 				return Selectioner.Dialog.SingleSelect.prototype.renderOption.call(this, option);
 			}

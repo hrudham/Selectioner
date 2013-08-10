@@ -28,14 +28,14 @@ define(
 				.data('option', option)
 				.attr('id', checkboxId);
 							
-			if (option[0].selected)
+			if (option.selected)
 			{
 				checkbox.attr('checked', 'checked');
 			}
 			
 			var label = $('<label />')
 				.append(checkbox)
-				.append($('<span />').text(option.text()))
+				.append($('<span />').text(option.innerText))
 				.attr('for', checkboxId);
 				
 			var selectioner = this.selectioner;
@@ -45,12 +45,12 @@ define(
 					'change.selectioner', 
 					function() 
 					{
-						option[0].selected = this.checked;
+						option.selected = this.checked;
 						selectioner.target.trigger('change', { source: 'selectioner' });
 					}
 				);
 				
-			if (option.is(':disabled'))
+			if (option.disabled)
 			{
 				label.addClass('disabled');
 				checkbox.prop('disabled', true);
@@ -78,7 +78,7 @@ define(
 					.each(
 						function()
 						{
-							$(this).data('option')[0].selected = this.checked;
+							$(this).data('option').selected = this.checked;
 						});
 				
 				target.trigger('change', { source: 'selectioner' });
@@ -87,16 +87,16 @@ define(
 			var groupTitle = $('<a />')
 				.attr('href', 'javascript:;')
 				.on('click', toggleGroupSelect)
-				.text(group.attr('label'));
+				.text(group.label);
 
 			var options = $('<li />')
 				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
 				.append(groupTitle);
 			
-			var children = group.children();
+			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				options = options.add(this.renderOption($(children[i])));
+				options = options.add(this.renderOption(children[i]));
 			}
 
 			var groupElement = $('<li />').append(

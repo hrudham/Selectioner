@@ -63,6 +63,16 @@ var initdemo = window.initdemo = function()
 	$('.basic').singleSelect();
 	$('#BasicSingle').singleSelect();
 	$('#OptGroupSingle').singleSelect();
+	$('#BasicSingleLotsOfItems').append(
+		(function(){
+			var html = '';
+			for (var i = 0; i <= 10000; i++)
+			{
+				html += '<option value="' + i + '">Item ' + i + '</option>';
+			}
+			return html;
+		})())
+		.singleSelect();
 
 	$('#BasicMultiple').multiSelect();
 	$('#OptGroupMultiple').multiSelect();
@@ -80,8 +90,8 @@ var initdemo = window.initdemo = function()
 	// Build the custom selectioner.
 	var customSelectioner = new Selectioner
 		(
-			// This is the obect that the Selectioner will target as it's 
-			// underlying element. This is usually an input, select or textarea.
+			// This is the object that the Selectioner will target as it's 
+			// underlying element. This is usually an input, select or text area.
 			$('#CustomSelect1'), 	
 			
 			// This is what displays what is currently selected to the user. 
@@ -89,7 +99,7 @@ var initdemo = window.initdemo = function()
 			new Selectioner.Display.ListBox(),	
 			
 			// This is either a single Dialog, or an array of them. Dialogs are what
-			// appear in the popup. You can either create static dialogs that are
+			// appear in the pop-up. You can either create static dialogs that are
 			// unaware of the rest of the Selectioner, or add objects that inherit from
 			// Selectioner.Core.Dialog that will update whenever the selected value 
 			// changes. In this example, only the SingleSelect() dialog does this.
