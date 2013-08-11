@@ -20,7 +20,7 @@ define(
 				.target
 				.children()
 				.not('option[value=""], option:empty:not([value])')
-				.length > 0;
+				.length === 0;
 		};
 
 		// Render an the equivalent control that represents an 

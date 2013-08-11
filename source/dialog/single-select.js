@@ -46,7 +46,7 @@ define(
 		
 		SingleSelect.prototype.isEmpty = function()
 		{
-			return this.selectioner.target.children().length > 0;
+			return this.selectioner.target.children().length === 0;
 		};
 
 		SingleSelect.prototype.update = function()
@@ -63,7 +63,7 @@ define(
 				
 				var results = [];
 
-				if (this.isEmpty())
+				if (!this.isEmpty())
 				{
 					var children = this.selectioner.target.children();
 					for (var i = 0, length = children.length; i < length; i++)
