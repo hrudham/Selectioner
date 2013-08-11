@@ -372,7 +372,7 @@
 			
 			this.dialogs.push(dialog);
 			
-			// Create closures for the popup and index.
+			// Create closures for the pop-up and index.
 			var index = this.dialogs.length - 1;
 			var popup = this;
 			
@@ -995,22 +995,29 @@
 		{
 			this.element = $('<ul />');
 			
+			this.bindEvents();
+		};
+		
+		SingleSelect.prototype.bindEvents = function()
+		{
 			var dialog = this;
-			
+		
 			var element = this.element
 				.on(
-					'mousemove',
+					'click', 
+					'li a',
+					function()
+					{
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.popup.hide();
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+					})
+				.on(
+					'mouseenter',
 					'li',
 					function()
 					{	
-						var target = $(this);
-						
-						if (!target.hasClass('highlight') && 
-							dialog.getSelectableOptions().filter(this).length > 0)
-						{
-							element.find('li').removeClass('highlight');
-							target.addClass('highlight');
-						}
+						dialog.highlight(this);
 					});
 		};
 		
@@ -1092,8 +1099,8 @@
 			{
 				var dialog = this;
 				selectElement = $('<a />')
-					.attr('href', 'javascript:;')
-					.on('click', function(){ dialog.selectOption(option); });
+					.attr('data-index', option.index)
+					.attr('href', 'javascript:;');
 			}
 			
 			selectElement.text(option.innerText || this.selectioner.settings.emptyOptionText);
@@ -1107,15 +1114,6 @@
 			}
 
 			return listItem.append(selectElement);
-		};
-
-		// This will select the option specified, hide the pop-up,
-		// and trigger the "change" event on the underlying element.
-		SingleSelect.prototype.selectOption = function(option)
-		{
-			option.selected = true;
-			this.popup.hide();
-			this.selectioner.target.trigger('change', { source: 'selectioner' });
 		};
 
 		// Render an the equivalent control that represents an 
@@ -1155,6 +1153,19 @@
 			return this._selectableOptions;
 		};
 
+		SingleSelect.prototype.highlight = function(item)
+		{
+			var dialog = this;		
+			var target = $(item);
+						
+			if (!target.hasClass('highlight') && 
+				dialog.getSelectableOptions().filter(item).length > 0)
+			{
+				dialog.element.find('li').removeClass('highlight');
+				target.addClass('highlight');
+			}
+		};
+		
 		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{
@@ -1389,7 +1400,29 @@
 				throw new Error('MultiSelect expects it\'s underlying target element to to be a <select /> element with a "multiple" attribute');
 			}
 		};
-
+		
+		MultiSelect.prototype.bindEvents = function()
+		{
+			var dialog = this;
+		
+			var element = this.element
+				.on(
+					'click', 
+					'input[type="checkbox"]',
+					function()
+					{
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+					})
+				.on(
+					'change',
+					'li',
+					function()
+					{	
+						dialog.highlight(this);
+					});
+		};
+		
 		// Render an the equivalent control that represents an
 		// <option /> element for the underlying <select /> element. 
 		// This overrides the SingleSelect version of this method.
@@ -1398,7 +1431,7 @@
 			var element = $('<li />');
 			var checkboxId = 'MultiSelectCheckbox' + MultiSelect._inputIdIndex++;
 			var checkbox = $('<input type="checkbox" />')
-				.data('option', option)
+				.attr('data-index', option.index)
 				.attr('id', checkboxId);
 							
 			if (option.selected)
@@ -1412,17 +1445,7 @@
 				.attr('for', checkboxId);
 				
 			var selectioner = this.selectioner;
-				
-			checkbox.on
-				(
-					'change.selectioner', 
-					function() 
-					{
-						option.selected = this.checked;
-						selectioner.target.trigger('change', { source: 'selectioner' });
-					}
-				);
-				
+								
 			if (option.disabled)
 			{
 				label.addClass('disabled');

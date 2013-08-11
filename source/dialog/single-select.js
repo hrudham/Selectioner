@@ -18,22 +18,29 @@ define(
 		{
 			this.element = $('<ul />');
 			
+			this.bindEvents();
+		};
+		
+		SingleSelect.prototype.bindEvents = function()
+		{
 			var dialog = this;
-			
+		
 			var element = this.element
 				.on(
-					'mousemove',
+					'click', 
+					'li a',
+					function()
+					{
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.popup.hide();
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+					})
+				.on(
+					'mouseenter',
 					'li',
 					function()
 					{	
-						var target = $(this);
-						
-						if (!target.hasClass('highlight') && 
-							dialog.getSelectableOptions().filter(this).length > 0)
-						{
-							element.find('li').removeClass('highlight');
-							target.addClass('highlight');
-						}
+						dialog.highlight(this);
 					});
 		};
 		
@@ -115,8 +122,8 @@ define(
 			{
 				var dialog = this;
 				selectElement = $('<a />')
-					.attr('href', 'javascript:;')
-					.on('click', function(){ dialog.selectOption(option); });
+					.attr('data-index', option.index)
+					.attr('href', 'javascript:;');
 			}
 			
 			selectElement.text(option.innerText || this.selectioner.settings.emptyOptionText);
@@ -130,15 +137,6 @@ define(
 			}
 
 			return listItem.append(selectElement);
-		};
-
-		// This will select the option specified, hide the pop-up,
-		// and trigger the "change" event on the underlying element.
-		SingleSelect.prototype.selectOption = function(option)
-		{
-			option.selected = true;
-			this.popup.hide();
-			this.selectioner.target.trigger('change', { source: 'selectioner' });
 		};
 
 		// Render an the equivalent control that represents an 
@@ -178,6 +176,19 @@ define(
 			return this._selectableOptions;
 		};
 
+		SingleSelect.prototype.highlight = function(item)
+		{
+			var dialog = this;		
+			var target = $(item);
+						
+			if (!target.hasClass('highlight') && 
+				dialog.getSelectableOptions().filter(item).length > 0)
+			{
+				dialog.element.find('li').removeClass('highlight');
+				target.addClass('highlight');
+			}
+		};
+		
 		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
 		{

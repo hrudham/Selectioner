@@ -16,7 +16,29 @@ define(
 				throw new Error('MultiSelect expects it\'s underlying target element to to be a <select /> element with a "multiple" attribute');
 			}
 		};
-
+		
+		MultiSelect.prototype.bindEvents = function()
+		{
+			var dialog = this;
+		
+			var element = this.element
+				.on(
+					'click', 
+					'input[type="checkbox"]',
+					function()
+					{
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+					})
+				.on(
+					'change',
+					'li',
+					function()
+					{	
+						dialog.highlight(this);
+					});
+		};
+		
 		// Render an the equivalent control that represents an
 		// <option /> element for the underlying <select /> element. 
 		// This overrides the SingleSelect version of this method.
@@ -25,7 +47,7 @@ define(
 			var element = $('<li />');
 			var checkboxId = 'MultiSelectCheckbox' + MultiSelect._inputIdIndex++;
 			var checkbox = $('<input type="checkbox" />')
-				.data('option', option)
+				.attr('data-index', option.index)
 				.attr('id', checkboxId);
 							
 			if (option.selected)
@@ -39,17 +61,7 @@ define(
 				.attr('for', checkboxId);
 				
 			var selectioner = this.selectioner;
-				
-			checkbox.on
-				(
-					'change.selectioner', 
-					function() 
-					{
-						option.selected = this.checked;
-						selectioner.target.trigger('change', { source: 'selectioner' });
-					}
-				);
-				
+								
 			if (option.disabled)
 			{
 				label.addClass('disabled');

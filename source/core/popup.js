@@ -93,7 +93,7 @@ define(
 			
 			this.dialogs.push(dialog);
 			
-			// Create closures for the popup and index.
+			// Create closures for the pop-up and index.
 			var index = this.dialogs.length - 1;
 			var popup = this;
 			
