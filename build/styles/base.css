@@ -425,11 +425,6 @@ textarea[readonly] + .select-display > .select-text {
 .select-date .months {
   width: 34%;
 }
-.select-date .months .up,
-.select-date .months .down {
-  border-left: 1px solid #DDD;
-  border-right: 1px solid #DDD;
-}
 .select-date .days a.previous span,
 .select-date .days a.next span,
 .select-date .days a.selected span {
