@@ -318,7 +318,7 @@
 				// from breaking.
 				.prop('tabindex', selectioner.target.prop('tabindex') + 1)
 				.on(
-					'focusin.selectioner',
+					'focusin',
 					function()
 					{
 						selectioner.display.element.focus();
@@ -482,7 +482,7 @@
 				}
 				
 				this.selectioner
-					.trigger('show.selectioner')
+					.trigger('show')
 					.target
 					.parents()
 					.add(window)
@@ -521,7 +521,7 @@
 						top: 0,
 						left: 0
 					});
-				this.selectioner.trigger('hide.selectioner');
+				this.selectioner.trigger('hide');
 				this._dialogFocusIndex = null;
 			}
 		};
@@ -716,7 +716,7 @@
 			this.selectioner
 				.target
 				.on(
-					'change.selectioner',
+					'change',
 					function()
 					{
 						display.update();
@@ -728,7 +728,7 @@
 			if (targetId !== undefined)
 			{
 				this.labels = $(document).on(
-					'click.selectioner',
+					'click',
 					'label[for="' + targetId + '"]',
 					function ()
 					{
@@ -738,7 +738,7 @@
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
 			this.element.on(
-				'keydown.selectioner',
+				'keydown',
 				function(e)
 				{
 					if (e.which == 27)
@@ -771,7 +771,7 @@
 				
 			// Handle key press for things like filtering lists.
 			this.element.on(
-				'keypress.selectioner',
+				'keypress',
 				function(e)
 				{						
 					if (display.popup.isShown())
@@ -800,7 +800,7 @@
 			// Hide or show the pop-up on mouse-down or focus-in.
 			this.element
 				.on(
-					'focusin.selectioner',
+					'focusin',
 					function(e)
 					{
 						var target = $(e.target);
@@ -816,7 +816,7 @@
 						}					
 					})
 				.on(
-					'mousedown.selectioner',
+					'mousedown',
 					function()
 					{
 						if (popup.isShown())
@@ -833,7 +833,7 @@
 			// element that is not part of the pop-up or display.
 			$(document)
 				.on(
-				'mousedown.selectioner focusin.selectioner',
+				'mousedown focusin',
 				function(e)
 				{
 					if (popup.isShown() &&
@@ -850,13 +850,13 @@
 
 			this.selectioner
 				.on(
-					'show.selectioner',
+					'show',
 					function()
 					{
 						displayElement.addClass(visibleCssClass);
 					})
 				.on(
-					'hide.selectioner',
+					'hide',
 					function()
 					{
 						displayElement.removeClass(visibleCssClass);
@@ -884,17 +884,6 @@
 		{
 			// This method should be explicitly overridden, but
 			// it is not required if it will never be updated.
-		};
-
-		// Removes this display element, and restores
-		// the original elements used to build it.
-		Display.prototype.remove = function()
-		{
-			this.selectioner
-				.target
-				.off('.selectioner');
-
-			this.element.add(this.popup.element).remove();
 		};
 
 		Display.prototype.getNoSelectionText = function()
@@ -1396,11 +1385,11 @@
 		
 			var element = this.element
 				.on(
-					'click', 
+					'change', 
 					'input[type="checkbox"]',
 					function()
 					{
-						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = this.checked;
 						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					})
 				.on(
@@ -1925,7 +1914,7 @@
 			this.selectioner
 				.target
 				.val(DateSelect.Utility.dateToString(date))
-				.trigger('change.selectioner');
+				.trigger('change');
 			this.update();
 		};
 
@@ -2031,7 +2020,7 @@
 			this.textElement
 				.addClass(this.selectioner.settings.cssPrefix + 'text')
 				.on(
-					'change.selectioner', 
+					'change', 
 					function(e, data) 
 					{			
 						if (!data || data.source != 'selectioner')
@@ -2044,12 +2033,12 @@
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
 			this.selectioner.on(
-				'show.selectioner',
+				'show',
 				function()
 				{
 					comboBox.element
 						.one(
-							'focusin.selectioner', 
+							'focusin', 
 							function()
 							{
 								comboBox.textElement.select();
@@ -2120,15 +2109,6 @@
 			return this.selectioner
 				.target
 				.find('option[value=""], option:empty:not([value])');
-		};
-
-		ComboBox.prototype.remove = function()
-		{
-			this.selectioner
-				.target
-				.after(this.textElement);
-				
-			Selectioner.Core.Display.prototype.remove.call(this);
 		};
 
 		ComboBox.prototype.getNoSelectionText = function()

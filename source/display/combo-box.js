@@ -47,7 +47,7 @@ define(
 			this.textElement
 				.addClass(this.selectioner.settings.cssPrefix + 'text')
 				.on(
-					'change.selectioner', 
+					'change', 
 					function(e, data) 
 					{			
 						if (!data || data.source != 'selectioner')
@@ -60,12 +60,12 @@ define(
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
 			this.selectioner.on(
-				'show.selectioner',
+				'show',
 				function()
 				{
 					comboBox.element
 						.one(
-							'focusin.selectioner', 
+							'focusin', 
 							function()
 							{
 								comboBox.textElement.select();
@@ -136,15 +136,6 @@ define(
 			return this.selectioner
 				.target
 				.find('option[value=""], option:empty:not([value])');
-		};
-
-		ComboBox.prototype.remove = function()
-		{
-			this.selectioner
-				.target
-				.after(this.textElement);
-				
-			Selectioner.Core.Display.prototype.remove.call(this);
 		};
 
 		ComboBox.prototype.getNoSelectionText = function()

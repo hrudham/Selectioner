@@ -346,7 +346,7 @@ define(
 			this.selectioner
 				.target
 				.val(DateSelect.Utility.dateToString(date))
-				.trigger('change.selectioner');
+				.trigger('change');
 			this.update();
 		};
 

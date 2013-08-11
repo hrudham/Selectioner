@@ -58,7 +58,7 @@ define(
 			this.selectioner
 				.target
 				.on(
-					'change.selectioner',
+					'change',
 					function()
 					{
 						display.update();
@@ -70,7 +70,7 @@ define(
 			if (targetId !== undefined)
 			{
 				this.labels = $(document).on(
-					'click.selectioner',
+					'click',
 					'label[for="' + targetId + '"]',
 					function ()
 					{
@@ -80,7 +80,7 @@ define(
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
 			this.element.on(
-				'keydown.selectioner',
+				'keydown',
 				function(e)
 				{
 					if (e.which == 27)
@@ -113,7 +113,7 @@ define(
 				
 			// Handle key press for things like filtering lists.
 			this.element.on(
-				'keypress.selectioner',
+				'keypress',
 				function(e)
 				{						
 					if (display.popup.isShown())
@@ -142,7 +142,7 @@ define(
 			// Hide or show the pop-up on mouse-down or focus-in.
 			this.element
 				.on(
-					'focusin.selectioner',
+					'focusin',
 					function(e)
 					{
 						var target = $(e.target);
@@ -158,7 +158,7 @@ define(
 						}					
 					})
 				.on(
-					'mousedown.selectioner',
+					'mousedown',
 					function()
 					{
 						if (popup.isShown())
@@ -175,7 +175,7 @@ define(
 			// element that is not part of the pop-up or display.
 			$(document)
 				.on(
-				'mousedown.selectioner focusin.selectioner',
+				'mousedown focusin',
 				function(e)
 				{
 					if (popup.isShown() &&
@@ -192,13 +192,13 @@ define(
 
 			this.selectioner
 				.on(
-					'show.selectioner',
+					'show',
 					function()
 					{
 						displayElement.addClass(visibleCssClass);
 					})
 				.on(
-					'hide.selectioner',
+					'hide',
 					function()
 					{
 						displayElement.removeClass(visibleCssClass);
@@ -226,17 +226,6 @@ define(
 		{
 			// This method should be explicitly overridden, but
 			// it is not required if it will never be updated.
-		};
-
-		// Removes this display element, and restores
-		// the original elements used to build it.
-		Display.prototype.remove = function()
-		{
-			this.selectioner
-				.target
-				.off('.selectioner');
-
-			this.element.add(this.popup.element).remove();
 		};
 
 		Display.prototype.getNoSelectionText = function()

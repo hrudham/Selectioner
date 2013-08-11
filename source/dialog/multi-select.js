@@ -23,11 +23,11 @@ define(
 		
 			var element = this.element
 				.on(
-					'click', 
+					'change', 
 					'input[type="checkbox"]',
 					function()
 					{
-						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = this.checked;
 						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					})
 				.on(

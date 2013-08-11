@@ -39,7 +39,7 @@ define(
 				// from breaking.
 				.prop('tabindex', selectioner.target.prop('tabindex') + 1)
 				.on(
-					'focusin.selectioner',
+					'focusin',
 					function()
 					{
 						selectioner.display.element.focus();
@@ -203,7 +203,7 @@ define(
 				}
 				
 				this.selectioner
-					.trigger('show.selectioner')
+					.trigger('show')
 					.target
 					.parents()
 					.add(window)
@@ -242,7 +242,7 @@ define(
 						top: 0,
 						left: 0
 					});
-				this.selectioner.trigger('hide.selectioner');
+				this.selectioner.trigger('hide');
 				this._dialogFocusIndex = null;
 			}
 		};
