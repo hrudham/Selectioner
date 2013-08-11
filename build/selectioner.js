@@ -1023,7 +1023,7 @@
 		
 		SingleSelect.prototype.isEmpty = function()
 		{
-			return this.selectioner.target.children().length > 0;
+			return this.selectioner.target.children().length === 0;
 		};
 
 		SingleSelect.prototype.update = function()
@@ -1040,7 +1040,7 @@
 				
 				var results = [];
 
-				if (this.isEmpty())
+				if (!this.isEmpty())
 				{
 					var children = this.selectioner.target.children();
 					for (var i = 0, length = children.length; i < length; i++)
@@ -1088,32 +1088,22 @@
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
-			var selectElement;
+			var text = option.innerText || this.selectioner.settings.emptyOptionText;
+			
+			var itemHtml;
 			
 			if (option.disabled)
 			{
-				selectElement = $('<span />')
-					.addClass('disabled');
+				itemHtml = '<span class="disabled">' + text + '</span>';
 			}
 			else
 			{
-				var dialog = this;
-				selectElement = $('<a />')
-					.attr('data-index', option.index)
-					.attr('href', 'javascript:;');
-			}
-			
-			selectElement.text(option.innerText || this.selectioner.settings.emptyOptionText);
-			
-			var listItem = $('<li />');
-			
-			var value = option.value;
-			if (value === null || value === '')
-			{
-				listItem.addClass('none');
+				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</span>';
 			}
 
-			return listItem.append(selectElement);
+			var cssClass = (option.value === null || option.value === '') ? 'none' : '';			
+
+			return '<li class="' + cssClass + '">' + itemHtml + '</li>';
 		};
 
 		// Render an the equivalent control that represents an 
@@ -1130,8 +1120,7 @@
 						children[i]));
 			}
 			
-			return $('<li />').append(
-				$('<ul >').append(results));
+			return '<li><ul>' + results.join('') + '</ul></li>';
 		};
 
 		// Get all options that can potentially be selected.
@@ -2168,7 +2157,7 @@
 				.target
 				.children()
 				.not('option[value=""], option:empty:not([value])')
-				.length > 0;
+				.length === 0;
 		};
 
 		// Render an the equivalent control that represents an 
