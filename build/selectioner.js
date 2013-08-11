@@ -1393,7 +1393,7 @@
 						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					})
 				.on(
-					'change',
+					'mouseenter',
 					'li',
 					function()
 					{	
