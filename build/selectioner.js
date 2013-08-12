@@ -1317,10 +1317,11 @@
 				for (var i = 0, length = options.length; i < length; i++)
 				{
 					var option = $(options[i]);
-					if (option.text().toUpperCase().indexOf(this.keyPressFilter) > -1)
+					if (option.text().toUpperCase().indexOf(this.keyPressFilter) === 0)
 					{
 						options.removeClass('highlight');
 						option.addClass('highlight');
+						this.scrollToHighlightedOption();
 						isSet = true;
 						break;
 					}
