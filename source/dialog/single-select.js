@@ -216,6 +216,11 @@ define(
 				}
 			}
 			
+			if (isHighlighted)
+			{
+				this.scrollToHighlightedOption();
+			}
+			
 			return isHighlighted;
 		};
 
@@ -317,8 +322,6 @@ define(
 				}
 			}
 			
-			this.scrollToHighlightedOption();
-			
 			return result;
 		};
 
@@ -339,13 +342,13 @@ define(
 								
 				this.keyPressFilterTimeout = setTimeout(
 					function()
-					{  
+					{
 						dialog.keyPressFilter = '';
 					},
 					400);
 					
-				// Find the first option that satisfies the filter, 
-				// and highlight and select it.
+				// Find the first option that satisfies   
+				// the filter, and highlight it.
 				var options = this.getSelectableOptions();
 				var isSet = false;
 				for (var i = 0, length = options.length; i < length; i++)

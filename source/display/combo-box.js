@@ -59,22 +59,28 @@ define(
 			var button = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
-			this.selectioner.on(
-				'show',
-				function()
-				{
-					comboBox.element
-						.one(
-							'focusin', 
-							function()
-							{
-								comboBox.textElement.select();
-							});
-				});
-					
 			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
+				
+			comboBox.element
+				.on(
+					'focus',
+					function(ev)
+					{
+						comboBox.element.one(
+							'click keyup', 
+							function(e)
+							{
+								if (e.which !== 9 || !e.shiftKey)
+								{
+									// If we are not navigating backwards via 
+									// SHIFT+TAB, then select the text in this 
+									// combo-box's text element.
+									comboBox.textElement.select();
+								}
+							});
+					});
 		};
 
 		ComboBox.prototype.textChanged = function()

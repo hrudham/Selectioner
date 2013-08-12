@@ -27,10 +27,6 @@ define(
 			this.render();
 			this.update();
 			
-			this.element.prop(
-				'tabindex', 
-				this.selectioner.target.prop('tabindex'));
-
 			this.element
 				.addClass(this.selectioner.settings.cssPrefix + 'display');
 				

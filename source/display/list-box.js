@@ -26,6 +26,7 @@ define(
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 					
 			this.element = $('<span />')
+				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
 		};

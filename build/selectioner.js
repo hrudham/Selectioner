@@ -685,10 +685,6 @@
 			this.render();
 			this.update();
 			
-			this.element.prop(
-				'tabindex', 
-				this.selectioner.target.prop('tabindex'));
-
 			this.element
 				.addClass(this.selectioner.settings.cssPrefix + 'display');
 				
@@ -917,6 +913,7 @@
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 					
 			this.element = $('<span />')
+				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
 		};
@@ -1182,6 +1179,11 @@
 				}
 			}
 			
+			if (isHighlighted)
+			{
+				this.scrollToHighlightedOption();
+			}
+			
 			return isHighlighted;
 		};
 
@@ -1283,8 +1285,6 @@
 				}
 			}
 			
-			this.scrollToHighlightedOption();
-			
 			return result;
 		};
 
@@ -1305,13 +1305,13 @@
 								
 				this.keyPressFilterTimeout = setTimeout(
 					function()
-					{  
+					{
 						dialog.keyPressFilter = '';
 					},
 					400);
 					
-				// Find the first option that satisfies the filter, 
-				// and highlight and select it.
+				// Find the first option that satisfies   
+				// the filter, and highlight it.
 				var options = this.getSelectableOptions();
 				var isSet = false;
 				for (var i = 0, length = options.length; i < length; i++)
@@ -1500,6 +1500,7 @@
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 			
 			this.element = $('<span />')
+				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
 		};
@@ -2005,22 +2006,28 @@
 			var button = $('<span />')
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
-			this.selectioner.on(
-				'show',
-				function()
-				{
-					comboBox.element
-						.one(
-							'focusin', 
-							function()
-							{
-								comboBox.textElement.select();
-							});
-				});
-					
 			this.element = $('<span />')
 				.append(button)
 				.append(this.textElement);
+				
+			comboBox.element
+				.on(
+					'focus',
+					function(ev)
+					{
+						comboBox.element.one(
+							'click keyup', 
+							function(e)
+							{
+								if (e.which !== 9 || !e.shiftKey)
+								{
+									// If we are not navigating backwards via 
+									// SHIFT+TAB, then select the text in this 
+									// combo-box's text element.
+									comboBox.textElement.select();
+								}
+							});
+					});
 		};
 
 		ComboBox.prototype.textChanged = function()
@@ -2125,14 +2132,14 @@
 			return '';
 		};
 
-		$.fn.comboSelect = function (textInput)
+		$.fn.comboSelect = function ()
 		{
 			this.each(
 				function()
 				{
 					new Selectioner(
 						this, 
-						new Selectioner.Display.ComboBox(textInput),
+						new Selectioner.Display.ComboBox(),
 						new Selectioner.Dialog.ComboSelect());
 				});
 				
