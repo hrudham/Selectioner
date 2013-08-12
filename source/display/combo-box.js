@@ -91,7 +91,7 @@ define(
 				.filter(
 					function() 
 					{ 
-						return this.innerText.toUpperCase() === display.textElement.val().toUpperCase(); 
+						return this.text.toUpperCase() === display.textElement.val().toUpperCase(); 
 					});
 			
 			if (option.length != 1)

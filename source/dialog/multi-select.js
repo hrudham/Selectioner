@@ -71,7 +71,7 @@ define(
 				
 			return '<li><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
 				checkbox + 
-				'<span>' + option.innerText + '</span>' + 
+				'<span>' + option.text + '</span>' + 
 				'</label></li>';
 		};
 

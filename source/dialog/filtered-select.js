@@ -83,7 +83,7 @@ define(
 					for (var i = 0, length = children.length; i < length; i++)
 					{
 						var option = children[i];
-						var text = option.innerText.toLowerCase();
+						var text = option.text.toLowerCase();
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{

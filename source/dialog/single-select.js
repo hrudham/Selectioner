@@ -107,7 +107,7 @@ define(
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
-			var text = option.innerText || this.selectioner.settings.emptyOptionText;
+			var text = option.text || this.selectioner.settings.emptyOptionText;
 			
 			var itemHtml;
 			

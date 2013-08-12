@@ -1073,7 +1073,7 @@
 		// <option /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderOption = function(option)
 		{
-			var text = option.innerText || this.selectioner.settings.emptyOptionText;
+			var text = option.text || this.selectioner.settings.emptyOptionText;
 			
 			var itemHtml;
 			
@@ -1431,7 +1431,7 @@
 				
 			return '<li><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
 				checkbox + 
-				'<span>' + option.innerText + '</span>' + 
+				'<span>' + option.text + '</span>' + 
 				'</label></li>';
 		};
 
@@ -2036,7 +2036,7 @@
 				.filter(
 					function() 
 					{ 
-						return this.innerText.toUpperCase() === display.textElement.val().toUpperCase(); 
+						return this.text.toUpperCase() === display.textElement.val().toUpperCase(); 
 					});
 			
 			if (option.length != 1)
@@ -2238,7 +2238,7 @@
 					for (var i = 0, length = children.length; i < length; i++)
 					{
 						var option = children[i];
-						var text = option.innerText.toLowerCase();
+						var text = option.text.toLowerCase();
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{
