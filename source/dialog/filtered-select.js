@@ -72,7 +72,8 @@ define(
 			
 				this._lastFilterText = filterText;
 			
-				var filteredOptions = [];
+				var filteredOptions = '';
+				var count = 0;
 				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
@@ -86,18 +87,23 @@ define(
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{
-							filteredOptions.push(this.renderOption(option));
+							filteredOptions += this.renderOption(option);
+							count++;
 							
-							if (filteredOptions.length > settings.filteredSelect.maxItems)
+							if (count > settings.filteredSelect.maxItems)
 							{
 								break;
 							}
 						}
 					}
 					
-					if (filteredOptions.length === 0)
+					if (count === 0)
 					{
-						filteredOptions.push('<li class="none"><span>' + settings.noMatchesFoundText + '</span></li>');
+						count++;
+						filteredOptions += 
+							'<li class="none"><span>' + 
+							settings.noMatchesFoundText + 
+							'</span></li>';
 					}
 				}
 				else
@@ -112,12 +118,12 @@ define(
 								minFilterLength - filterText.length);
 					}
 					
-					filteredOptions.push('<li class="none"><span>' + enterMoreText + '</span></li>');
+					filteredOptions += '<li class="none"><span>' + enterMoreText + '</span></li>';
 				}			
 				
 				this.element
 					.empty()
-					.append(filteredOptions);
+					.html(filteredOptions);
 			}
 		};
 	});

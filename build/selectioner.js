@@ -1027,7 +1027,7 @@
 				this.element.empty();
 				this._selectableOptions = null;
 				
-				var results = [];
+				var results = '';
 
 				if (!this.isEmpty())
 				{
@@ -1037,15 +1037,15 @@
 						var child = children[i];
 						if (child.tagName == 'OPTION')
 						{
-							results.push(this.renderOption(child));
+							results += this.renderOption(child);
 						}
 						else 
 						{
 							// We can safely assume that all other elements are 
-							// optgroups, since the HTML5 spec only allows these 
-							// two child elements. 
+							// <optgroup /> elements, since the HTML5 specification 
+							// only allows these two child elements. 
 							// See http://www.w3.org/TR/html-markup/select.html
-							results.push(this.renderGroup(child));
+							results += this.renderGroup(child);
 						}
 					}
 				}
@@ -1059,17 +1059,13 @@
 						.target
 						.find('option[value=""], option:empty:not([value])')
 						.text();
-				
-					results
-						.push(
-							$('<li />')
-								.addClass('none')
-								.append(
-									$('<span />').text(
-										noOptionText || this.selectioner.settings.noOptionText)));
+							
+					var text = noOptionText || this.selectioner.settings.noOptionText;
+							
+					results += '<li class="none"><span>' + text + '</span></li>';
 				}
 				
-				this.element.append(results);
+				this.element.html(results);
 			}
 		};
 
@@ -1087,7 +1083,7 @@
 			}
 			else
 			{
-				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</span>';
+				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
 			}
 
 			var cssClass = (option.value === null || option.value === '') ? 'none' : '';			
@@ -1099,17 +1095,19 @@
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
 		{					
-			var results = ['<li class="' + this.selectioner.settings.cssPrefix + 'group-title"><span>' + group.label + '</span></li>'];
+			var results = '<li class="' + 
+				this.selectioner.settings.cssPrefix + 
+				'group-title"><span>' + 
+				group.label + 
+				'</span></li>';
 			
 			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				results.push(
-					this.renderOption(
-						children[i]));
+				results += this.renderOption(children[i]);
 			}
 			
-			return '<li><ul>' + results.join('') + '</ul></li>';
+			return '<li><ul>' + results + '</ul></li>';
 		};
 
 		// Get all options that can potentially be selected.
@@ -1368,7 +1366,6 @@
 
 		MultiSelect._inputIdIndex = 0;
 
-		// Inherit from the SingleSelect dialog, not the core dialog.
 		MultiSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
 		MultiSelect.prototype.validateTarget = function()
@@ -1382,6 +1379,7 @@
 		MultiSelect.prototype.bindEvents = function()
 		{
 			var dialog = this;
+			var target = dialog.selectioner.target;
 		
 			var element = this.element
 				.on(
@@ -1389,8 +1387,27 @@
 					'input[type="checkbox"]',
 					function()
 					{
-						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = this.checked;
-						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+						target[0][this.getAttribute('data-index')].selected = this.checked;
+						target.trigger('change', { source: 'selectioner' });
+					})
+				.on(
+					'click',
+					'li a',
+					function()
+					{
+						// Allow group titles to toggle the check-boxes of all their child items.
+						var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
+						var checkedCount = checkboxes.filter(':checked').length;
+						
+						checkboxes
+							.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
+							.each(
+								function()
+								{
+									target[0][this.getAttribute('data-index')].selected = this.checked;
+								});
+						
+						target.trigger('change', { source: 'selectioner' });
 					})
 				.on(
 					'mouseenter',
@@ -1406,77 +1423,32 @@
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderOption = function(option)
 		{
-			var element = $('<li />');
 			var checkboxId = 'MultiSelectCheckbox' + MultiSelect._inputIdIndex++;
-			var checkbox = $('<input type="checkbox" />')
-				.attr('data-index', option.index)
-				.attr('id', checkboxId);
-							
-			if (option.selected)
-			{
-				checkbox.attr('checked', 'checked');
-			}
-			
-			var label = $('<label />')
-				.append(checkbox)
-				.append($('<span />').text(option.innerText))
-				.attr('for', checkboxId);
+			var checkbox = '<input type="checkbox" id="' + checkboxId + 
+				'" data-index="' + option.index + '" ' + 
+				(option.selected ? 'checked="checked" ' : '') + 
+				(option.disabled ? 'disabled="disabled" ' : '') + '/>';
 				
-			var selectioner = this.selectioner;
-								
-			if (option.disabled)
-			{
-				label.addClass('disabled');
-				checkbox.prop('disabled', true);
-			}
-				
-			element.append(label);
-
-			return element;
+			return '<li><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
+				checkbox + 
+				'<span>' + option.innerText + '</span>' + 
+				'</label></li>';
 		};
 
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		// This overrides the SingleSelect version of this method.
 		MultiSelect.prototype.renderGroup = function(group)
-		{
-			var target = this.selectioner.target;
+		{	
+			var groupTitle = '<li class="' + this.selectioner.settings.cssPrefix + 'group-title' + '"><a href="javascript:;">' + group.label + '</a></li>';
+			var options = '';
 			
-			var toggleGroupSelect = function()
+			for (var i = 0, length = group.children.length; i < length; i++)
 			{
-				var checkboxes = $(this).closest('ul').find('input:checkbox:not(:disabled)');
-				var checkedCount = checkboxes.filter(':checked').length;
-				
-				checkboxes
-					.prop('checked', checkedCount != checkboxes.length || checkedCount === 0)
-					.each(
-						function()
-						{
-							$(this).data('option').selected = this.checked;
-						});
-				
-				target.trigger('change', { source: 'selectioner' });
-			};
-			
-			var groupTitle = $('<a />')
-				.attr('href', 'javascript:;')
-				.on('click', toggleGroupSelect)
-				.text(group.label);
-
-			var options = $('<li />')
-				.addClass(this.selectioner.settings.cssPrefix + 'group-title')
-				.append(groupTitle);
-			
-			var children = group.children;
-			for (var i = 0, length = children.length; i < length; i++)
-			{
-				options = options.add(this.renderOption(children[i]));
+				options += this.renderOption(group.children[i]);
 			}
-
-			var groupElement = $('<li />').append(
-				$('<ul >').append(options));
-			
-			return groupElement;
+				
+			return '<li><ul>' + groupTitle + options + '</ul></li>';
 		};
 
 		MultiSelect.prototype.clearSelection = function()
@@ -2149,7 +2121,7 @@
 				return Selectioner.Dialog.SingleSelect.prototype.renderOption.call(this, option);
 			}
 			
-			return null;
+			return '';
 		};
 
 		$.fn.comboSelect = function (textInput)
@@ -2255,7 +2227,8 @@
 			
 				this._lastFilterText = filterText;
 			
-				var filteredOptions = [];
+				var filteredOptions = '';
+				var count = 0;
 				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
 				
 				if (filterText.length >= minFilterLength)
@@ -2269,18 +2242,23 @@
 						
 						if (text !== '' && text.indexOf(filterText) === 0)
 						{
-							filteredOptions.push(this.renderOption(option));
+							filteredOptions += this.renderOption(option);
+							count++;
 							
-							if (filteredOptions.length > settings.filteredSelect.maxItems)
+							if (count > settings.filteredSelect.maxItems)
 							{
 								break;
 							}
 						}
 					}
 					
-					if (filteredOptions.length === 0)
+					if (count === 0)
 					{
-						filteredOptions.push('<li class="none"><span>' + settings.noMatchesFoundText + '</span></li>');
+						count++;
+						filteredOptions += 
+							'<li class="none"><span>' + 
+							settings.noMatchesFoundText + 
+							'</span></li>';
 					}
 				}
 				else
@@ -2295,12 +2273,12 @@
 								minFilterLength - filterText.length);
 					}
 					
-					filteredOptions.push('<li class="none"><span>' + enterMoreText + '</span></li>');
+					filteredOptions += '<li class="none"><span>' + enterMoreText + '</span></li>';
 				}			
 				
 				this.element
 					.empty()
-					.append(filteredOptions);
+					.html(filteredOptions);
 			}
 		};
 

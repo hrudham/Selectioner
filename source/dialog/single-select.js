@@ -61,7 +61,7 @@ define(
 				this.element.empty();
 				this._selectableOptions = null;
 				
-				var results = [];
+				var results = '';
 
 				if (!this.isEmpty())
 				{
@@ -71,15 +71,15 @@ define(
 						var child = children[i];
 						if (child.tagName == 'OPTION')
 						{
-							results.push(this.renderOption(child));
+							results += this.renderOption(child);
 						}
 						else 
 						{
 							// We can safely assume that all other elements are 
-							// optgroups, since the HTML5 spec only allows these 
-							// two child elements. 
+							// <optgroup /> elements, since the HTML5 specification 
+							// only allows these two child elements. 
 							// See http://www.w3.org/TR/html-markup/select.html
-							results.push(this.renderGroup(child));
+							results += this.renderGroup(child);
 						}
 					}
 				}
@@ -93,17 +93,13 @@ define(
 						.target
 						.find('option[value=""], option:empty:not([value])')
 						.text();
-				
-					results
-						.push(
-							$('<li />')
-								.addClass('none')
-								.append(
-									$('<span />').text(
-										noOptionText || this.selectioner.settings.noOptionText)));
+							
+					var text = noOptionText || this.selectioner.settings.noOptionText;
+							
+					results += '<li class="none"><span>' + text + '</span></li>';
 				}
 				
-				this.element.append(results);
+				this.element.html(results);
 			}
 		};
 
@@ -121,7 +117,7 @@ define(
 			}
 			else
 			{
-				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</span>';
+				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
 			}
 
 			var cssClass = (option.value === null || option.value === '') ? 'none' : '';			
@@ -133,17 +129,19 @@ define(
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
 		{					
-			var results = ['<li class="' + this.selectioner.settings.cssPrefix + 'group-title"><span>' + group.label + '</span></li>'];
+			var results = '<li class="' + 
+				this.selectioner.settings.cssPrefix + 
+				'group-title"><span>' + 
+				group.label + 
+				'</span></li>';
 			
 			var children = group.children;
 			for (var i = 0, length = children.length; i < length; i++)
 			{
-				results.push(
-					this.renderOption(
-						children[i]));
+				results += this.renderOption(children[i]);
 			}
 			
-			return '<li><ul>' + results.join('') + '</ul></li>';
+			return '<li><ul>' + results + '</ul></li>';
 		};
 
 		// Get all options that can potentially be selected.

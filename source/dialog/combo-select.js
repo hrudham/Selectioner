@@ -32,6 +32,6 @@ define(
 				return Selectioner.Dialog.SingleSelect.prototype.renderOption.call(this, option);
 			}
 			
-			return null;
+			return '';
 		};
 	});
