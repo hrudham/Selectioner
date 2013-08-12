@@ -90,7 +90,8 @@ define(
 							filteredOptions += this.renderOption(option);
 							count++;
 							
-							if (count > settings.filteredSelect.maxItems)
+							var maxItems = settings.filteredSelect.maxItems;
+							if (maxItems && count >= maxItems)
 							{
 								break;
 							}

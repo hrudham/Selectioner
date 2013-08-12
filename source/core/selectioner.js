@@ -82,7 +82,7 @@ define(
 			typeToSearchText: 'Type to search',
 			filteredSelect:
 				{
-					maxItems: 5,
+					maxItems: null,
 					minFilterLength: 1,
 					enterOneMoreCharacterText: 'Enter 1 more character',
 					enterNumberMoreCharactersText: 'Enter {{number}} more characters',

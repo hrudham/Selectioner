@@ -202,7 +202,7 @@
 			typeToSearchText: 'Type to search',
 			filteredSelect:
 				{
-					maxItems: 5,
+					maxItems: null,
 					minFilterLength: 1,
 					enterOneMoreCharacterText: 'Enter 1 more character',
 					enterNumberMoreCharactersText: 'Enter {{number}} more characters',
@@ -2246,7 +2246,8 @@
 							filteredOptions += this.renderOption(option);
 							count++;
 							
-							if (count > settings.filteredSelect.maxItems)
+							var maxItems = settings.filteredSelect.maxItems;
+							if (maxItems && count >= maxItems)
 							{
 								break;
 							}
