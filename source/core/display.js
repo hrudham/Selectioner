@@ -97,9 +97,7 @@ define(
 						
 						switch (e.which)
 						{
-							case 37: // Left arrow
 							case 38: // Up arrow
-							case 39: // Right arrow
 							case 40: // Down arrow
 								e.preventDefault();
 								display.popup.show();
