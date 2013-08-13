@@ -18,20 +18,25 @@ define(
 		// <option /> element for the underlying <select /> element. 
 		FilteredSelect.prototype.render = function()
 		{
-			Selectioner.Dialog.SingleSelect.prototype.render.apply(this, arguments);
-
 			this.textElement = this
 				.selectioner
 				.display
 				.element
 				.find('input[type="text"]');
-			
+				
 			if (this.textElement.length === 0)
 			{
 				throw new Error('FilteredSelect expects the Display to contain an <input type="text" /> element');
 			}
+		
+			Selectioner.Dialog.SingleSelect.prototype.render.apply(this, arguments);
 			
 			this.update();
+		};
+		
+		FilteredSelect.prototype.bindEvents = function()
+		{
+			Selectioner.Dialog.SingleSelect.prototype.bindEvents.apply(this, arguments);
 			
 			var dialog = this;
 			
@@ -53,78 +58,97 @@ define(
 						}
 					}
 				});
-			
-			this.update();
 		};
 
 		FilteredSelect.prototype.update = function()
 		{		
-			var dialog = this;
+			// Clear our cached selectable options.
+			// If you remove this line, highlighting will break.
+			this._selectableOptions = null;
 
 			var filterText = this.textElement.val().toLowerCase();
 			
-			var settings = this.selectioner.settings;
-			
 			// Don't re-update unless we have to.
 			if (filterText !== this._lastFilterText)
-			{
-				this._selectableOptions = null;
-			
+			{			
 				this._lastFilterText = filterText;
-			
 				var filteredOptions = '';
-				var count = 0;
-				var minFilterLength = settings.filteredSelect.minFilterLength || 1;
-				
-				if (filterText.length >= minFilterLength)
+				if (filterText.length >= this.selectioner.settings.filteredSelect.minFilterLength)
 				{
-					var children = this.selectioner.target.find('option');
-					
-					for (var i = 0, length = children.length; i < length; i++)
-					{
-						var option = children[i];
-						var text = option.text.toLowerCase();
-						
-						if (text !== '' && text.indexOf(filterText) === 0)
-						{
-							filteredOptions += this.renderOption(option);
-							count++;
-							
-							var maxItems = settings.filteredSelect.maxItems;
-							if (maxItems && count >= maxItems)
-							{
-								break;
-							}
-						}
-					}
-					
-					if (count === 0)
-					{
-						count++;
-						filteredOptions += 
-							'<li class="none"><span>' + 
-							settings.noMatchesFoundText + 
-							'</span></li>';
-					}
+					filteredOptions = this.getFilteredOptions();
 				}
 				else
 				{
-					var enterMoreText = settings.filteredSelect.enterOneMoreCharacterText;
-					
-					if (minFilterLength - filterText.length > 1)
-					{
-						enterMoreText = settings.filteredSelect.enterNumberMoreCharactersText
-							.replace(
-								/{{number}}/, 
-								minFilterLength - filterText.length);
-					}
-					
-					filteredOptions += '<li class="none"><span>' + enterMoreText + '</span></li>';
+					filteredOptions = this.getEnterCharactersOptions();
 				}			
 				
 				this.element
 					.empty()
 					.html(filteredOptions);
 			}
+		};
+		
+		// Returns the HTML of the list items that notify 
+		// the user that they need to enter more characters 
+		// before any filtering will be performed.
+		FilteredSelect.prototype.getEnterCharactersOptions = function()
+		{
+			var settings = this.selectioner.settings.filteredSelect;
+			var filterText = this.textElement.val().toLowerCase();
+			var enterMoreText = settings.enterOneMoreCharacterText;
+
+			if (settings.minFilterLength - filterText.length > 1)
+			{
+				enterMoreText = settings.enterNumberMoreCharactersText
+					.replace(
+						/{{number}}/, 
+						minFilterLength - filterText.length);
+			}
+			
+			return '<li class="none"><span>' + enterMoreText + '</span></li>';
+		};
+		
+		// Returns the HTML of the list of items that match
+		// the filter criteria entered into the auto-completes
+		// text input.
+		FilteredSelect.prototype.getFilteredOptions = function()
+		{
+			var filteredOptions = '';
+			var count = 0;
+		
+			var children = this.selectioner.target.find('option');
+					
+			for (var i = 0, length = children.length; i < length; i++)
+			{
+				var option = children[i];
+				var text = option.text.toLowerCase();
+				
+				if (text !== '' && text.indexOf(this.textElement.val().toLowerCase()) === 0)
+				{
+					filteredOptions += this.renderOption(option);
+					count++;
+					
+					var maxItems = this.selectioner.settings.filteredSelect.maxItems;
+					if (maxItems && count >= maxItems)
+					{
+						break;
+					}
+				}
+			}
+			
+			if (count === 0)
+			{
+				count++;
+				filteredOptions = this.getNoMatchesFound();
+			}
+			
+			return filteredOptions;
+		};
+		
+		FilteredSelect.prototype.getNoMatchesFound = function()
+		{
+			return '<li class="none"><span>' + 
+					this.selectioner.settings.noMatchesFoundText + 
+					'</span></li>';
 		};
 	});
