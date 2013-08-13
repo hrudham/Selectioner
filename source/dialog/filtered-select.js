@@ -67,11 +67,15 @@ define(
 			this._selectableOptions = null;
 
 			var filterText = this.textElement.val().toLowerCase();
+			var currentTargetHtml = this.selectioner.target.html();
 			
 			// Don't re-update unless we have to.
-			if (filterText !== this._lastFilterText)
+			if (filterText !== this._lastFilterText || 
+				currentTargetHtml !== this._lastRenderedTargetHtml)
 			{			
 				this._lastFilterText = filterText;
+				this._lastRenderedTargetHtml = currentTargetHtml;
+				
 				var filteredOptions = '';
 				if (filterText.length >= this.selectioner.settings.filteredSelect.minFilterLength)
 				{
