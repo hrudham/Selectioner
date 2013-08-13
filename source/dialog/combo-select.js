@@ -34,4 +34,31 @@ define(
 			
 			return '';
 		};
+		
+		ComboSelect.prototype.keyPress = function(simpleEvent)
+		{
+			var result = { handled: false };
+
+			// Do not filter on enter / return or tab.
+			if (simpleEvent.key != 13 && simpleEvent.key != 9)
+			{
+				var filter = this.selectioner.display.textElement.val() + 
+					String.fromCharCode(simpleEvent.key).toUpperCase();
+					
+				var options = this.getSelectableOptions();
+				for (var i = 0, length = options.length; i < length; i++)
+				{
+					var option = $(options[i]);
+					if (option.text().toUpperCase().indexOf(filter) === 0)
+					{
+						options.removeClass('highlight');
+						option.addClass('highlight');
+						this.scrollToHighlightedOption();
+						break;
+					}
+				}
+			}
+			
+			return result;
+		};
 	});
