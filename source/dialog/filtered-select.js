@@ -88,7 +88,9 @@ define(
 				
 				this.element
 					.empty()
-					.html(filteredOptions);
+					.html(filteredOptions)
+					.find('li:not(.none,.disabled):first')
+					.addClass('highlight');
 			}
 		};
 		

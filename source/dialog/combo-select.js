@@ -42,7 +42,7 @@ define(
 			// Do not filter on enter / return or tab.
 			if (simpleEvent.key != 13 && simpleEvent.key != 9)
 			{
-				var filter = this.selectioner.display.textElement.val() + 
+				var filter = this.selectioner.display.textElement.val().toUpperCase() + 
 					String.fromCharCode(simpleEvent.key).toUpperCase();
 					
 				var options = this.getSelectableOptions();

@@ -111,18 +111,23 @@ define(
 			
 			var itemHtml;
 			
+			var cssClass = [];
+			if (option.value === null || option.value === '') 
+			{
+				cssClass.push('none');
+			}
+			
 			if (option.disabled)
 			{
-				itemHtml = '<span class="disabled">' + text + '</span>';
+				cssClass.push('disabled');
+				itemHtml = '<span>' + text + '</span>';
 			}
 			else
 			{
 				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
-			}
+			}		
 
-			var cssClass = (option.value === null || option.value === '') ? 'none' : '';			
-
-			return '<li class="' + cssClass + '">' + itemHtml + '</li>';
+			return '<li class="' + cssClass.join(' ') + '">' + itemHtml + '</li>';
 		};
 
 		// Render an the equivalent control that represents an 

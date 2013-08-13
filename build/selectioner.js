@@ -1072,18 +1072,23 @@
 			
 			var itemHtml;
 			
+			var cssClass = [];
+			if (option.value === null || option.value === '') 
+			{
+				cssClass.push('none');
+			}
+			
 			if (option.disabled)
 			{
-				itemHtml = '<span class="disabled">' + text + '</span>';
+				cssClass.push('disabled');
+				itemHtml = '<span>' + text + '</span>';
 			}
 			else
 			{
 				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
-			}
+			}		
 
-			var cssClass = (option.value === null || option.value === '') ? 'none' : '';			
-
-			return '<li class="' + cssClass + '">' + itemHtml + '</li>';
+			return '<li class="' + cssClass.join(' ') + '">' + itemHtml + '</li>';
 		};
 
 		// Render an the equivalent control that represents an 
@@ -2136,7 +2141,7 @@
 			// Do not filter on enter / return or tab.
 			if (simpleEvent.key != 13 && simpleEvent.key != 9)
 			{
-				var filter = this.selectioner.display.textElement.val() + 
+				var filter = this.selectioner.display.textElement.val().toUpperCase() + 
 					String.fromCharCode(simpleEvent.key).toUpperCase();
 					
 				var options = this.getSelectableOptions();
@@ -2275,7 +2280,9 @@
 				
 				this.element
 					.empty()
-					.html(filteredOptions);
+					.html(filteredOptions)
+					.find('li:not(.none,.disabled):first')
+					.addClass('highlight');
 			}
 		};
 		
