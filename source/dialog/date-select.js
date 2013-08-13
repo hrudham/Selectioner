@@ -165,7 +165,7 @@ define(
 					})
 				.on(
 					'click',
-					'.selected',
+					'.selected, .confirm-date',
 					function()
 					{
 						dateSelect.setCurrentDate(dateSelect.getCurrentDate());
@@ -173,7 +173,7 @@ define(
 					})
 				.on(
 					'click',
-					'.today',
+					'.today-date',
 					function()
 					{
 						// Always set the date, in case it's been 
@@ -183,7 +183,7 @@ define(
 					})
 				.on(
 					'click',
-					'.clear',
+					'.clear-date',
 					function()
 					{
 						dateSelect.setCurrentDate(null);
@@ -232,20 +232,19 @@ define(
 				
 			var today = new Date();
 			
-			var todayButton = $('<a />')
-				.attr('href', 'javascript:;')
-				.addClass('today')
-				.append($('<span />').text('Today'));
-				
-			var clearButton = $('<a />')
-				.attr('href', 'javascript:;')
-				.addClass('clear')
-				.append($('<span />').text('Clear'));
-			
+			var createButton = function(text, cssClass)
+			{
+				return $('<a />')
+					.attr('href', 'javascript:;')
+					.addClass(cssClass)
+					.append($('<span />').text(text));
+			};
+							
 			// Build the control
 			this.element
 				.empty()
-				.append(todayButton);
+				.append(createButton('Clear', 'clear-date'))
+				.append(createButton('Today', 'today-date'));
 				
 			// Attempt to define the order of the scrollers
 			// based upon the user's culture settings.
@@ -291,7 +290,7 @@ define(
 				this.element.append(scrollers[i].element);
 			}
 				
-			this.element.append(clearButton);
+			this.element.append(createButton('OK', 'confirm-date'));
 		};
 
 		DateSelect.prototype.addDays = function(day)

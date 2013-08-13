@@ -435,8 +435,13 @@ textarea[readonly] + .select-display > .select-text {
 .select-date .years a.selected span {
   margin-right: 4px;
 }
-.select-date .today,
-.select-date .clear {
+.select-date .today-date,
+.select-date .clear-date,
+.select-date .confirm-date {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -ms-box-sizing: border-box;
+  box-sizing: border-box;
   display: block;
   text-decoration: none;
   text-align: center;
@@ -444,23 +449,36 @@ textarea[readonly] + .select-display > .select-text {
   color: #333;
   background-color: #F9F9F9;
 }
-.select-date .today:before,
-.select-date .clear:before,
-.select-date .today:after,
-.select-date .clear:after {
+.select-date .today-date:before,
+.select-date .clear-date:before,
+.select-date .confirm-date:before,
+.select-date .today-date:after,
+.select-date .clear-date:after,
+.select-date .confirm-date:after {
   content: '';
   display: table;
 }
-.select-date .today:after,
-.select-date .clear:after {
+.select-date .today-date:after,
+.select-date .clear-date:after,
+.select-date .confirm-date:after {
   clear: both;
 }
-.select-date .today:hover,
-.select-date .clear:hover {
+.select-date .today-date:hover,
+.select-date .clear-date:hover,
+.select-date .confirm-date:hover {
   color: #3377DD;
   background-color: #EEE;
 }
-.select-date .today:active,
-.select-date .clear:active {
+.select-date .today-date:active,
+.select-date .clear-date:active,
+.select-date .confirm-date:active {
   background-color: #DDD;
+}
+.select-date .clear-date,
+.select-date .today-date {
+  display: inline-block;
+  width: 50%;
+}
+.select-date .today-date {
+  border-left: 1px solid #CCC;
 }

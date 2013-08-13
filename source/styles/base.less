@@ -455,10 +455,12 @@ textarea
         }
     }
 
-    .today,
-    .clear
+    .today-date,
+    .clear-date,
+	.confirm-date
     {
         .clear();
+		.box-sizing();
         display: block;
         text-decoration: none;
         text-align: center;
@@ -477,4 +479,16 @@ textarea
             background-color: #DDD;
         }
     }
+	
+	.clear-date,
+	.today-date
+	{
+		display: inline-block;
+		width: 50%;
+	}
+	
+	.today-date
+	{
+		border-left: 1px solid #CCC;
+	}
 }
