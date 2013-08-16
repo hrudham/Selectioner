@@ -75,11 +75,13 @@ define(
 			}
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
+			
 			this.element.on(
 				'keydown',
 				function(e)
 				{
-					if (e.which == 27)
+					var key = e.which;
+					if (key == 27)
 					{
 						// Escape key was pressed.
 						display.popup.hide();
@@ -90,12 +92,12 @@ define(
 						{
 							display.popup
 								.keyDown({ 
-									key: e.which, 
+									key: key, 
 									target: e.target, 
 									preventDefault: function() { e.preventDefault(); } });
 						}
 						
-						switch (e.which)
+						switch (key)
 						{
 							case 38: // Up arrow
 							case 40: // Down arrow
@@ -110,11 +112,11 @@ define(
 				'keypress',
 				function(e)
 				{						
-					if (display.popup.isShown())
+					if (e.charCode && display.popup.isShown())
 					{
 						var result = display.popup
 							.keyPress({ 
-								key: e.which, 
+								key: e.charCode, 
 								target: e.target, 
 								preventDefault: function() { e.preventDefault(); } });
 					}

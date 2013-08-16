@@ -19,6 +19,7 @@
   text-align: left;
   margin-top: -1px;
   overflow: auto;
+  outline: none;
   top: 0px;
   /* Stop page from overflowing when the control is created. */
 
