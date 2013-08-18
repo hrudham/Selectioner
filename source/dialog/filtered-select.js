@@ -41,7 +41,7 @@ define(
 				{
 					if ((!data || data.source != 'selectioner') && 
 						e.which != 13 &&	// Enter
-						e.which !== 27) 	// Escape
+						e.which !== 27)		// Escape
 					{
 						dialog.update();
 						if (!dialog.popup.isShown())

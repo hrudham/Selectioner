@@ -2236,7 +2236,8 @@
 				function(e, data)
 				{
 					if ((!data || data.source != 'selectioner') && 
-						e.which !== 27) // e.which == 27 == Escape key pressed.
+						e.which != 13 &&	// Enter
+						e.which !== 27)		// Escape
 					{
 						dialog.update();
 						if (!dialog.popup.isShown())
