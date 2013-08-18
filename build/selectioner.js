@@ -897,7 +897,7 @@
 		{
 			if (!this.selectioner.target.is('select'))
 			{
-				throw new Error('ListBox expects it\'s underlying target element to to be a <select /> element');
+				throw new Error('Underlying target element is expected to be a <select /> element');
 			}
 		};
 
@@ -973,7 +973,7 @@
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('SingleSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
 			}
 		};
 
@@ -1378,7 +1378,7 @@
 		{
 			if (!this.selectioner.target.is('select[multiple]'))
 			{
-				throw new Error('MultiSelect expects it\'s underlying target element to to be a <select /> element with a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element with a "multiple" attribute');
 			}
 		};
 		
@@ -1486,7 +1486,7 @@
 		{
 			if (!this.selectioner.target.is('input[type="date"]'))
 			{
-				throw new Error('DateBox expects it\'s underlying target element to to be a <input type="date" /> element');
+				throw new Error('Underlying target element is expected to be a <input type="date" /> element');
 			}
 		};
 
@@ -1628,7 +1628,7 @@
 		{
 			if (!this.selectioner.target.is('input[type="date"]'))
 			{
-				throw new Error('DateBox expects it\'s underlying target element to to be a <input type="date" /> element');
+				throw new Error('Underlying element is expected to be an <input type="date" /> element');
 			}
 		};
 
@@ -1961,7 +1961,12 @@
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
+			}
+			
+			if (!this.selectioner.target.next().is('input[type="text"]'))
+			{
+				throw new Error('The element to follow the underlying <select /> is expected to be an <input type="text" />');
 			}
 		};
 		
@@ -1970,12 +1975,7 @@
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'combo-box';
 		
 			this.textElement = this.selectioner.target.next();
-			
-			if (!this.textElement.is('input[type="text"]'))
-			{
-				throw new Error('ComboBox expects the element to follow it\'s target <select /> to be an <input type="text" />');
-			}
-			
+						
 			var noSelectionText = this.getNoSelectionText();
 			
 			if (noSelectionText !== null)
@@ -2111,7 +2111,7 @@
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
 			}
 		};
 		
@@ -2206,7 +2206,7 @@
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
 			}
 		};
 
@@ -2219,12 +2219,7 @@
 				.display
 				.element
 				.find('input[type="text"]');
-				
-			if (this.textElement.length === 0)
-			{
-				throw new Error('FilteredSelect expects the Display to contain an <input type="text" /> element');
-			}
-		
+						
 			Selectioner.Dialog.SingleSelect.prototype.render.apply(this, arguments);
 			
 			this.update();

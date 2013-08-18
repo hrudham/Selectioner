@@ -10,7 +10,7 @@ define(
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
 			}
 		};
 		

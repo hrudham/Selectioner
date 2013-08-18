@@ -10,7 +10,7 @@ define(
 		{
 			if (!this.selectioner.target.is('input[type="date"]'))
 			{
-				throw new Error('DateBox expects it\'s underlying target element to to be a <input type="date" /> element');
+				throw new Error('Underlying target element is expected to be a <input type="date" /> element');
 			}
 		};
 

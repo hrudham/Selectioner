@@ -10,7 +10,7 @@ define(
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboSelect expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
 			}
 		};
 
@@ -23,12 +23,7 @@ define(
 				.display
 				.element
 				.find('input[type="text"]');
-				
-			if (this.textElement.length === 0)
-			{
-				throw new Error('FilteredSelect expects the Display to contain an <input type="text" /> element');
-			}
-		
+						
 			Selectioner.Dialog.SingleSelect.prototype.render.apply(this, arguments);
 			
 			this.update();

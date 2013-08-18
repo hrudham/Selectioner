@@ -10,7 +10,7 @@ define(
 		{
 			if (!this.selectioner.target.is('select'))
 			{
-				throw new Error('ListBox expects it\'s underlying target element to to be a <select /> element');
+				throw new Error('Underlying target element is expected to be a <select /> element');
 			}
 		};
 

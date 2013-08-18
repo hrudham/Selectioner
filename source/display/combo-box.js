@@ -10,7 +10,12 @@ define(
 		{
 			if (!this.selectioner.target.is('select:not([multiple])'))
 			{
-				throw new Error('ComboBox expects it\'s underlying target element to to be a <select /> element without a "multiple" attribute');
+				throw new Error('Underlying element is expected to be a <select /> element without a "multiple" attribute');
+			}
+			
+			if (!this.selectioner.target.next().is('input[type="text"]'))
+			{
+				throw new Error('The element to follow the underlying <select /> is expected to be an <input type="text" />');
 			}
 		};
 		
@@ -19,12 +24,7 @@ define(
 			this.cssClass = this.selectioner.settings.cssPrefix  + 'combo-box';
 		
 			this.textElement = this.selectioner.target.next();
-			
-			if (!this.textElement.is('input[type="text"]'))
-			{
-				throw new Error('ComboBox expects the element to follow it\'s target <select /> to be an <input type="text" />');
-			}
-			
+						
 			var noSelectionText = this.getNoSelectionText();
 			
 			if (noSelectionText !== null)
