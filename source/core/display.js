@@ -112,7 +112,7 @@ define(
 				'keypress',
 				function(e)
 				{						
-					if (e.charCode && display.popup.isShown())
+					if (e.charCode)
 					{
 						var result = display.popup
 							.keyPress({ 

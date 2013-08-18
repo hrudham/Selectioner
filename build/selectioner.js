@@ -770,7 +770,7 @@
 				'keypress',
 				function(e)
 				{						
-					if (e.charCode && display.popup.isShown())
+					if (e.charCode)
 					{
 						var result = display.popup
 							.keyPress({ 
@@ -2143,6 +2143,8 @@
 			// Do not filter on enter / return or tab.
 			if (simpleEvent.key != 13 && simpleEvent.key != 9)
 			{
+				this.popup.show();
+			
 				var filter = this.selectioner.display.textElement.val().toUpperCase() + 
 					String.fromCharCode(simpleEvent.key).toUpperCase();
 					
