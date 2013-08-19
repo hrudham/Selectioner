@@ -146,12 +146,17 @@ textarea[readonly] + .select-display > .select-text {
   background-color: transparent;
   /* for text inputs, which usually have a white background. */
 
+  /* Remove the "x" from IE's text inputs */
+
 }
 .select-display > .select-text:focus {
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
   outline: none;
+}
+.select-display > .select-text::-ms-clear {
+  display: none;
 }
 .select-display > span.select-text {
   cursor: pointer;
