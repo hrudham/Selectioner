@@ -89,7 +89,7 @@ define(
 			// the drop-down, and select it if it does.
 			// If it doesn't match an option, select the 
 			// option with no value.
-			var display = this;
+			var filterText = this.textElement.val().toUpperCase();
 			
 			var option = this.selectioner
 				.target
@@ -97,7 +97,7 @@ define(
 				.filter(
 					function() 
 					{ 
-						return this.text.toUpperCase() === display.textElement.val().toUpperCase(); 
+						return this.text.toUpperCase() === filterText; 
 					});
 			
 			if (option.length != 1)
@@ -114,24 +114,15 @@ define(
 
 		ComboBox.prototype.update = function()
 		{
-			var selectedOption = this.selectioner.target.find('option:selected');
+			var value = this.selectioner.target.find('option:selected').text();
 			
-			if (selectedOption.length === 0)
+			if (value !== '')
 			{
-				this.textElement.addClass('none');
-			}
-			else
-			{
-				this.textElement.removeClass('none');
-				var value = selectedOption.text();
-				
-				if (value !== '')
-				{
-					this.textElement.val(value)
-						.trigger(
-							'change',
-							{ source: 'selectioner' });
-				}
+				this.textElement
+					.val(value)
+					.trigger(
+						'change',
+						{ source: 'selectioner' });
 			}
 		};
 
