@@ -723,13 +723,17 @@
 			var targetId = this.selectioner.target.attr('id');
 			if (targetId !== undefined)
 			{
-				$(document).on(
-					'click',
-					'label[for="' + targetId + '"]',
-					function ()
-					{
-						display.element.focus();
-					});
+				var eventName = 'click.' + targetId;
+			
+				$(document)
+					.off(eventName)
+					.on(
+						eventName,
+						'label[for="' + targetId + '"]',
+						function ()
+						{
+							display.focus();
+						});
 			}
 			
 			// Look for any labels that are an ancestor of 
@@ -748,7 +752,7 @@
 					'click',
 					function ()
 					{
-						display.element.focus();
+						display.focus();
 					});	
 			
 			// Handle the key down event for things like arrows, escape, backspace, etc.
@@ -845,8 +849,7 @@
 
 			// Hide the pop-up whenever it loses focus to an
 			// element that is not part of the pop-up or display.
-			$(document)
-				.on(
+			$(document).on(
 				'mousedown focusin',
 				function(e)
 				{
@@ -898,6 +901,14 @@
 		{
 			// This method should be explicitly overridden, but
 			// it is not required if it will never be updated.
+		};
+		
+		// Focus on the relevant control instead of the 
+		// underlying target element. This is often
+		// called when a label is clicked on.
+		Display.prototype.focus = function()
+		{
+			this.element.focus();
 		};
 
 		Display.prototype.getNoSelectionText = function()
@@ -2110,6 +2121,11 @@
 				this.selectioner.target.data('placeholder') ||
 				this.textElement.attr('placeholder') ||
 				this.selectioner.settings.noSelectionText);
+		};
+		
+		ComboBox.prototype.focus = function()
+		{
+			this.textElement.focus();
 		};
 
 		var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};

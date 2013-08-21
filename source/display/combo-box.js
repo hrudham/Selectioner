@@ -142,4 +142,9 @@ define(
 				this.textElement.attr('placeholder') ||
 				this.selectioner.settings.noSelectionText);
 		};
+		
+		ComboBox.prototype.focus = function()
+		{
+			this.textElement.focus();
+		};
 	});
