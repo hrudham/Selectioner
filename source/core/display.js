@@ -189,22 +189,6 @@ define(
 						}
 					});
 
-			// Hide the pop-up whenever it loses focus to an
-			// element that is not part of the pop-up or display.
-			$(document).on(
-				'mousedown focusin',
-				function(e)
-				{
-					if (popup.isShown() &&
-						e.target !== displayElement[0] &&
-						!$.contains(displayElement[0], e.target) &&
-						e.target !== popup.element[0] &&
-						!$.contains(popup.element[0], e.target))
-					{
-						popup.hide();
-					}
-				});
-
 			var visibleCssClass = this.selectioner.settings.cssPrefix + 'visible';
 
 			this.selectioner

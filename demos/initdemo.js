@@ -123,7 +123,7 @@ var initdemo = window.initdemo = function()
 				}
 			);
 			
-	var customSelectioner = new Selectioner
+	var customSelectioner2 = new Selectioner
 		(
 			// Target control
 			$('#CustomSelect2'), 

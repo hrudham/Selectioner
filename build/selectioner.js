@@ -452,15 +452,34 @@
 			{
 				// Hide the pop-up any time the window resizes.
 				var popup = this;
+				var displayElement = this.selectioner.display.element[0];
+				var id = this.selectioner.id;
+				
 				$(window)
 					.one
 					(
-						'resize.selectioner_' + this.selectioner.id,
+						'resize.selectioner_' + id,
 						function()
 						{
 							popup.hide();
 						}
 					);
+					
+				// Hide the pop-up whenever it loses focus to an
+				// element that is not part of the pop-up or display.
+				$(document).on(
+					'mousedown.selectioner_' + id + ' focusin.selectioner_' + id,
+					function(e)
+					{
+						if (popup.isShown() &&
+							e.target !== displayElement &&
+							!$.contains(displayElement, e.target) &&
+							e.target !== popup.element &&
+							!$.contains(popup.element, e.target))
+						{
+							popup.hide();
+						}
+					});
 			
 				this._isVisible = true;
 				this.update();
@@ -487,7 +506,7 @@
 					.parents()
 					.add(window)
 					.on(
-						'scroll.selectioner_' + this.selectioner.id, 
+						'scroll.selectioner_' + id, 
 						function() 
 						{
 							// Hide the pop-up whenever a scroll event
@@ -509,9 +528,13 @@
 		{
 			if (this.isShown())
 			{
+				var id = this.selectioner.id;
+			
 				$(window).off(
-					'resize.selectioner_{id} scroll.selectioner_{id}'.replace(
-						/\{id\}/g, this.selectioner.id));
+					'resize.selectioner_' + id + ' scroll.selectioner_' + id);
+						
+				$(document).off(
+					'mousedown.selectioner_' + id + ' focusin.selectioner_' + id);
 			
 				this._isVisible = false;
 				this.element.css(
@@ -846,22 +869,6 @@
 							popup.show();
 						}
 					});
-
-			// Hide the pop-up whenever it loses focus to an
-			// element that is not part of the pop-up or display.
-			$(document).on(
-				'mousedown focusin',
-				function(e)
-				{
-					if (popup.isShown() &&
-						e.target !== displayElement[0] &&
-						!$.contains(displayElement[0], e.target) &&
-						e.target !== popup.element[0] &&
-						!$.contains(popup.element[0], e.target))
-					{
-						popup.hide();
-					}
-				});
 
 			var visibleCssClass = this.selectioner.settings.cssPrefix + 'visible';
 
