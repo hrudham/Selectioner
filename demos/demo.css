@@ -69,10 +69,11 @@ p {
 .box p {
   margin: 8px;
 }
-.box > p > label {
+.box > p > label,
+.box > p > label > span:first-child {
   cursor: pointer;
   font-weight: bold;
-  display: inline-block;
+  display: block;
   min-width: 160px;
   margin: 0px 0px 4px 0px;
 }

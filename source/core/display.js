@@ -65,7 +65,7 @@ define(
 			var targetId = this.selectioner.target.attr('id');
 			if (targetId !== undefined)
 			{
-				this.labels = $(document).on(
+				$(document).on(
 					'click',
 					'label[for="' + targetId + '"]',
 					function ()
@@ -74,8 +74,26 @@ define(
 					});
 			}
 			
-			// Handle the key down event for things like arrows, escape, backspace, etc.
+			// Look for any labels that are an ancestor of 
+			// the underlying target, yet have no 'for' attribute,
+			// but are still targeting our underlying target,
+			// and make them focus on the display when clicked.
+			var wrappingLabel = this.selectioner
+				.target
+				.closest('label:not([for])')
+				.filter(
+					function()
+					{
+						return this.control === display.selectioner.target[0];
+					})
+				.on(
+					'click',
+					function ()
+					{
+						display.element.focus();
+					});	
 			
+			// Handle the key down event for things like arrows, escape, backspace, etc.
 			this.element.on(
 				'keydown',
 				function(e)
