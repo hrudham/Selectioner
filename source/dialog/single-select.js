@@ -89,14 +89,23 @@ define(
 					// an <option /> without a value for it's no-option
 					// text, other dialogs that inherit from it often do, 
 					// such as in the case of the combo-select.
-					var noOptionText = this.selectioner
+					var option = this.selectioner
 						.target
-						.find('option[value=""], option:empty:not([value])')
-						.text();
+						.find('option[value=""], option:empty:not([value])');
 							
-					var text = noOptionText || this.selectioner.settings.noOptionText;
-							
-					results += '<li class="none"><span>' + text + '</span></li>';
+					var text = option.text() || this.selectioner.settings.noOptionText;
+					
+					var titleAttribute = '';
+					if (option.length > 0)
+					{
+						var title = option.getAttribute('title');
+						if (title)
+						{
+							titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '" ';
+						}
+					}
+					
+					results += '<li class="none"' + titleAttribute + '><span>' + text + '</span></li>';
 				}
 				
 				this.element.html(results);
@@ -125,18 +134,32 @@ define(
 			else
 			{
 				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
-			}		
+			}
+			
+			var titleAttribute = '';
+			var title = option.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
 
-			return '<li class="' + cssClass.join(' ') + '">' + itemHtml + '</li>';
+			return '<li class="' + cssClass.join(' ') + '"' + titleAttribute + '>' + itemHtml + '</li>';
 		};
 
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{					
+		{			
+			var titleAttribute = '';
+			var title = group.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
+		
 			var results = '<li class="' + 
 				this.selectioner.settings.cssPrefix + 
-				'group-title"><span>' + 
+				'group-title"' + titleAttribute + '><span>' + 
 				group.label + 
 				'</span></li>';
 			

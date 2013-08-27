@@ -949,6 +949,7 @@
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 					
 			this.element = $('<span />')
+				.prop('title', this.selectioner.target.prop('title'))
 				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
@@ -1088,14 +1089,23 @@
 					// an <option /> without a value for it's no-option
 					// text, other dialogs that inherit from it often do, 
 					// such as in the case of the combo-select.
-					var noOptionText = this.selectioner
+					var option = this.selectioner
 						.target
-						.find('option[value=""], option:empty:not([value])')
-						.text();
+						.find('option[value=""], option:empty:not([value])');
 							
-					var text = noOptionText || this.selectioner.settings.noOptionText;
-							
-					results += '<li class="none"><span>' + text + '</span></li>';
+					var text = option.text() || this.selectioner.settings.noOptionText;
+					
+					var titleAttribute = '';
+					if (option.length > 0)
+					{
+						var title = option.getAttribute('title');
+						if (title)
+						{
+							titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '" ';
+						}
+					}
+					
+					results += '<li class="none"' + titleAttribute + '><span>' + text + '</span></li>';
 				}
 				
 				this.element.html(results);
@@ -1124,18 +1134,32 @@
 			else
 			{
 				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
-			}		
+			}
+			
+			var titleAttribute = '';
+			var title = option.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
 
-			return '<li class="' + cssClass.join(' ') + '">' + itemHtml + '</li>';
+			return '<li class="' + cssClass.join(' ') + '"' + titleAttribute + '>' + itemHtml + '</li>';
 		};
 
 		// Render an the equivalent control that represents an 
 		// <optgroup /> element for the underlying <select /> element. 
 		SingleSelect.prototype.renderGroup = function(group)
-		{					
+		{			
+			var titleAttribute = '';
+			var title = group.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
+		
 			var results = '<li class="' + 
 				this.selectioner.settings.cssPrefix + 
-				'group-title"><span>' + 
+				'group-title"' + titleAttribute + '><span>' + 
 				group.label + 
 				'</span></li>';
 			
@@ -1471,7 +1495,14 @@
 				(option.selected ? 'checked="checked" ' : '') + 
 				(option.disabled ? 'disabled="disabled" ' : '') + '/>';
 				
-			return '<li><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
+			var titleAttribute = '';
+			var title = option.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
+				
+			return '<li' + titleAttribute + '><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
 				checkbox + 
 				'<span>' + option.text + '</span>' + 
 				'</label></li>';
@@ -1541,6 +1572,7 @@
 			var button = $('<span />').addClass(this.selectioner.settings.cssPrefix + 'button');
 			
 			this.element = $('<span />')
+				.prop('title', this.selectioner.target.prop('title'))
 				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
@@ -2047,6 +2079,7 @@
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
 			this.element = $('<span />')
+				.prop('title', this.selectioner.target.prop('title'))
 				.append(button)
 				.append(this.textElement);
 				

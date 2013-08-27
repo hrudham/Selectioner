@@ -60,6 +60,7 @@ define(
 				.addClass(this.selectioner.settings.cssPrefix + 'button');
 				
 			this.element = $('<span />')
+				.prop('title', this.selectioner.target.prop('title'))
 				.append(button)
 				.append(this.textElement);
 				

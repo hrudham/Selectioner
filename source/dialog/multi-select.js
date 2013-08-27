@@ -69,7 +69,14 @@ define(
 				(option.selected ? 'checked="checked" ' : '') + 
 				(option.disabled ? 'disabled="disabled" ' : '') + '/>';
 				
-			return '<li><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
+			var titleAttribute = '';
+			var title = option.getAttribute('title');
+			if (title)
+			{
+				titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '"';
+			}
+				
+			return '<li' + titleAttribute + '><label for="' + checkboxId + '" ' + (option.disabled ? 'class="disabled"' : '') + '>' + 
 				checkbox + 
 				'<span>' + option.text + '</span>' + 
 				'</label></li>';

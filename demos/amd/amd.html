@@ -32,19 +32,19 @@
 				<p>
 					<label>
 						<span>Empty (no ID attribute): </span>
-						<select class="empty" data-placeholder="Pick an option">
+						<select title="Empty single-select" class="empty" data-placeholder="Pick an option">
 						</select>
 					</label>
 				</p>
 				<p>
 					<label>
 						<span>Empty (no ID attribute): </span>
-						<select class="basic" data-placeholder="Pick an option">
-							<option></option><!-- empty option -->
-							<option value="1">Salsa</option>
-							<option value="1">Bachata</option>
-							<option value="2">Kizomba</option>
-							<option value="2">Merengue</option>
+						<select title="Basic single-select" class="basic" data-placeholder="Pick an option">
+							<option title="Empty option"></option><!-- empty option -->
+							<option value="1" title="Salsa with 'single quotes'">Salsa</option>
+							<option value="1" title="Escaped &lt;/option&gt; here, followed a non-escpated </option> here.">Bachata</option>
+							<option value="2" title='Kizomba with "double quotes"'>Kizomba</option>
+							<option value="2" title="Merengue">Merengue</option>
 						</select>
 					</label>
 				</p>
@@ -65,7 +65,7 @@
 					<label for="OptGroupSingle">OptGroup: </label>
 					<select id="OptGroupSingle">
 						<option></option>
-						<optgroup label="Islay">
+						<optgroup title="Smoke and peat" label="Islay">
 							<option>Ardbeg</option>
 							<option>Caol Ila</option>
 							<option>Bowmore</option>
@@ -73,12 +73,12 @@
 							<option>Bunnahabhain</option>
 							<option>Kilchoman</option>
 							<option>Lagavulin</option>
-							<option>Laphroaig</option>
+							<option title="My other favourite!">Laphroaig</option>
 						</optgroup>
-						<optgroup label="Speyside">
+						<optgroup title="Light and fruity" label="Speyside">
 							<option>Cragganmore</option>
 							<option>Glendronach</option>
-							<option>Glenfarclas</option>
+							<option title="My favourite!">Glenfarclas</option>
 							<option>Glenfiddich</option>
 							<option>Strathisla</option>
 							<option>Tamdhu</option>
@@ -96,12 +96,12 @@
 				<h3>Multi-select</h3>
 				<p style="height: 100px;">
 					<label for="BasicMultiple">Basic Multiple: </label>
-					<select id="BasicMultiple" multiple="multiple">
-						<option disabled="disabled">Disabled</option>
-						<option>Salsa</option>
-						<option>Bachata</option>
-						<option>Kizomba</option>
-						<option>Merengue</option>
+					<select title="Basic multi-select" id="BasicMultiple" multiple="multiple">
+						<option title="Disabled" disabled="disabled">Disabled</option>
+						<option title="Salsa">Salsa</option>
+						<option title="Bachata">Bachata</option>
+						<option title="Kizomba">Kizomba</option>
+						<option title="Merengue">Merengue</option>
 					</select>
 				</p>
 				<p>
@@ -129,24 +129,24 @@
 				<h3>Combo-select</h3>
 				<p>
 					<label for="EmptyComboText">Empty: </label>
-					<select id="EmptyComboSelect" data-placeholder="Pick an option">
+					<select title="Empty combo-select" id="EmptyComboSelect" data-placeholder="Pick an option">
 						<option></option>
 						<!--<option value="">None</option>-->
 					</select>
-					<input type="text" id="EmptyComboText" value="Custom entry" />
+					<input type="text" id="EmptyComboText" title="Empty combo-select's text-input" value="Custom entry" />
 				</p>
 				<p>
 					<label for="BasicComboSelect">Basic: </label>
-					<select id="BasicComboSelect" data-placeholder="Pick an option">
+					<select title="Basic combo-select" id="BasicComboSelect" data-placeholder="Pick an option">
 						<option></option>
-						<option disabled="disabled">Disabled Option</option>
-						<option>Cape Town</option>
-						<option>Durban</option>
-						<option>Johannesburg</option>
-						<option>Bloemfontein</option>
-						<option>Pietermaritzburg</option>
+						<option title="Disabled" disabled="disabled">Disabled Option</option>
+						<option title="Cape Town">Cape Town</option>
+						<option title="Durban">Durban</option>
+						<option title="Johannesburg">Johannesburg</option>
+						<option title="Bloemfontein">Bloemfontein</option>
+						<option title="Pietermaritzburg">Pietermaritzburg</option>
 					</select>
-					<input type="text" id="BasicComboText" value="Custom entry" />
+					<input type="text" id="BasicComboText" title="Basic combo-select's text-input" value="Custom entry" />
 				</p>		
 				<p>
 					<label for="OptGroupComboText">OptGroup: </label>
@@ -174,7 +174,7 @@
 				<h3>Auto-complete</h3>
 				<p>
 					<label for="BasicAutoCompleteText">Basic: </label>
-					<select id="BasicAutoCompleteSelect">
+					<select title="Basic auto-complete" id="BasicAutoCompleteSelect">
 						<option></option>
 						<option>Aberlour</option>
 						<option>Amrut</option>
@@ -216,7 +216,7 @@
 						<option>Glencadam</option>
 						<option>Glendronach</option>
 						<option>Glen Elgin</option>
-						<option>Glenfarclas</option>
+						<option title="My favourite!">Glenfarclas</option>
 						<option>Glenfiddich</option>
 						<option>Glen Garioch</option>
 						<option>Glenglassaugh</option>
@@ -237,7 +237,7 @@
 						<option>Kilchoman</option>
 						<option>Knockdhu</option>
 						<option>Lagavulin</option>
-						<option>Laphroaig</option>
+						<option title="My other favourite!">Laphroaig</option>
 						<option>Longmorn</option>
 						<option>Macallan</option>
 						<option>Maker's Mark</option>
@@ -271,14 +271,14 @@
 				<p>
 					<label for="DateInput">Date: </label>
 					<!-- set a value for this control the following attribute: value="2013-04-15" -->
-					<input type="date" id="DateInput" value="2013-03-01" placeholder="Choose a date" />
+					<input title="Basic date-box" type="date" id="DateInput" value="2013-03-01" placeholder="Choose a date" />
 				</p>
 			</div>
 			<div class="box">
 				<h3>Custom</h3>
 				<p>
 					<label for="CustomSelect1">Custom 1: </label>
-					<select id="CustomSelect1">
+					<select title="Custom select" id="CustomSelect1">
 						<option></option>
 						<option>Red</option>
 						<option>Green</option>
