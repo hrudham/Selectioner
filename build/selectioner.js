@@ -1017,14 +1017,12 @@
 		SingleSelect.prototype.render = function()
 		{
 			this.element = $('<ul />');
-			
 			this.bindEvents();
 		};
 		
 		SingleSelect.prototype.bindEvents = function()
 		{
 			var dialog = this;
-		
 			var element = this.element
 				.on(
 					'click', 
@@ -1104,11 +1102,13 @@
 							titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '" ';
 						}
 					}
-					
+
 					results += '<li class="none"' + titleAttribute + '><span>' + text + '</span></li>';
 				}
-				
+
 				this.element.html(results);
+
+				this.scrollToHighlightedOption();
 			}
 		};
 
@@ -1136,6 +1136,11 @@
 				itemHtml = '<a href="javascript:;" data-index="' + option.index + '">' + text + '</a>';
 			}
 			
+			if (option.selected)
+			{
+				cssClass.push('highlight');
+			}
+
 			var titleAttribute = '';
 			var title = option.getAttribute('title');
 			if (title)
