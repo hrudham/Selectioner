@@ -2,6 +2,7 @@ var initdemo = window.initdemo = function()
 {
 	//Globalize.culture('en-US');
 	//Globalize.culture('en-ZA');
+	Globalize.culture('de-DE');
 	//Globalize.culture('it-IT');
 
 	var resetForm = function()
