@@ -102,7 +102,7 @@ define(
 					var titleAttribute = '';
 					if (option.length > 0)
 					{
-						var title = option.getAttribute('title');
+						var title = option[0].getAttribute('title');
 						if (title)
 						{
 							titleAttribute = ' title="' + title.replace(/"/g, '&quot;') + '" ';
