@@ -1029,9 +1029,15 @@
 					'li a',
 					function()
 					{
-						dialog.selectioner.target[0][this.getAttribute('data-index')].selected = true;
+						var option = dialog.selectioner.target[0][this.getAttribute('data-index')];
+						
+						if (!option.selected)
+						{
+							option.selected = true;
+							dialog.selectioner.target.trigger('change', { source: 'selectioner' });
+						}
+						
 						dialog.popup.hide();
-						dialog.selectioner.target.trigger('change', { source: 'selectioner' });
 					})
 				.on(
 					'mouseenter',
