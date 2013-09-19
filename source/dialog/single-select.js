@@ -384,16 +384,18 @@ define(
 					{
 						dialog.keyPressFilter = '';
 					},
-					400);
+					600);
 					
 				// Find the first option that satisfies   
-				// the filter, and highlight it.
+				// the filter, is not empty (or "none"), 
+				// and highlight it.
 				var options = this.getSelectableOptions();
 				var isSet = false;
 				for (var i = 0, length = options.length; i < length; i++)
 				{
 					var option = $(options[i]);
-					if (option.text().toUpperCase().indexOf(this.keyPressFilter) === 0)
+					if (!option.hasClass('none') &&
+						option.text().toUpperCase().indexOf(this.keyPressFilter) === 0)
 					{
 						options.removeClass('highlight');
 						option.addClass('highlight');
