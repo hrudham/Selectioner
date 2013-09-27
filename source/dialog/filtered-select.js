@@ -116,16 +116,25 @@ define(
 		FilteredSelect.prototype.getFilteredOptions = function()
 		{
 			var filteredOptions = '';
+			var filterText = this.textElement.val().toLowerCase();
 			var count = 0;
 		
 			var children = this.selectioner.target.find('option');
 					
+			var wordFilter = function(text)
+			{ 
+				return text !== '' && text.indexOf(filterText) === 0;
+			};
+					
 			for (var i = 0, length = children.length; i < length; i++)
 			{
 				var option = children[i];
-				var text = option.text.toLowerCase();
 				
-				if (text !== '' && text.indexOf(this.textElement.val().toLowerCase()) === 0)
+				// Split the text on spaces, so that we can match on 
+				// any word that starts with the filter criteria.
+				var textParts = option.text.toLowerCase().split(' ');
+				
+				if (textParts.filter(wordFilter).length > 0)
 				{
 					filteredOptions += this.renderOption(option);
 					count++;
