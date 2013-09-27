@@ -2406,8 +2406,16 @@
 				
 				// Split the text on spaces, so that we can match on 
 				// any word that starts with the filter criteria.
-				var textParts = option.text.toLowerCase().split(' ');
+				var optionText = option.text.toLowerCase();
+				var textParts = [];
+				var spaceIndex = 0;
 				
+				while(spaceIndex > -1)
+				{
+					textParts.push(optionText.substring(spaceIndex === 0 ? 0 : spaceIndex + 1));
+					spaceIndex = optionText.indexOf(' ', spaceIndex + 1);
+				}
+			
 				if (textParts.filter(wordFilter).length > 0)
 				{
 					filteredOptions += this.renderOption(option);
