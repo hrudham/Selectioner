@@ -1,5 +1,5 @@
 define(
-	['core/selectioner', 'dialog/single-select'],
+	['dialog/single-select'],
 	function()
 	{
 		var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};

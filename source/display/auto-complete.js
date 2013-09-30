@@ -1,5 +1,5 @@
 define(
-	['core/selectioner', 'core/display'],
+	['display/combo-box'],
 	function()
 	{
 		var AutoComplete = Selectioner.Display.AutoComplete = function() {};

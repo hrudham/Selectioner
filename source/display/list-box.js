@@ -1,5 +1,5 @@
 define(
-	['core/selectioner', 'core/display'],
+	['core/display'],
 	function()
 	{
 		var ListBox = Selectioner.Display.ListBox = function() {};

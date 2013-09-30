@@ -1,5 +1,5 @@
 define(
-	['core/selectioner', 'core/dialog'],
+	['core/dialog'],
 	function()
 	{
 		var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};

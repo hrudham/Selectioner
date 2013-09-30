@@ -1,7 +1,7 @@
 // Note that you may optionally include the excellent Globalize library in order 
 // to get culturally formatted dates. See https://github.com/jquery/globalize
 define(
-	['core/selectioner', 'core/dialog'],
+	['core/dialog'],
 	function()
 	{
 		var DateSelect = Selectioner.Dialog.DateSelect = function() {};
