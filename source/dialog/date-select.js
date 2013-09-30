@@ -1,5 +1,6 @@
 // Note that you may optionally include the excellent Globalize library in order 
 // to get culturally formatted dates. See https://github.com/jquery/globalize
+
 define(
 	['core/dialog'],
 	function()
@@ -370,13 +371,7 @@ define(
 						this.addDays(1);
 						simpleEvent.preventDefault();
 						break;
-					
-					case 8: // Backspace
-						this.setCurrentDate(null);
-						this.popup.hide();
-						simpleEvent.preventDefault();
-						break;
-						
+											
 					case 32: // Space
 					case 13: // Enter / Return
 						this.setCurrentDate(this.getCurrentDate());
