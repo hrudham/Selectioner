@@ -345,7 +345,8 @@ define(
 						break;
 						
 					case 32: // Space
-						if (!this.keyPressFilter && simpleEvent.target === this.selectioner.display.element[0])
+						if (!this.keyPressFilter && 
+							simpleEvent.target === this.selectioner.display.element[0])
 						{
 							this.selectHighlightedOption();
 							simpleEvent.preventDefault();
@@ -353,6 +354,14 @@ define(
 						}
 						break;
 						 
+					case 9:  // Tab
+						if (!this.selectioner.target.is('[multiple]'))
+						{
+							this.selectHighlightedOption();
+							result.handled = true;
+						}
+						break;
+					
 					case 13: // Enter / Return
 						this.selectHighlightedOption();
 						simpleEvent.preventDefault();
