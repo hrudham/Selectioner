@@ -23,6 +23,7 @@ define(
 		SingleSelect.prototype.bindEvents = function()
 		{
 			var dialog = this;
+			var lastScrollTop = null;
 			var element = this.element
 				.on(
 					'click', 
@@ -40,11 +41,16 @@ define(
 						dialog.popup.hide();
 					})
 				.on(
-					'mouseenter',
+					'mousemove',
 					'li',
 					function()
 					{	
-						dialog.highlight(this);
+						var scrollTop = dialog.popup.element.scrollTop();
+						if (scrollTop === lastScrollTop)
+						{
+							dialog.highlight(this);
+						}
+						lastScrollTop = scrollTop;
 					});
 		};
 		
@@ -203,21 +209,18 @@ define(
 		};
 
 		SingleSelect.prototype.highlight = function(item)
-		{
-			var dialog = this;		
-			var target = $(item);
-						
-			if (!target.hasClass('highlight') && 
-				dialog.getSelectableOptions().filter(item).length > 0)
+		{						
+			if ((' ' + item.className + ' ').indexOf(' highlight ') === -1 && 
+				this.getSelectableOptions().filter(item).length > 0)
 			{
-				dialog.element.find('li').removeClass('highlight');
-				target.addClass('highlight');
+				this.element.find('li').removeClass('highlight');
+				$(item).addClass('highlight');
 			}
 		};
 		
 		// Highlight the next or previous item.
 		SingleSelect.prototype.highlightAdjacentOption = function(isNext)
-		{
+		{		
 			var isHighlighted = false;
 			var items = this.getSelectableOptions();
 			
