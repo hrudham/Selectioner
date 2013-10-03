@@ -1705,6 +1705,19 @@
 				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
+				
+			this.textElement
+				.on(
+					'focus',
+					function(ev)
+					{
+						dateBox.textElement.one(
+							'click', 
+							function(e)
+							{
+								dateBox.textElement.select();
+							});
+					});
 		};
 
 		DateBox.prototype.update = function()
@@ -2182,22 +2195,16 @@
 				.append(button)
 				.append(this.textElement);
 				
-			comboBox.element
+			comboBox.textElement
 				.on(
 					'focus',
 					function(ev)
 					{
-						comboBox.element.one(
+						comboBox.textElement.one(
 							'click keyup', 
 							function(e)
 							{
-								if (e.which !== 9 || !e.shiftKey)
-								{
-									// If we are not navigating backwards via 
-									// SHIFT+TAB, then select the text in this 
-									// combo-box's text element.
-									comboBox.textElement.select();
-								}
+								comboBox.textElement.select();
 							});
 					});
 		};

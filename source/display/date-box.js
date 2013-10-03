@@ -137,6 +137,19 @@ define(
 				.prop('tabindex', this.selectioner.target.prop('tabindex')) // Allow for tabbing and keyboard-related events to work.
 				.append(button)
 				.append(this.textElement);
+				
+			this.textElement
+				.on(
+					'focus',
+					function(ev)
+					{
+						dateBox.textElement.one(
+							'click', 
+							function(e)
+							{
+								dateBox.textElement.select();
+							});
+					});
 		};
 
 		DateBox.prototype.update = function()
