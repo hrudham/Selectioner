@@ -1002,7 +1002,10 @@
 			this.textElement.toggleClass('none', isEmpty);
 		};
 
-		var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
+		var SingleSelect = Selectioner.Dialog.SingleSelect = function() 
+		{
+			this.allowTabSelection = true;
+		};
 
 		SingleSelect.prototype = new Selectioner.Core.Dialog();
 
@@ -1358,7 +1361,7 @@
 						break;
 						 
 					case 9:  // Tab
-						if (!this.selectioner.target.is('[multiple]'))
+						if (this.allowTabSelection)
 						{
 							this.selectHighlightedOption();
 							result.handled = true;
@@ -1453,7 +1456,10 @@
 			return this;
 		};
 
-		var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
+		var MultiSelect = Selectioner.Dialog.MultiSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		MultiSelect._inputIdIndex = 0;
 
@@ -2201,7 +2207,7 @@
 					function(ev)
 					{
 						comboBox.textElement.one(
-							'click keyup', 
+							'click', 
 							function(e)
 							{
 								comboBox.textElement.select();
@@ -2274,7 +2280,10 @@
 			this.textElement.focus();
 		};
 
-		var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
+		var ComboSelect = Selectioner.Dialog.ComboSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		ComboSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
@@ -2319,13 +2328,13 @@
 				var filter = this.selectioner.display.textElement.val().toUpperCase() + 
 					String.fromCharCode(simpleEvent.key).toUpperCase();
 					
-				var options = this.getSelectableOptions();
+				var options = this.getSelectableOptions().removeClass('highlight');
+				
 				for (var i = 0, length = options.length; i < length; i++)
 				{
 					var option = $(options[i]);
 					if (option.text().toUpperCase().indexOf(filter) === 0)
 					{
-						options.removeClass('highlight');
 						option.addClass('highlight');
 						this.scrollToHighlightedOption();
 						break;
@@ -2369,7 +2378,10 @@
 				this.selectioner.settings.typeToSearchText);
 		};
 
-		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() {};
+		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		FilteredSelect.prototype = new Selectioner.Dialog.SingleSelect();
 

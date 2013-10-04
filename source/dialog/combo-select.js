@@ -2,7 +2,10 @@ define(
 	['dialog/single-select'],
 	function()
 	{
-		var ComboSelect = Selectioner.Dialog.ComboSelect = function() {};
+		var ComboSelect = Selectioner.Dialog.ComboSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		ComboSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
@@ -47,13 +50,13 @@ define(
 				var filter = this.selectioner.display.textElement.val().toUpperCase() + 
 					String.fromCharCode(simpleEvent.key).toUpperCase();
 					
-				var options = this.getSelectableOptions();
+				var options = this.getSelectableOptions().removeClass('highlight');
+				
 				for (var i = 0, length = options.length; i < length; i++)
 				{
 					var option = $(options[i]);
 					if (option.text().toUpperCase().indexOf(filter) === 0)
 					{
-						options.removeClass('highlight');
 						option.addClass('highlight');
 						this.scrollToHighlightedOption();
 						break;

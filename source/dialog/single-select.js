@@ -2,7 +2,10 @@ define(
 	['core/dialog'],
 	function()
 	{
-		var SingleSelect = Selectioner.Dialog.SingleSelect = function() {};
+		var SingleSelect = Selectioner.Dialog.SingleSelect = function() 
+		{
+			this.allowTabSelection = true;
+		};
 
 		SingleSelect.prototype = new Selectioner.Core.Dialog();
 
@@ -358,7 +361,7 @@ define(
 						break;
 						 
 					case 9:  // Tab
-						if (!this.selectioner.target.is('[multiple]'))
+						if (this.allowTabSelection)
 						{
 							this.selectHighlightedOption();
 							result.handled = true;

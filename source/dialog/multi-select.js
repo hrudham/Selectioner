@@ -2,7 +2,10 @@ define(
 	['dialog/single-select'],
 	function()
 	{
-		var MultiSelect = Selectioner.Dialog.MultiSelect = function() {};
+		var MultiSelect = Selectioner.Dialog.MultiSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		MultiSelect._inputIdIndex = 0;
 

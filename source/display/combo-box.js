@@ -70,7 +70,7 @@ define(
 					function(ev)
 					{
 						comboBox.textElement.one(
-							'click keyup', 
+							'click', 
 							function(e)
 							{
 								comboBox.textElement.select();

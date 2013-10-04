@@ -2,7 +2,10 @@ define(
 	['dialog/single-select'],
 	function()
 	{
-		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() {};
+		var FilteredSelect = Selectioner.Dialog.FilteredSelect = function() 
+		{
+			this.allowTabSelection = false;
+		};
 
 		FilteredSelect.prototype = new Selectioner.Dialog.SingleSelect();
 
