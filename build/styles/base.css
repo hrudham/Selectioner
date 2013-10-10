@@ -137,7 +137,7 @@ textarea[readonly] + .select-display > .select-text {
   /* Stop IE10 from picking sub-pixel values by setting a round number ourselves. */
 
   display: inline-block;
-  min-width: 133px;
+  min-width: 175px;
   text-align: left;
   padding: 1px 24px 1px 3px;
   margin: 0px;
