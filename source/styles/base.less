@@ -10,6 +10,7 @@
     text-align: left;
     margin-top: -1px;
     overflow: auto;
+	-webkit-overflow-scrolling: touch;
 	outline: none;
     top: 0px; /* Stop page from overflowing when the control is created. */
 
@@ -37,8 +38,17 @@
         {
             a, label
             {
-                background-color: #F5F5F5;
+                background-color: #39F;
+				color: #FFF;
             }
+			
+			&.none
+			{
+				a, label
+				{
+					color: #DDD;
+				}
+			}
         }
 
         input[disabled] + span,

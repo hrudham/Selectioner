@@ -228,7 +228,7 @@ define(
 					.add(window)
 					.on(
 						'scroll.selectioner_' + id, 
-						function() 
+						function(e) 
 						{
 							// Hide the pop-up whenever a scroll event
 							// on a parent element occurs. It's either 

@@ -19,6 +19,7 @@
   text-align: left;
   margin-top: -1px;
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   outline: none;
   top: 0px;
   /* Stop page from overflowing when the control is created. */
@@ -45,7 +46,12 @@
 }
 .select-popup > ul li.highlight a,
 .select-popup > ul li.highlight label {
-  background-color: #F5F5F5;
+  background-color: #39F;
+  color: #FFF;
+}
+.select-popup > ul li.highlight.none a,
+.select-popup > ul li.highlight.none label {
+  color: #DDD;
 }
 .select-popup > ul input[disabled] + span,
 .select-popup > ul .disabled {
